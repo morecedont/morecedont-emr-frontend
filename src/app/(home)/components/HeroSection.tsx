@@ -48,7 +48,7 @@ export default function HeroSection() {
         <div className="relative mt-4 lg:mt-0">
           <div className="rounded-xl overflow-hidden shadow-2xl border border-white/50">
             <Image
-              src="/hero-section.jpg"
+              src="/hero-section-dental.jpg"
               alt="Interior de clínica dental moderna con equipamiento odontológico"
               width={1024}
               height={684}
