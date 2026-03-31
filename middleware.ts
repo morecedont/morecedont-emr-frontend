@@ -10,14 +10,15 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
+  const isHomePage = pathname === "/"
   const isLoginPage = pathname === "/login"
   const isRegisterPage = pathname === "/register"
   const isPendingPage = pathname.startsWith("/register/pending")
   const isRejectedPage = pathname.startsWith("/register/rejected")
 
-  // Unauthenticated: allow only auth pages
+  // Unauthenticated: allow public pages
   if (!user) {
-    if (!isLoginPage && !isRegisterPage && !isPendingPage && !isRejectedPage) {
+    if (!isHomePage && !isLoginPage && !isRegisterPage && !isPendingPage && !isRejectedPage) {
       return NextResponse.redirect(new URL("/login", request.nextUrl))
     }
     return supabaseResponse

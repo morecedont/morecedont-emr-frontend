@@ -75,6 +75,13 @@
   --radius-lg:      0.5rem;
   --radius-xl:      0.75rem;
   --radius-full:    9999px;
+
+  /* Brand / landing page tokens */
+  --color-brand-dark:      #1E1E2F;
+  --color-brand-footer:    #2E3A59;
+  --color-brand-shape-a:   #3F5AA6;
+  --color-brand-shape-b:   #C9CDEB;
+  --color-brand-section-alt: #E6EAF5;
 }
 
 /* ── Decorative background ───────────────────────────────── */

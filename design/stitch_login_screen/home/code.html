@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-high": "#e4e8f3",
+                        "on-error": "#ffffff",
+                        "background": "#f8f9ff",
+                        "secondary-fixed-dim": "#bac6ec",
+                        "primary-container": "#4367f7",
+                        "on-primary-container": "#fffbff",
+                        "tertiary": "#565b74",
+                        "tertiary-fixed-dim": "#c1c5e3",
+                        "secondary-container": "#cad6fd",
+                        "on-primary-fixed": "#001356",
+                        "inverse-surface": "#2c3139",
+                        "primary": "#224bdd",
+                        "on-secondary-fixed-variant": "#3a4666",
+                        "primary-fixed": "#dde1ff",
+                        "surface-bright": "#f8f9ff",
+                        "secondary-fixed": "#dae2ff",
+                        "tertiary-fixed": "#dde1ff",
+                        "on-surface": "#171c23",
+                        "on-tertiary-fixed": "#151a30",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#6f738e",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#b8c3ff",
+                        "inverse-primary": "#b8c3ff",
+                        "on-surface-variant": "#444655",
+                        "on-primary-fixed-variant": "#0035be",
+                        "surface-container": "#eaeef9",
+                        "error": "#ba1a1a",
+                        "surface": "#f8f9ff",
+                        "on-secondary-container": "#515d7e",
+                        "on-tertiary-fixed-variant": "#41455e",
+                        "surface-container-low": "#f0f3ff",
+                        "secondary": "#525e7f",
+                        "outline-variant": "#c4c5d8",
+                        "outline": "#747687",
+                        "inverse-on-surface": "#edf1fc",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#264ee0",
+                        "on-secondary-fixed": "#0d1a38",
+                        "surface-variant": "#dee2ed",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#dee2ed",
+                        "surface-dim": "#d6dae5",
+                        "on-background": "#171c23",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-container": "#fffbff",
+                        "brand-dark": "#1E1E2F",
+                        "brand-muted": "#6B7280",
+                        "brand-primary": "#4C6FFF",
+                        "brand-shape-a": "#3F5AA6",
+                        "brand-shape-b": "#C9CDEB",
+                        "brand-footer": "#2E3A59"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hero-pattern {
+            background-image: radial-gradient(circle at 2px 2px, #C9CDEB 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-brand-muted selection:bg-primary-fixed selection:text-primary">
+<!-- 1. Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm">
+<div class="flex justify-between items-center px-8 h-20 max-w-7xl mx-auto">
+<div class="text-2xl font-bold tracking-tight text-brand-dark">
+                Morecedont
+            </div>
+<div class="hidden md:flex items-center space-gap-8 gap-8">
+<a class="text-brand-primary font-semibold border-b-2 border-brand-primary pb-1" href="#">Inicio</a>
+<a class="text-brand-muted hover:text-brand-primary transition-colors" href="#how-it-works">Cómo funciona</a>
+<a class="text-brand-muted hover:text-brand-primary transition-colors" href="#for-whom">Para quién</a>
+<a class="text-brand-muted hover:text-brand-primary transition-colors" href="#faq">FAQ</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-5 py-2 text-brand-primary border border-brand-primary font-semibold rounded-lg hover:bg-surface-container-low transition-all">
+                    Iniciar sesión
+                </button>
+<button class="px-5 py-2 bg-brand-primary text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-brand-primary/20 transition-all transform active:scale-95">
+                    Solicitar acceso
+                </button>
+</div>
+</div>
+<div class="bg-slate-100/50 h-[1px]"></div>
+</nav>
+<!-- 2. Hero Section -->
+<header class="relative pt-32 pb-20 overflow-hidden bg-[#F9FAFC]">
+<!-- Decorative Shapes -->
+<div class="absolute top-20 -right-20 w-96 h-96 bg-brand-shape-a/10 rounded-full blur-3xl"></div>
+<div class="absolute bottom-10 -left-20 w-80 h-80 bg-brand-shape-b/20 rounded-full blur-3xl"></div>
+<div class="max-w-7xl mx-auto px-8 relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+<div>
+<h1 class="font-headline text-5xl md:text-6xl font-extrabold text-brand-dark leading-tight tracking-tight mb-6">
+                    Lleva el historial clínico de tus pacientes a <span class="text-brand-primary">otro nivel</span>
+</h1>
+<p class="text-xl text-brand-muted mb-10 max-w-lg leading-relaxed">
+                    La plataforma inteligente para odontólogos que buscan centralizar su práctica, mejorar la atención y digitalizar su consulta de forma segura.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="px-8 py-4 bg-brand-primary text-white font-bold rounded-lg shadow-xl shadow-brand-primary/20 hover:scale-105 transition-all">
+                        Solicitar acceso
+                    </button>
+<button class="px-8 py-4 bg-surface-container-lowest text-brand-dark font-bold border border-outline-variant/20 rounded-lg hover:bg-white transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">play_circle</span>
+                        Ver cómo funciona
+                    </button>
+</div>
+</div>
+<div class="relative">
+<div class="rounded-xl overflow-hidden shadow-2xl border border-white/50">
+<img class="w-full h-auto object-cover" data-alt="modern dental clinic interior with clean minimalist design soft lighting and professional high-tech medical equipment for patient care" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcK_ZfoBWRNMTL7b7u9D-diakOmR4m0R5q1b2eK5vybr6ar0cOe23bOHC8fHQGZE6Ztb_t51rtiH5N81uAFqTaJmJlrLen5OkIAb55rwulNNxr9rd_DU-HUDqScLJvK-dT3LI_jr-dYZ3W92iZEwS0NFkvkhtUte-QN_PHpTLxpDEhcn0v0XpMJXLOsSAlDatWnCfF1CdY4UocN9B79hkaREfJga2ujMDYw7-bnUGCprXcWby_MMlOlBlphxsJcJKCYA9eDlwqnggZ"/>
+</div>
+<!-- Floating Card UI Element -->
+<div class="absolute -bottom-6 -left-6 bg-white p-6 rounded-lg shadow-xl max-w-xs hidden md:block">
+<div class="flex items-center gap-4 mb-3">
+<div class="w-10 h-10 bg-primary-fixed rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">analytics</span>
+</div>
+<div>
+<p class="text-brand-dark font-bold text-sm">Historial Digital</p>
+<p class="text-xs">Acceso inmediato 24/7</p>
+</div>
+</div>
+<div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-brand-primary w-3/4"></div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- 3. Problem Section -->
+<section class="py-24 bg-white">
+<div class="max-w-7xl mx-auto px-8">
+<div class="text-center mb-16">
+<h2 class="font-headline text-3xl md:text-4xl font-bold text-brand-dark mb-4">¿Todavía gestionas tus historias clínicas en papel?</h2>
+<p class="text-brand-muted max-w-2xl mx-auto">La desorganización administrativa frena el crecimiento de tu clínica y afecta la experiencia de tus pacientes.</p>
+</div>
+<div class="grid md:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="p-8 bg-white rounded-lg shadow-md border border-slate-50 flex flex-col items-center text-center">
+<div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-3xl">inventory_2</span>
+</div>
+<h3 class="text-xl font-bold text-brand-dark mb-4">Historias clínicas dispersas</h3>
+<p class="text-brand-muted">Archivos físicos que se pierden, se dañan o son difíciles de consultar rápidamente durante la cita.</p>
+</div>
+<!-- Card 2 -->
+<div class="p-8 bg-white rounded-lg shadow-md border border-slate-50 flex flex-col items-center text-center">
+<div class="w-16 h-16 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-3xl">schedule</span>
+</div>
+<h3 class="text-xl font-bold text-brand-dark mb-4">Tiempo perdido en administración</h3>
+<p class="text-brand-muted">Horas semanales dedicadas a buscar papeles en lugar de centrarte en el tratamiento de tus pacientes.</p>
+</div>
+<!-- Card 3 -->
+<div class="p-8 bg-white rounded-lg shadow-md border border-slate-50 flex flex-col items-center text-center">
+<div class="w-16 h-16 bg-blue-50 text-brand-primary rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-3xl">corporate_fare</span>
+</div>
+<h3 class="text-xl font-bold text-brand-dark mb-4">Sin visibilidad entre clínicas</h3>
+<p class="text-brand-muted">Dificultad para acceder a los datos de un paciente si trabajas en múltiples sedes o consultorios.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. What is Morecedont Section -->
+<section class="py-24 bg-[#E6EAF5]">
+<div class="max-w-7xl mx-auto px-8">
+<div class="grid lg:grid-cols-2 gap-16 items-center">
+<div>
+<span class="inline-block px-4 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-sm font-bold mb-4">SOBRE NOSOTROS</span>
+<h2 class="font-headline text-3xl md:text-5xl font-bold text-brand-dark mb-6">Una plataforma hecha por y para odontólogos</h2>
+<p class="text-lg text-brand-muted mb-8 leading-relaxed">
+                        Entendemos los retos del día a día en la consulta. Por eso diseñamos una interfaz intuitiva que prioriza la claridad clínica sobre la complejidad técnica. Gestiona diagnósticos, tratamientos y evoluciones con un solo clic.
+                    </p>
+<ul class="space-y-4">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-brand-primary">check_circle</span>
+<span class="text-brand-dark font-medium">Interfaz editorial de alta legibilidad</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-brand-primary">check_circle</span>
+<span class="text-brand-dark font-medium">Estandarización de procesos clínicos</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-brand-primary">check_circle</span>
+<span class="text-brand-dark font-medium">Cumplimiento con normativas de salud</span>
+</li>
+</ul>
+</div>
+<div class="bg-white rounded-xl shadow-2xl p-4 transform rotate-1 hover:rotate-0 transition-transform duration-500 border border-white">
+<!-- Mockup placeholder mimicking SCREEN_12 -->
+<div class="bg-surface-container-low rounded-lg p-6 min-h-[400px]">
+<div class="flex justify-between items-center mb-8">
+<div class="flex gap-4 items-center">
+<div class="w-12 h-12 bg-white rounded-full"></div>
+<div>
+<div class="h-4 w-32 bg-brand-dark/10 rounded mb-2"></div>
+<div class="h-3 w-20 bg-brand-muted/10 rounded"></div>
+</div>
+</div>
+<div class="flex gap-2">
+<div class="h-8 w-8 bg-white rounded"></div>
+<div class="h-8 w-8 bg-white rounded"></div>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<div class="col-span-2 space-y-4">
+<div class="h-32 bg-white rounded-lg p-4">
+<div class="h-4 w-1/3 bg-brand-primary/10 rounded mb-4"></div>
+<div class="space-y-2">
+<div class="h-2 w-full bg-slate-50 rounded"></div>
+<div class="h-2 w-full bg-slate-50 rounded"></div>
+<div class="h-2 w-3/4 bg-slate-50 rounded"></div>
+</div>
+</div>
+<div class="h-48 bg-white rounded-lg p-4">
+<div class="h-4 w-1/4 bg-brand-primary/10 rounded mb-4"></div>
+<div class="grid grid-cols-8 gap-2">
+<!-- Dental chart visual -->
+<div class="h-8 bg-primary-fixed/30 rounded"></div>
+<div class="h-8 bg-primary-fixed/30 rounded"></div>
+<div class="h-8 bg-primary-fixed/30 rounded"></div>
+<div class="h-8 bg-primary-fixed/30 rounded"></div>
+<div class="h-8 bg-brand-primary/40 rounded"></div>
+<div class="h-8 bg-primary-fixed/30 rounded"></div>
+<div class="h-8 bg-primary-fixed/30 rounded"></div>
+<div class="h-8 bg-primary-fixed/30 rounded"></div>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="h-40 bg-white rounded-lg"></div>
+<div class="h-40 bg-white rounded-lg"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. Benefits Section -->
+<section class="py-24 bg-white">
+<div class="max-w-7xl mx-auto px-8">
+<div class="text-center mb-16">
+<h2 class="font-headline text-3xl md:text-4xl font-bold text-brand-dark mb-4">Todo lo que necesitas para gestionar tu consulta</h2>
+<p class="text-brand-muted max-w-2xl mx-auto">Funcionalidades diseñadas para optimizar cada aspecto de tu labor odontológica.</p>
+</div>
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Benefit Cards -->
+<div class="p-8 rounded-lg border border-outline-variant/10 hover:border-brand-primary/30 transition-all hover:bg-surface-container-lowest group">
+<span class="material-symbols-outlined text-brand-primary text-4xl mb-6 block group-hover:scale-110 transition-transform">clinical_notes</span>
+<h3 class="text-xl font-bold text-brand-dark mb-3">Historia clínica completa</h3>
+<p class="text-brand-muted">Registra antecedentes, odontogramas y evoluciones en un formato digital estructurado y fácil de leer.</p>
+</div>
+<div class="p-8 rounded-lg border border-outline-variant/10 hover:border-brand-primary/30 transition-all hover:bg-surface-container-lowest group">
+<span class="material-symbols-outlined text-brand-primary text-4xl mb-6 block group-hover:scale-110 transition-transform">security</span>
+<h3 class="text-xl font-bold text-brand-dark mb-3">Tus datos, seguros</h3>
+<p class="text-brand-muted">Encriptación de nivel bancario y copias de seguridad automáticas para proteger la privacidad de tus pacientes.</p>
+</div>
+<div class="p-8 rounded-lg border border-outline-variant/10 hover:border-brand-primary/30 transition-all hover:bg-surface-container-lowest group">
+<span class="material-symbols-outlined text-brand-primary text-4xl mb-6 block group-hover:scale-110 transition-transform">distance</span>
+<h3 class="text-xl font-bold text-brand-dark mb-3">Trabaja en varias clínicas</h3>
+<p class="text-brand-muted">Accede a tu cuenta desde cualquier consultorio, manteniendo la continuidad de la información sin importar dónde estés.</p>
+</div>
+<div class="p-8 rounded-lg border border-outline-variant/10 hover:border-brand-primary/30 transition-all hover:bg-surface-container-lowest group">
+<span class="material-symbols-outlined text-brand-primary text-4xl mb-6 block group-hover:scale-110 transition-transform">group_add</span>
+<h3 class="text-xl font-bold text-brand-dark mb-3">Comparte historiales con colegas</h3>
+<p class="text-brand-muted">Colabora con especialistas enviando derivaciones e historiales completos de forma segura dentro de la plataforma.</p>
+</div>
+<div class="p-8 rounded-lg border border-outline-variant/10 hover:border-brand-primary/30 transition-all hover:bg-surface-container-lowest group">
+<span class="material-symbols-outlined text-brand-primary text-4xl mb-6 block group-hover:scale-110 transition-transform">payments</span>
+<h3 class="text-xl font-bold text-brand-dark mb-3">Control de presupuestos y pagos</h3>
+<p class="text-brand-muted">Genera presupuestos claros y realiza un seguimiento detallado de los pagos pendientes y realizados.</p>
+</div>
+<div class="p-8 rounded-lg border border-outline-variant/10 hover:border-brand-primary/30 transition-all hover:bg-surface-container-lowest group">
+<span class="material-symbols-outlined text-brand-primary text-4xl mb-6 block group-hover:scale-110 transition-transform">photo_library</span>
+<h3 class="text-xl font-bold text-brand-dark mb-3">Adjunta radiografías y estudios</h3>
+<p class="text-brand-muted">Almacena imágenes diagnósticas directamente en el perfil del paciente para una consulta rápida y comparativa.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 6. How it works section -->
+<section class="py-24 bg-slate-50" id="how-it-works">
+<div class="max-w-7xl mx-auto px-8">
+<div class="text-center mb-16">
+<h2 class="font-headline text-3xl md:text-4xl font-bold text-brand-dark mb-4">Empieza en 3 pasos</h2>
+<p class="text-brand-muted">La digitalización de tu consultorio nunca fue tan sencilla.</p>
+</div>
+<div class="grid md:grid-cols-3 gap-12 relative">
+<!-- Connector Line (Desktop) -->
+<div class="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-slate-200 -z-0"></div>
+<div class="relative z-10 text-center">
+<div class="w-24 h-24 bg-white border-4 border-brand-primary rounded-full flex items-center justify-center text-3xl font-extrabold text-brand-primary mx-auto mb-8 shadow-lg">
+                        1
+                    </div>
+<h3 class="text-xl font-bold text-brand-dark mb-4">Solicita tu acceso</h3>
+<p class="text-brand-muted">Completa el formulario y un asesor se pondrá en contacto contigo para configurar tu perfil.</p>
+</div>
+<div class="relative z-10 text-center">
+<div class="w-24 h-24 bg-white border-4 border-brand-primary rounded-full flex items-center justify-center text-3xl font-extrabold text-brand-primary mx-auto mb-8 shadow-lg">
+                        2
+                    </div>
+<h3 class="text-xl font-bold text-brand-dark mb-4">Activa tu cuenta</h3>
+<p class="text-brand-muted">Recibe tus credenciales y accede a tu panel personalizado con todas las herramientas listas.</p>
+</div>
+<div class="relative z-10 text-center">
+<div class="w-24 h-24 bg-white border-4 border-brand-primary rounded-full flex items-center justify-center text-3xl font-extrabold text-brand-primary mx-auto mb-8 shadow-lg">
+                        3
+                    </div>
+<h3 class="text-xl font-bold text-brand-dark mb-4">Empieza a gestionar</h3>
+<p class="text-brand-muted">Importa tus pacientes actuales o comienza a registrar nuevos tratamientos desde el primer minuto.</p>
+</div>
+</div>
+<div class="mt-16 text-center">
+<button class="px-10 py-4 bg-brand-primary text-white font-bold rounded-lg shadow-xl shadow-brand-primary/20 hover:scale-105 transition-all">
+                    Solicitar acceso ahora
+                </button>
+</div>
+</div>
+</section>
+<!-- 7. For Whom Section -->
+<section class="py-24 bg-[#E6EAF5]" id="for-whom">
+<div class="max-w-7xl mx-auto px-8">
+<h2 class="font-headline text-3xl md:text-4xl font-bold text-brand-dark mb-12 text-center">Ideal si eres...</h2>
+<div class="grid md:grid-cols-3 gap-8">
+<!-- User Cards -->
+<div class="bg-white p-8 rounded-lg shadow-sm border-l-4 border-brand-primary">
+<div class="w-12 h-12 bg-primary-fixed rounded-lg flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-brand-primary">person</span>
+</div>
+<h3 class="text-xl font-bold text-brand-dark mb-4">Odontólogo independiente</h3>
+<p class="text-brand-muted">Simplifica tu administración y proyecta una imagen más profesional y moderna ante tus pacientes.</p>
+</div>
+<div class="bg-white p-8 rounded-lg shadow-sm border-l-4 border-brand-primary">
+<div class="w-12 h-12 bg-primary-fixed rounded-lg flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-brand-primary">apartment</span>
+</div>
+<h3 class="text-xl font-bold text-brand-dark mb-4">Odontólogo multisede</h3>
+<p class="text-brand-muted">Centraliza la información de todas tus ubicaciones en un solo lugar, accesible desde cualquier dispositivo.</p>
+</div>
+<div class="bg-white p-8 rounded-lg shadow-sm border-l-4 border-brand-primary">
+<div class="w-12 h-12 bg-primary-fixed rounded-lg flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-brand-primary">medical_services</span>
+</div>
+<h3 class="text-xl font-bold text-brand-dark mb-4">Especialista</h3>
+<p class="text-brand-muted">Herramientas específicas para cada especialidad que facilitan el registro de procedimientos complejos.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 8. FAQ Section -->
+<section class="py-24 bg-white" id="faq">
+<div class="max-w-3xl mx-auto px-8">
+<h2 class="font-headline text-3xl md:text-4xl font-bold text-brand-dark mb-12 text-center">Preguntas Frecuentes</h2>
+<div class="space-y-6">
+<!-- Accordion Items -->
+<div class="border-b border-slate-200 pb-6">
+<button class="flex justify-between items-center w-full text-left group">
+<span class="text-brand-dark font-bold text-lg group-hover:text-brand-primary transition-colors">¿Es segura la información de mis pacientes?</span>
+<span class="material-symbols-outlined text-brand-primary">expand_more</span>
+</button>
+<div class="mt-4 text-brand-muted leading-relaxed">
+                        Absolutamente. Utilizamos protocolos de seguridad de grado bancario (SSL/TLS) y toda la información se almacena de forma encriptada en la nube con respaldos automáticos cada hora.
+                    </div>
+</div>
+<div class="border-b border-slate-200 pb-6">
+<button class="flex justify-between items-center w-full text-left group">
+<span class="text-brand-dark font-bold text-lg group-hover:text-brand-primary transition-colors">¿Puedo acceder desde mi tablet o móvil?</span>
+<span class="material-symbols-outlined text-brand-primary">expand_more</span>
+</button>
+<div class="mt-4 text-brand-muted leading-relaxed">
+                        Sí, Morecedont es una plataforma web responsive. Puedes usarla en ordenadores, tablets y teléfonos móviles sin necesidad de instalar ninguna aplicación.
+                    </div>
+</div>
+<div class="border-b border-slate-200 pb-6">
+<button class="flex justify-between items-center w-full text-left group">
+<span class="text-brand-dark font-bold text-lg group-hover:text-brand-primary transition-colors">¿Qué pasa si trabajo en varias clínicas?</span>
+<span class="material-symbols-outlined text-brand-primary">expand_more</span>
+</button>
+<div class="mt-4 text-brand-muted leading-relaxed">
+                        La plataforma está diseñada para la movilidad. Puedes registrar múltiples consultorios y saltar de uno a otro manteniendo historiales separados pero bajo tu mismo acceso profesional.
+                    </div>
+</div>
+<div class="border-b border-slate-200 pb-6">
+<button class="flex justify-between items-center w-full text-left group">
+<span class="text-brand-dark font-bold text-lg group-hover:text-brand-primary transition-colors">¿Cómo realizo los presupuestos?</span>
+<span class="material-symbols-outlined text-brand-primary">expand_more</span>
+</button>
+<div class="mt-4 text-brand-muted leading-relaxed">
+                        Contamos con un módulo financiero donde puedes cargar tus aranceles y generar presupuestos PDF profesionales para entregar a tus pacientes en segundos.
+                    </div>
+</div>
+<div class="border-b border-slate-200 pb-6">
+<button class="flex justify-between items-center w-full text-left group">
+<span class="text-brand-dark font-bold text-lg group-hover:text-brand-primary transition-colors">¿Puedo compartir historiales con otros doctores?</span>
+<span class="material-symbols-outlined text-brand-primary">expand_more</span>
+</button>
+<div class="mt-4 text-brand-muted leading-relaxed">
+                        Sí, dentro de la plataforma puedes colaborar con otros usuarios de Morecedont para interconsultas, siempre respetando la privacidad y consentimiento del paciente.
+                    </div>
+</div>
+<div class="border-b border-slate-200 pb-6">
+<button class="flex justify-between items-center w-full text-left group">
+<span class="text-brand-dark font-bold text-lg group-hover:text-brand-primary transition-colors">¿Existe un límite de pacientes?</span>
+<span class="material-symbols-outlined text-brand-primary">expand_more</span>
+</button>
+<div class="mt-4 text-brand-muted leading-relaxed">
+                        Nuestros planes se adaptan al volumen de tu consulta. Tenemos opciones desde consultorios pequeños hasta clínicas de alta rotación sin límites estrictos.
+                    </div>
+</div>
+</div>
+</div>
+</section>
+<!-- 9. Final CTA Section -->
+<section class="py-24 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-[#2E3A59] to-[#3F5AA6]"></div>
+<!-- Decorative Shapes for CTA -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-brand-shape-b/10 rounded-full -mr-20 -mt-20"></div>
+<div class="absolute bottom-0 left-0 w-96 h-96 bg-brand-shape-a/10 rounded-full -ml-32 -mb-32"></div>
+<div class="max-w-5xl mx-auto px-8 relative z-10 text-center text-white">
+<h2 class="font-headline text-4xl md:text-5xl font-extrabold mb-8">Empieza a transformar tu consulta hoy mismo</h2>
+<p class="text-xl text-blue-100 mb-12 max-w-2xl mx-auto">Únete a la nueva era de la odontología digital con Morecedont. Organización, seguridad y profesionalismo.</p>
+<div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+<button class="px-10 py-5 bg-[#3B82F6] text-white font-extrabold rounded-lg shadow-2xl shadow-blue-900/40 hover:scale-105 transition-all text-lg">
+                    Solicitar acceso gratuito
+                </button>
+<button class="px-10 py-5 border-2 border-white/40 text-white font-extrabold rounded-lg hover:bg-white/10 transition-all text-lg">
+                    Tengo dudas
+                </button>
+</div>
+</div>
+</section>
+<!-- 10. Footer -->
+<footer class="bg-brand-footer pt-20 pb-12 px-8">
+<div class="max-w-7xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 text-left">
+<div class="col-span-1 md:col-span-1">
+<div class="text-2xl font-bold text-white mb-6">Morecedont</div>
+<p class="text-slate-300 leading-relaxed mb-6">
+                        Innovación en gestión dental para los profesionales del mañana.
+                    </p>
+</div>
+<div>
+<h4 class="text-white font-bold mb-6">Plataforma</h4>
+<ul class="space-y-4">
+<li><a class="text-slate-300 hover:text-white transition-colors" href="#">Características</a></li>
+<li><a class="text-slate-300 hover:text-white transition-colors" href="#">Seguridad</a></li>
+<li><a class="text-slate-300 hover:text-white transition-colors" href="#">Precios</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-white font-bold mb-6">Legal</h4>
+<ul class="space-y-4">
+<li><a class="text-slate-300 hover:text-white transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="text-slate-300 hover:text-white transition-colors" href="#">Terms of Service</a></li>
+<li><a class="text-slate-300 hover:text-white transition-colors" href="#">Support</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-white font-bold mb-6">Contacto</h4>
+<ul class="space-y-4">
+<li class="flex items-center gap-2 text-slate-300">
+<span class="material-symbols-outlined text-sm">mail</span>
+                            info@morecedont.com
+                        </li>
+<li class="flex items-center gap-2 text-slate-300">
+<span class="material-symbols-outlined text-sm">call</span>
+                            +34 900 123 456
+                        </li>
+<li>
+<button class="text-blue-400 hover:underline">Contact Us</button>
+</li>
+</ul>
+</div>
+</div>
+<div class="mt-20 pt-8 border-t border-slate-700/50 flex flex-col md:flex-row justify-between items-center gap-6">
+<p class="text-slate-400 text-sm">© 2024 Morecedont Dental Systems. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="text-slate-400 hover:text-white" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="text-slate-400 hover:text-white" href="#"><span class="material-symbols-outlined">share</span></a>
+<a class="text-slate-400 hover:text-white" href="#"><span class="material-symbols-outlined">thumb_up</span></a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>
