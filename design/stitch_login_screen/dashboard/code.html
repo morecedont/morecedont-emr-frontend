@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Morecedont | Clinical Curator Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "surface-container-high": "#e4e8f3",
+                "on-secondary-container": "#515d7e",
+                "on-surface-variant": "#444655",
+                "error": "#ba1a1a",
+                "inverse-primary": "#b8c3ff",
+                "error-container": "#ffdad6",
+                "surface-variant": "#dee2ed",
+                "tertiary-fixed": "#dde1ff",
+                "primary": "#224bdd",
+                "tertiary-container": "#6f738e",
+                "secondary": "#525e7f",
+                "on-tertiary-container": "#fffbff",
+                "on-primary-container": "#fffbff",
+                "inverse-on-surface": "#edf1fc",
+                "inverse-surface": "#2c3139",
+                "primary-fixed-dim": "#b8c3ff",
+                "on-tertiary-fixed": "#151a30",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary": "#ffffff",
+                "on-error-container": "#93000a",
+                "on-background": "#171c23",
+                "on-tertiary": "#ffffff",
+                "surface": "#f8f9ff",
+                "secondary-fixed": "#dae2ff",
+                "outline": "#747687",
+                "on-error": "#ffffff",
+                "background": "#f8f9ff",
+                "on-surface": "#171c23",
+                "on-secondary-fixed": "#0d1a38",
+                "secondary-container": "#cad6fd",
+                "surface-tint": "#264ee0",
+                "surface-container-low": "#f0f3ff",
+                "surface-container": "#eaeef9",
+                "on-tertiary-fixed-variant": "#41455e",
+                "primary-fixed": "#dde1ff",
+                "surface-bright": "#f8f9ff",
+                "secondary-fixed-dim": "#bac6ec",
+                "on-primary-fixed": "#001356",
+                "on-primary": "#ffffff",
+                "surface-container-highest": "#dee2ed",
+                "tertiary": "#565b74",
+                "on-primary-fixed-variant": "#0035be",
+                "primary-container": "#4367f7",
+                "outline-variant": "#c4c5d8",
+                "surface-dim": "#d6dae5",
+                "on-secondary-fixed-variant": "#3a4666",
+                "tertiary-fixed-dim": "#c1c5e3"
+              },
+              fontFamily: {
+                "headline": ["Manrope"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- SideNavBar (Authority: JSON & Design System) -->
+<aside class="bg-[#2E3A59] dark:bg-slate-950 h-screen w-64 fixed left-0 top-0 border-r-0 flex flex-col py-6 z-50">
+<div class="px-6 mb-10 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white" data-icon="medical_services">medical_services</span>
+</div>
+<div>
+<h1 class="text-xl font-bold text-white tracking-tighter">Morecedont</h1>
+<p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Clinical Curator</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Dashboard Active -->
+<a class="bg-[#4C6FFF] text-white rounded-lg mx-2 px-4 py-3 flex items-center gap-3 active:scale-95 duration-200 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-manrope text-sm font-medium tracking-tight">Dashboard</span>
+</a>
+<a class="text-slate-300 hover:text-white mx-2 px-4 py-3 flex items-center gap-3 hover:bg-slate-700/50 transition-all active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-manrope text-sm font-medium tracking-tight">Patients</span>
+</a>
+<a class="text-slate-300 hover:text-white mx-2 px-4 py-3 flex items-center gap-3 hover:bg-slate-700/50 transition-all active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+<span class="font-manrope text-sm font-medium tracking-tight">Clinics</span>
+</a>
+<a class="text-slate-300 hover:text-white mx-2 px-4 py-3 flex items-center gap-3 hover:bg-slate-700/50 transition-all active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-manrope text-sm font-medium tracking-tight">Settings</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<div class="bg-slate-800/40 rounded-xl p-4 border border-white/5">
+<p class="text-xs text-slate-400 mb-2">Storage Usage</p>
+<div class="h-1.5 w-full bg-slate-700 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[65%]"></div>
+</div>
+<p class="text-[10px] text-slate-500 mt-2">6.5 GB of 10 GB used</p>
+</div>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 left-64 h-16 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-[#c4c5d8]/20">
+<div class="flex justify-between items-center px-8 w-full h-full">
+<div class="flex items-center gap-4">
+<h2 class="font-manrope headline-sm text-[#171c23] dark:text-slate-100 font-bold tracking-tight">Overview</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm" data-icon="search">search</span>
+<input class="bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm w-64 focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Search records..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full p-2 transition-all cursor-pointer active:scale-90">
+<span class="material-symbols-outlined text-secondary" data-icon="notifications">notifications</span>
+</button>
+<button class="hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full p-2 transition-all cursor-pointer active:scale-90">
+<span class="material-symbols-outlined text-secondary" data-icon="help_outline">help_outline</span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant/30"></div>
+<div class="flex items-center gap-3 cursor-pointer group">
+<div class="text-right">
+<p class="text-xs font-bold text-on-surface">Dr. Julian Curator</p>
+<p class="text-[10px] text-secondary">Chief Resident</p>
+</div>
+<img alt="Dr. Julian Curator" class="w-10 h-10 rounded-full object-cover ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all" data-alt="Professional portrait of a male doctor in a white clinical coat with a warm, confident expression in a bright medical setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkZDSW68S3IUnn8EwhuVr_rxnX4UuJFCVajE4yPipT3PEFpPk3rE3YJcXvyqtkA98p5jHHkhIrNeB-cESRnvboMJO5uODaqXwzqX9U2HMcXyz9bwhETipgCUpmre2LKT0ZZcfQk_Hbg8r2djbumcGmKWT-pxlqEGIVU4V8TQ3DSNRpESFvhe-DlNtEEy6qEkU0VTJJrRhHTuf7y0orucmvKjUA5Vl14ff8GxDHGqqvrxkdmgGZfu7L7Ciog7P9kdlGov7GARBhpDs8"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-16 min-h-screen">
+<div class="p-8 max-w-7xl mx-auto space-y-8">
+<!-- Summary Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Total Patients Card -->
+<div class="bg-surface-container-low p-6 rounded-lg transition-all hover:translate-y-[-4px]">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-primary/10 rounded-xl">
+<span class="material-symbols-outlined text-primary" data-icon="groups">groups</span>
+</div>
+<span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">+12.5%</span>
+</div>
+<p class="text-secondary text-sm font-medium">Total Patients</p>
+<h3 class="text-3xl font-extrabold text-[#1E1E2F] mt-1">1,284</h3>
+<p class="text-[11px] text-outline mt-4 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="history">history</span>
+                        Updated 2 mins ago
+                    </p>
+</div>
+<!-- Recent Consultations -->
+<div class="bg-surface-container-low p-6 rounded-lg transition-all hover:translate-y-[-4px]">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-secondary-container/30 rounded-xl">
+<span class="material-symbols-outlined text-secondary" data-icon="stethoscope">stethoscope</span>
+</div>
+<span class="text-xs font-bold text-primary bg-primary/5 px-2 py-1 rounded-full">Busy</span>
+</div>
+<p class="text-secondary text-sm font-medium">Recent Consultations</p>
+<h3 class="text-3xl font-extrabold text-[#1E1E2F] mt-1">42</h3>
+<p class="text-[11px] text-outline mt-4">Average 8.4 per day</p>
+</div>
+<!-- Upcoming Appointments -->
+<div class="bg-primary-container p-6 rounded-lg shadow-xl shadow-primary/20 text-white relative overflow-hidden transition-all hover:translate-y-[-4px]">
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+<span class="material-symbols-outlined text-white" data-icon="event_available">event_available</span>
+</div>
+</div>
+<p class="text-white/80 text-sm font-medium">Upcoming Today</p>
+<h3 class="text-3xl font-extrabold mt-1">12</h3>
+<p class="text-[11px] text-white/60 mt-4">Next: Sarah J. at 2:00 PM</p>
+</div>
+<!-- Decorative background flare -->
+<div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+</div>
+</section>
+<!-- Main Content Area: Asymmetric Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Recent Patients Table (Wide Column) -->
+<section class="lg:col-span-2 space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold text-[#1E1E2F]">Recent Patients</h3>
+<button class="text-sm font-semibold text-primary hover:underline">View All</button>
+</div>
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container/30">
+<tr>
+<th class="px-6 py-4 text-[11px] font-bold text-secondary uppercase tracking-wider">Patient Name</th>
+<th class="px-6 py-4 text-[11px] font-bold text-secondary uppercase tracking-wider">Last Visit</th>
+<th class="px-6 py-4 text-[11px] font-bold text-secondary uppercase tracking-wider">Procedure</th>
+<th class="px-6 py-4 text-[11px] font-bold text-secondary uppercase tracking-wider text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Patient Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center font-bold text-on-secondary-fixed text-xs">EK</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Eleanor Kamin</p>
+<p class="text-[10px] text-outline">ID: #8829-X</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-secondary">Oct 24, 2023</td>
+<td class="px-6 py-4 text-sm text-secondary">Root Canal Therapy</td>
+<td class="px-6 py-4 text-right">
+<span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-bold text-green-700">active</span>
+</td>
+</tr>
+<!-- Patient Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-fixed flex items-center justify-center font-bold text-on-tertiary-fixed text-xs">JM</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Julian Marc</p>
+<p class="text-[10px] text-outline">ID: #2210-C</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-secondary">Oct 21, 2023</td>
+<td class="px-6 py-4 text-sm text-secondary">Check-up</td>
+<td class="px-6 py-4 text-right">
+<span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-500">inactive</span>
+</td>
+</tr>
+<!-- Patient Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center font-bold text-on-primary-fixed text-xs">SW</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Sophia Wright</p>
+<p class="text-[10px] text-outline">ID: #9931-A</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-secondary">Oct 19, 2023</td>
+<td class="px-6 py-4 text-sm text-secondary">Implant Placement</td>
+<td class="px-6 py-4 text-right">
+<span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-bold text-green-700">active</span>
+</td>
+</tr>
+<!-- Patient Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed-dim flex items-center justify-center font-bold text-on-secondary-fixed text-xs">TB</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Thomas Burke</p>
+<p class="text-[10px] text-outline">ID: #5542-L</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-secondary">Oct 15, 2023</td>
+<td class="px-6 py-4 text-sm text-secondary">Wisdom Tooth Extr.</td>
+<td class="px-6 py-4 text-right">
+<span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-bold text-green-700">active</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Side Panel (Narrow Column): Timeline & Schedule -->
+<section class="space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold text-[#1E1E2F]">Clinical Timeline</h3>
+<span class="material-symbols-outlined text-outline cursor-pointer" data-icon="more_horiz">more_horiz</span>
+</div>
+<div class="bg-surface-container-low rounded-xl p-6 relative">
+<div class="absolute left-8 top-10 bottom-10 w-[2px] bg-primary-fixed"></div>
+<div class="space-y-8 relative">
+<!-- Timeline Event 1 -->
+<div class="flex gap-4 relative">
+<div class="w-4 h-4 rounded-full bg-surface-container-lowest border-4 border-primary z-10 mt-1 shadow-sm"></div>
+<div>
+<p class="text-[11px] font-bold text-primary uppercase">09:00 AM</p>
+<p class="text-sm font-bold text-on-surface">Staff Briefing</p>
+<p class="text-xs text-secondary mt-1">Reviewing complex cases for the week</p>
+</div>
+</div>
+<!-- Timeline Event 2 -->
+<div class="flex gap-4 relative">
+<div class="w-4 h-4 rounded-full bg-surface-container-lowest border-4 border-secondary-container z-10 mt-1 shadow-sm"></div>
+<div>
+<p class="text-[11px] font-bold text-secondary uppercase">10:30 AM</p>
+<p class="text-sm font-bold text-on-surface">Sarah Jenkins</p>
+<p class="text-xs text-secondary mt-1">Checkup &amp; Cleaning (Apt 302)</p>
+</div>
+</div>
+<!-- Timeline Event 3 -->
+<div class="flex gap-4 relative">
+<div class="w-4 h-4 rounded-full bg-surface-container-lowest border-4 border-error/30 z-10 mt-1 shadow-sm"></div>
+<div>
+<p class="text-[11px] font-bold text-error uppercase">01:15 PM</p>
+<p class="text-sm font-bold text-on-surface">Emergency Case</p>
+<p class="text-xs text-secondary mt-1">Patient Mike Ross - Acute Pain</p>
+</div>
+</div>
+<!-- Timeline Event 4 -->
+<div class="flex gap-4 relative">
+<div class="w-4 h-4 rounded-full bg-surface-container-lowest border-4 border-primary-fixed z-10 mt-1 shadow-sm"></div>
+<div>
+<p class="text-[11px] font-bold text-outline uppercase">04:00 PM</p>
+<p class="text-sm font-bold text-on-surface">Digital Record Review</p>
+<p class="text-xs text-secondary mt-1">Updating EMR curator logs</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Action Card -->
+<div class="bg-white border border-outline-variant/20 rounded-xl p-6 flex items-center justify-between group cursor-pointer hover:border-primary/40 transition-all">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">New Patient</p>
+<p class="text-xs text-secondary">Quick intake form</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- FAB (Suppressed based on context: Dashboard usually has one primary action) -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform z-50">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</body></html>

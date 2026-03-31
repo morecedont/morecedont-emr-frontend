@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login | Morecedont Clinical Curator</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "surface-container-high": "#e4e8f3",
+                "on-secondary-container": "#515d7e",
+                "on-surface-variant": "#444655",
+                "error": "#ba1a1a",
+                "inverse-primary": "#b8c3ff",
+                "error-container": "#ffdad6",
+                "surface-variant": "#dee2ed",
+                "tertiary-fixed": "#dde1ff",
+                "primary": "#224bdd",
+                "tertiary-container": "#6f738e",
+                "secondary": "#525e7f",
+                "on-tertiary-container": "#fffbff",
+                "on-primary-container": "#fffbff",
+                "inverse-on-surface": "#edf1fc",
+                "inverse-surface": "#2c3139",
+                "primary-fixed-dim": "#b8c3ff",
+                "on-tertiary-fixed": "#151a30",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary": "#ffffff",
+                "on-error-container": "#93000a",
+                "on-background": "#171c23",
+                "on-tertiary": "#ffffff",
+                "surface": "#f8f9ff",
+                "secondary-fixed": "#dae2ff",
+                "outline": "#747687",
+                "on-error": "#ffffff",
+                "background": "#f8f9ff",
+                "on-surface": "#171c23",
+                "on-secondary-fixed": "#0d1a38",
+                "secondary-container": "#cad6fd",
+                "surface-tint": "#264ee0",
+                "surface-container-low": "#f0f3ff",
+                "surface-container": "#eaeef9",
+                "on-tertiary-fixed-variant": "#41455e",
+                "primary-fixed": "#dde1ff",
+                "surface-bright": "#f8f9ff",
+                "secondary-fixed-dim": "#bac6ec",
+                "on-primary-fixed": "#001356",
+                "on-primary": "#ffffff",
+                "surface-container-highest": "#dee2ed",
+                "tertiary": "#565b74",
+                "on-primary-fixed-variant": "#0035be",
+                "primary-container": "#4367f7",
+                "outline-variant": "#c4c5d8",
+                "surface-dim": "#d6dae5",
+                "on-secondary-fixed-variant": "#3a4666",
+                "tertiary-fixed-dim": "#c1c5e3"
+              },
+              fontFamily: {
+                "headline": ["Manrope"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-geometric {
+            background-color: #F9FAFC;
+            background-image: radial-gradient(circle at 10% 20%, rgba(63, 90, 166, 0.05) 0%, transparent 20%),
+                              radial-gradient(circle at 90% 80%, rgba(201, 205, 235, 0.1) 0%, transparent 30%);
+            position: relative;
+            overflow: hidden;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-geometric min-h-screen flex items-center justify-center font-body text-on-surface p-4">
+<!-- Decorative Geometric Shapes -->
+<div class="absolute top-[-10%] left-[-5%] w-96 h-96 rounded-full bg-[#C9CDEB]/20 blur-3xl pointer-events-none"></div>
+<div class="absolute bottom-[-10%] right-[-5%] w-[32rem] h-[32rem] rounded-full bg-[#3F5AA6]/5 blur-3xl pointer-events-none"></div>
+<main class="w-full max-w-[440px] relative z-10">
+<!-- Logo Section -->
+<div class="flex flex-col items-center mb-10">
+<div class="w-14 h-14 bg-gradient-to-br from-primary to-primary-container rounded-xl flex items-center justify-center shadow-lg mb-4">
+<span class="material-symbols-outlined text-white text-3xl" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+</div>
+<h1 class="font-headline text-3xl font-extrabold tracking-tighter text-[#171c23]">Morecedont</h1>
+<p class="font-label text-sm text-secondary tracking-wide uppercase mt-1">Clinical Curator</p>
+</div>
+<!-- Login Card -->
+<div class="glass-card surface-container-lowest border border-outline-variant/20 rounded-xl p-8 shadow-2xl shadow-secondary/5">
+<div class="mb-8">
+<h2 class="font-headline text-2xl font-bold text-[#171c23]">Welcome back</h2>
+<p class="text-on-surface-variant mt-2 text-sm">Please enter your clinical credentials to continue.</p>
+</div>
+<form action="#" class="space-y-6">
+<!-- Email Input -->
+<div class="space-y-2">
+<label class="block font-label text-sm font-semibold text-on-surface-variant" for="email">Email Address</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-lg">mail</span>
+</div>
+<input class="block w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/30 rounded-lg focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all duration-200 outline-none text-on-surface" id="email" name="email" placeholder="julian.curator@clinic.com" required="" type="email"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<label class="block font-label text-sm font-semibold text-on-surface-variant" for="password">Password</label>
+<a class="text-xs font-medium text-primary hover:underline" href="#">Forgot password?</a>
+</div>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-lg">lock</span>
+</div>
+<input class="block w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/30 rounded-lg focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all duration-200 outline-none text-on-surface" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+</div>
+</div>
+<!-- Remember Me -->
+<div class="flex items-center">
+<input class="w-4 h-4 text-primary border-outline-variant rounded focus:ring-primary" id="remember" type="checkbox"/>
+<label class="ml-2 text-sm text-on-surface-variant" for="remember">Keep me logged in for 30 days</label>
+</div>
+<!-- CTA Button -->
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-white font-semibold py-3.5 rounded-lg shadow-md hover:shadow-lg hover:brightness-110 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2" type="submit">
+                    Sign In to Dashboard
+                    <span class="material-symbols-outlined text-xl">arrow_forward</span>
+</button>
+</form>
+<!-- Social/SSO Divider -->
+<div class="relative my-8">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-outline-variant/20"></div>
+</div>
+<div class="relative flex justify-center text-xs uppercase">
+<span class="bg-surface-container-lowest px-4 text-outline font-medium">Or institutional login</span>
+</div>
+</div>
+<!-- SSO Option -->
+<button class="w-full surface-container-highest/50 hover:bg-surface-container-highest border border-outline-variant/30 text-on-surface font-medium py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-3">
+<img alt="" class="w-5 h-5" data-alt="Google G logo in brand colors on a white background circle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSTsckxiRIrBM5081cNDdVe6M_huXwgkugaOPXX3Oy6kFs2zYEStCiV1en06oWWuYivP_2pk-EmXqEoQQ_jZsu-LJPVh5wJJnxeamDlHiWfRyeh64YEgMNnbHcjNkmg0NNr30BIV6zKXensisEhpzjB46KZ3Ura8Lm22orlzUyY2kXEe5QGm1IquQGC9VVYxfqLGU_x4WDxwbxLzn-D0JsTLrWwDtIKcJTqGpkjpiRFacCbGB59Wl3mQA0IrE-ADxr-tSTywkyVqjT"/>
+                Continue with Google Workspace
+            </button>
+</div>
+<!-- Registration Link -->
+<p class="text-center mt-8 text-on-surface-variant text-sm">
+            Don't have a clinical account? 
+            <a class="text-primary font-bold hover:underline transition-all" href="#">Request access to Morecedont</a>
+</p>
+<!-- Footer Info -->
+<div class="mt-12 flex flex-col items-center gap-4">
+<div class="flex items-center gap-6 text-xs text-outline font-medium">
+<a class="hover:text-primary transition-colors" href="#">Privacy Protocol</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">HIPAA Compliance</a>
+</div>
+<div class="flex items-center gap-2 py-2 px-4 bg-surface-container-low rounded-full">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="text-[10px] font-bold text-secondary uppercase tracking-widest">All Systems Operational</span>
+</div>
+</div>
+</main>
+<!-- Side Illustration (Hidden on Mobile) -->
+<div class="hidden lg:block fixed right-12 bottom-12 w-64 h-64 opacity-20 pointer-events-none">
+<span class="material-symbols-outlined text-[12rem] text-primary select-none">dentistry</span>
+</div>
+</body></html>
