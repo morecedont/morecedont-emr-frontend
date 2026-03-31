@@ -1,0 +1,34 @@
+---
+description: Implementar pantallas desde mockup y HTML guía
+alwaysApply: true
+---
+
+# Implementar pantallas (Morecedont)
+
+## Contexto técnico obligatorio
+- Proyecto con Next.js 14+ App Router, Tailwind CSS y TypeScript.
+- Leer `DESIGN.md` antes de escribir código y respetar su sistema de diseño.
+
+## Tarea
+- Implementar la pantalla solicitada en la ruta indicada por el prompt del usuario.
+- Crear los componentes necesarios (Server/Client Components según corresponda).
+- Usar el PNG como referencia visual y el HTML/CSS exportado como referencia estructural/estilos (traducir a Next.js + Tailwind, no copiar literal).
+
+## Requisitos funcionales (adaptar por pantalla)
+- Implementar todos los elementos y estados pedidos en el prompt (campos, acciones, enlaces, validaciones, errores, carga, redirecciones, etc.).
+- Si la pantalla requiere acciones del servidor, usar Server Actions del proyecto (sin introducir librerías de auth no utilizadas por el repositorio).
+- Inputs controlados o con `FormData` (no inputs no controlados sin `ref`).
+
+## Reglas visuales y de implementación
+- Fidelidad alta al mockup (layout, spacing, tipografía, radios, sombras y colores).
+- No usar hex hardcodeados fuera del sistema en `DESIGN.md`.
+- Incluir elementos decorativos/branding que aparezcan en el mockup.
+- Solo Tailwind (sin CSS modules ni estilos inline).
+- Usar idioma y copy exactamente como en el diseño o prompt.
+- Añadir atributos de accesibilidad (`aria-label`, labels semánticos, focus visible) donde aplique.
+- No introducir frameworks de autenticación distintos a los definidos por el proyecto.
+
+## Verificación mínima
+- Probar que la ruta de la pantalla renderiza sin errores.
+- Probar estados exitosos y de error definidos en el prompt, sin crashes.
+- Validar consistencia visual en desktop (1280px) y mobile.

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Solicitar acceso | Morecedont</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary-fixed": "#001356",
+              "inverse-surface": "#2c3139",
+              "outline-variant": "#c4c5d8",
+              "tertiary-fixed-dim": "#c1c5e3",
+              "secondary-fixed": "#dae2ff",
+              "primary-container": "#4367f7",
+              "outline": "#747687",
+              "on-secondary": "#ffffff",
+              "on-secondary-fixed-variant": "#3a4666",
+              "on-tertiary-fixed": "#151a30",
+              "inverse-primary": "#b8c3ff",
+              "on-surface": "#171c23",
+              "surface-tint": "#264ee0",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-container": "#fffbff",
+              "on-error": "#ffffff",
+              "background": "#f8f9ff",
+              "error": "#ba1a1a",
+              "on-secondary-container": "#515d7e",
+              "surface-variant": "#dee2ed",
+              "primary-fixed": "#dde1ff",
+              "tertiary-container": "#6f738e",
+              "surface-container-high": "#e4e8f3",
+              "surface": "#f8f9ff",
+              "on-tertiary": "#ffffff",
+              "on-tertiary-fixed-variant": "#41455e",
+              "primary": "#224bdd",
+              "on-surface-variant": "#444655",
+              "surface-dim": "#d6dae5",
+              "secondary-fixed-dim": "#bac6ec",
+              "on-error-container": "#93000a",
+              "surface-container-highest": "#dee2ed",
+              "on-primary": "#ffffff",
+              "inverse-on-surface": "#edf1fc",
+              "secondary-container": "#cad6fd",
+              "error-container": "#ffdad6",
+              "surface-bright": "#f8f9ff",
+              "primary-fixed-dim": "#b8c3ff",
+              "tertiary-fixed": "#dde1ff",
+              "surface-container-low": "#f0f3ff",
+              "surface-container": "#eaeef9",
+              "on-secondary-fixed": "#0d1a38",
+              "on-primary-container": "#fffbff",
+              "secondary": "#525e7f",
+              "on-background": "#171c23",
+              "tertiary": "#565b74",
+              "on-primary-fixed-variant": "#0035be"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .bg-geometric {
+        background-color: #F9FAFC;
+        position: relative;
+        overflow: hidden;
+      }
+      .shape-1 {
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: #3F5AA6;
+        opacity: 0.05;
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        top: -100px;
+        left: -100px;
+        z-index: 0;
+      }
+      .shape-2 {
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        background: #3F5AA6;
+        opacity: 0.03;
+        border-radius: 50%;
+        bottom: -50px;
+        right: -50px;
+        z-index: 0;
+      }
+      .glass-card {
+        background: #ffffff;
+        box-shadow: 0 10px 40px -10px rgba(82, 94, 127, 0.1);
+        z-index: 10;
+      }
+    </style>
+</head>
+<body class="bg-geometric min-h-screen flex items-center justify-center p-6">
+<div class="shape-1"></div>
+<div class="shape-2"></div>
+<div class="glass-card w-full max-w-2xl rounded-lg p-8 md:p-12 border border-[#E6EAF5]/50">
+<!-- Logo Section -->
+<div class="flex flex-col items-center mb-10">
+<div class="flex items-center gap-2 mb-6">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white shadow-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+</div>
+<span class="text-2xl font-['Manrope'] font-extrabold tracking-tighter text-[#171c23]">Morecedont</span>
+</div>
+<h1 class="text-[28px] font-['Manrope'] font-bold text-[#1E1E2F] tracking-tight">Solicitar acceso</h1>
+<p class="text-[#6B7280] text-center mt-2 max-w-md font-['Inter'] leading-relaxed">
+                Completa tu información para que podamos verificar tu perfil profesional.
+            </p>
+</div>
+<!-- Registration Form -->
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Full Name - Full Width -->
+<div class="col-span-1 md:col-span-2 space-y-2">
+<label class="block text-sm font-semibold text-[#171c23] ml-1">Nombre completo</label>
+<input class="w-full bg-white border-[#E6EAF5] rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#4C6FFF] focus:border-[#4C6FFF] transition-all outline-none text-[#171c23] placeholder:text-[#c4c5d8]" placeholder="Dr. Juan Pérez" type="text"/>
+</div>
+<!-- Email -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-[#171c23] ml-1">Correo electrónico</label>
+<input class="w-full bg-white border-[#E6EAF5] rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#4C6FFF] focus:border-[#4C6FFF] transition-all outline-none text-[#171c23] placeholder:text-[#c4c5d8]" placeholder="email@ejemplo.com" type="email"/>
+</div>
+<!-- Phone -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-[#171c23] ml-1">Teléfono</label>
+<input class="w-full bg-white border-[#E6EAF5] rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#4C6FFF] focus:border-[#4C6FFF] transition-all outline-none text-[#171c23] placeholder:text-[#c4c5d8]" placeholder="+52 000 000 0000" type="tel"/>
+</div>
+<!-- Password -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-[#171c23] ml-1">Contraseña</label>
+<input class="w-full bg-white border-[#E6EAF5] rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#4C6FFF] focus:border-[#4C6FFF] transition-all outline-none text-[#171c23] placeholder:text-[#c4c5d8]" placeholder="••••••••" type="password"/>
+</div>
+<!-- Confirm Password -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-[#171c23] ml-1">Confirmar contraseña</label>
+<input class="w-full bg-white border-[#E6EAF5] rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#4C6FFF] focus:border-[#4C6FFF] transition-all outline-none text-[#171c23] placeholder:text-[#c4c5d8]" placeholder="••••••••" type="password"/>
+</div>
+<!-- License Number -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-[#171c23] ml-1">Número de colegiatura / licencia</label>
+<input class="w-full bg-white border-[#E6EAF5] rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#4C6FFF] focus:border-[#4C6FFF] transition-all outline-none text-[#171c23] placeholder:text-[#c4c5d8]" placeholder="ID-12345678" type="text"/>
+</div>
+<!-- Specialty Dropdown -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-[#171c23] ml-1">Especialidad</label>
+<div class="relative">
+<select class="w-full bg-white border-[#E6EAF5] rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#4C6FFF] focus:border-[#4C6FFF] transition-all outline-none text-[#171c23] appearance-none cursor-pointer">
+<option value="">Seleccionar especialidad</option>
+<option>Odontología General</option>
+<option>Endodoncia</option>
+<option>Ortodoncia</option>
+<option>Periodoncia</option>
+<option>Cirugía Maxilofacial</option>
+<option>Odontopediatría</option>
+</select>
+<div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-[#525e7f]">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Info Box -->
+<div class="bg-[#E6EAF5] rounded-lg p-4 flex items-start gap-3 mt-8">
+<span class="material-symbols-outlined text-[#4C6FFF] shrink-0 mt-0.5">info</span>
+<p class="text-[#6B7280] text-sm leading-relaxed">
+                    Tu solicitud será revisada por nuestro equipo. Recibirás un correo electrónico cuando tu cuenta sea activada.
+                </p>
+</div>
+<!-- Submit Button -->
+<div class="pt-4 space-y-4">
+<button class="w-full bg-[#4C6FFF] text-white font-bold py-4 rounded-lg shadow-lg shadow-[#4C6FFF]/20 hover:bg-[#3d59cc] active:scale-[0.98] transition-all duration-200" type="submit">
+                    Enviar solicitud
+                </button>
+<div class="text-center">
+<a class="text-[#4C6FFF] text-sm font-semibold hover:underline" href="#">¿Ya tienes cuenta? Inicia sesión</a>
+</div>
+</div>
+</form>
+<!-- Footer for Clinical Systems -->
+<div class="mt-12 text-center">
+<p class="text-[#525e7f] text-xs font-['Inter']">
+                © 2024 Morecedont Clinical Systems. All rights reserved.
+            </p>
+<div class="flex justify-center gap-4 mt-3">
+<a class="text-[#525e7f] text-xs hover:text-[#224bdd] transition-colors" href="#">Privacy Policy</a>
+<a class="text-[#525e7f] text-xs hover:text-[#224bdd] transition-colors" href="#">Terms of Service</a>
+<a class="text-[#525e7f] text-xs hover:text-[#224bdd] transition-colors" href="#">Support</a>
+</div>
+</div>
+</div>
+<!-- Decorative Image Element -->
+<div class="fixed bottom-10 right-10 hidden xl:block w-48 opacity-20 pointer-events-none">
+<img class="w-full" data-alt="minimalist white 3d dental tooth icon with soft shadows and professional lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8GgJV3CXV0SXjlM33bSxuPaA6f6C-c7Fo-ALMu1A70J4qR2bDi8NG-gVDkZRATxNvSVmY7U5Wls9aXRCUykW7h4etn8KYigtZ0cnWXtwS3ozAIXqQXoJFLbwhu50evtd-tR1OahTH0tSJGRlocfK_UWUEJZB8o6d6V-A9iBwJth7R8FOSbfgx0kf8N9ktCRUJ90JYSV16opwLmNSgIOqm_3zXC6fen7HAeDqYK0hC6LhAZ-FDRZ6HoKxfyLP8Z62J2K1u689VaRcz"/>
+</div>
+</body></html>
