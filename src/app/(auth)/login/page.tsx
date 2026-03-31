@@ -10,11 +10,11 @@ export default function LoginPage() {
       {/* Decorative blobs */}
       <div
         aria-hidden="true"
-        className="absolute -top-[10%] -left-[5%] w-96 h-96 rounded-full bg-[#C9CDEB]/20 blur-3xl pointer-events-none"
+        className="hidden sm:block absolute -top-[10%] -left-[5%] w-64 sm:w-96 h-64 sm:h-96 rounded-full bg-brand-shape-b/20 blur-3xl pointer-events-none"
       />
       <div
         aria-hidden="true"
-        className="absolute -bottom-[10%] -right-[5%] w-[32rem] h-[32rem] rounded-full bg-[#3F5AA6]/5 blur-3xl pointer-events-none"
+        className="hidden sm:block absolute -bottom-[10%] -right-[5%] w-72 sm:w-[32rem] h-72 sm:h-[32rem] rounded-full bg-brand-shape-a/5 blur-3xl pointer-events-none"
       />
 
       <main className="w-full max-w-[440px] relative z-10">
@@ -37,7 +37,7 @@ export default function LoginPage() {
         </div>
 
         {/* Card */}
-        <div className="glass-card border border-outline-variant/20 rounded-xl p-8 shadow-2xl">
+        <div className="glass-card border border-outline-variant/20 rounded-xl p-6 sm:p-8 shadow-2xl">
           <div className="mb-7">
             <h2 className="font-headline text-2xl font-bold text-on-surface tracking-tight">
               Bienvenido de vuelta

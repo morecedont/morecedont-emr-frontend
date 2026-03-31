@@ -43,13 +43,13 @@ export default function FAQSection() {
   }
 
   return (
-    <section id="faq" className="py-24 bg-surface-container-lowest">
-      <div className="max-w-3xl mx-auto px-6 md:px-8">
-        <h2 className="font-headline text-3xl md:text-4xl font-bold text-brand-dark mb-12 text-center">
+    <section id="faq" className="py-12 sm:py-16 lg:py-24 bg-surface-container-lowest">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="font-headline text-2xl sm:text-3xl lg:text-4xl font-bold text-brand-dark mb-8 sm:mb-10 lg:mb-12 text-center">
           Preguntas Frecuentes
         </h2>
 
-        <div className="space-y-0">
+        <div>
           {faqs.map((faq, index) => (
             <div
               key={faq.question}
@@ -57,9 +57,9 @@ export default function FAQSection() {
             >
               <button
                 onClick={() => toggle(index)}
-                className="flex justify-between items-center w-full text-left py-6 group"
+                className="flex justify-between items-center w-full text-left py-4 sm:py-5 gap-4 min-h-[44px] group"
               >
-                <span className="text-brand-dark font-bold text-lg group-hover:text-primary transition-colors pr-4">
+                <span className="text-base sm:text-lg text-brand-dark font-bold group-hover:text-primary transition-colors">
                   {faq.question}
                 </span>
                 <span
@@ -73,10 +73,10 @@ export default function FAQSection() {
 
               <div
                 className={`overflow-hidden transition-all duration-300 ${
-                  openIndex === index ? "max-h-48 pb-6" : "max-h-0"
+                  openIndex === index ? "max-h-48 pb-5" : "max-h-0"
                 }`}
               >
-                <p className="text-on-surface-variant leading-relaxed">
+                <p className="text-sm sm:text-base text-on-surface-variant leading-relaxed">
                   {faq.answer}
                 </p>
               </div>

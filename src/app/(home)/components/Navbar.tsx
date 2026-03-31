@@ -26,14 +26,14 @@ export default function Navbar({ isAuthenticated, userStatus }: NavbarProps) {
         scrolled ? "shadow-md" : ""
       }`}
     >
-      <div className="flex justify-between items-center px-6 md:px-8 h-20 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 h-16 sm:h-20 max-w-7xl mx-auto">
         {/* Logo */}
-        <div className="text-2xl font-headline font-bold tracking-tight text-brand-dark">
+        <div className="text-xl sm:text-2xl font-headline font-bold tracking-tight text-brand-dark shrink-0">
           Morecedont
         </div>
 
         {/* Desktop nav links */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-6 lg:gap-8">
           <a
             href="#inicio"
             className="text-on-surface-variant hover:text-primary transition-colors font-medium text-sm"
@@ -61,18 +61,18 @@ export default function Navbar({ isAuthenticated, userStatus }: NavbarProps) {
         </div>
 
         {/* Desktop CTA buttons */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-3">
           {!isAuthenticated && (
             <>
               <Link
                 href="/login"
-                className="px-5 py-2 text-primary border border-primary font-semibold rounded-lg hover:bg-surface-container-low transition-all text-sm"
+                className="inline-flex items-center justify-center h-11 px-5 text-primary border border-primary font-semibold rounded-lg hover:bg-surface-container-low transition-all text-sm"
               >
                 Iniciar sesión
               </Link>
               <Link
                 href="/register"
-                className="px-5 py-2 bg-primary text-on-primary font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95 text-sm"
+                className="inline-flex items-center justify-center h-11 px-5 bg-primary text-on-primary font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95 text-sm"
               >
                 Solicitar acceso
               </Link>
@@ -81,7 +81,7 @@ export default function Navbar({ isAuthenticated, userStatus }: NavbarProps) {
           {isAuthenticated && userStatus === "active" && (
             <Link
               href="/dashboard"
-              className="px-5 py-2 bg-primary text-on-primary font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95 text-sm"
+              className="inline-flex items-center justify-center h-11 px-5 bg-primary text-on-primary font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95 text-sm"
             >
               Ir al dashboard
             </Link>
@@ -89,7 +89,7 @@ export default function Navbar({ isAuthenticated, userStatus }: NavbarProps) {
           {isAuthenticated && userStatus === "pending" && (
             <button
               disabled
-              className="px-5 py-2 text-on-surface-variant border border-outline-variant font-semibold rounded-lg opacity-60 cursor-not-allowed text-sm"
+              className="inline-flex items-center justify-center h-11 px-5 text-on-surface-variant border border-outline-variant font-semibold rounded-lg opacity-60 cursor-not-allowed text-sm"
             >
               Solicitud en revisión
             </button>
@@ -97,7 +97,7 @@ export default function Navbar({ isAuthenticated, userStatus }: NavbarProps) {
           {isAuthenticated && userStatus === "rejected" && (
             <Link
               href="/register/rejected"
-              className="px-5 py-2 text-primary border border-primary font-semibold rounded-lg hover:bg-surface-container-low transition-all text-sm"
+              className="inline-flex items-center justify-center h-11 px-5 text-primary border border-primary font-semibold rounded-lg hover:bg-surface-container-low transition-all text-sm"
             >
               Ver estado
             </Link>
@@ -106,9 +106,10 @@ export default function Navbar({ isAuthenticated, userStatus }: NavbarProps) {
 
         {/* Mobile hamburger */}
         <button
-          className="md:hidden p-2 text-on-surface"
+          className="md:hidden flex items-center justify-center w-11 h-11 text-on-surface rounded-lg hover:bg-surface-container transition-colors"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Abrir menú"
+          aria-expanded={menuOpen}
         >
           <span className="material-symbols-outlined">
             {menuOpen ? "close" : "menu"}
@@ -118,50 +119,50 @@ export default function Navbar({ isAuthenticated, userStatus }: NavbarProps) {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-surface-container-lowest border-t border-outline-variant/20 px-6 py-6 flex flex-col gap-2">
+        <div className="md:hidden bg-surface-container-lowest border-t border-outline-variant/20 px-4 py-4 flex flex-col gap-1">
           <a
             href="#inicio"
             onClick={closeMenu}
-            className="text-on-surface-variant hover:text-primary transition-colors font-medium py-2"
+            className="flex items-center text-on-surface-variant hover:text-primary transition-colors font-medium px-3 h-11 rounded-lg hover:bg-surface-container-low"
           >
             Inicio
           </a>
           <a
             href="#como-funciona"
             onClick={closeMenu}
-            className="text-on-surface-variant hover:text-primary transition-colors font-medium py-2"
+            className="flex items-center text-on-surface-variant hover:text-primary transition-colors font-medium px-3 h-11 rounded-lg hover:bg-surface-container-low"
           >
             Cómo funciona
           </a>
           <a
             href="#para-quien"
             onClick={closeMenu}
-            className="text-on-surface-variant hover:text-primary transition-colors font-medium py-2"
+            className="flex items-center text-on-surface-variant hover:text-primary transition-colors font-medium px-3 h-11 rounded-lg hover:bg-surface-container-low"
           >
             Para quién
           </a>
           <a
             href="#faq"
             onClick={closeMenu}
-            className="text-on-surface-variant hover:text-primary transition-colors font-medium py-2"
+            className="flex items-center text-on-surface-variant hover:text-primary transition-colors font-medium px-3 h-11 rounded-lg hover:bg-surface-container-low"
           >
             FAQ
           </a>
 
-          <div className="flex flex-col gap-3 pt-4 mt-2 border-t border-outline-variant/20">
+          <div className="flex flex-col gap-3 pt-3 mt-2 border-t border-outline-variant/20">
             {!isAuthenticated && (
               <>
                 <Link
                   href="/login"
                   onClick={closeMenu}
-                  className="px-5 py-2 text-primary border border-primary font-semibold rounded-lg hover:bg-surface-container-low transition-all text-center"
+                  className="flex items-center justify-center h-11 px-5 text-primary border border-primary font-semibold rounded-lg hover:bg-surface-container-low transition-all"
                 >
                   Iniciar sesión
                 </Link>
                 <Link
                   href="/register"
                   onClick={closeMenu}
-                  className="px-5 py-2 bg-primary text-on-primary font-semibold rounded-lg text-center"
+                  className="flex items-center justify-center h-11 px-5 bg-primary text-on-primary font-semibold rounded-lg"
                 >
                   Solicitar acceso
                 </Link>
@@ -171,7 +172,7 @@ export default function Navbar({ isAuthenticated, userStatus }: NavbarProps) {
               <Link
                 href="/dashboard"
                 onClick={closeMenu}
-                className="px-5 py-2 bg-primary text-on-primary font-semibold rounded-lg text-center"
+                className="flex items-center justify-center h-11 px-5 bg-primary text-on-primary font-semibold rounded-lg"
               >
                 Ir al dashboard
               </Link>
@@ -179,7 +180,7 @@ export default function Navbar({ isAuthenticated, userStatus }: NavbarProps) {
             {isAuthenticated && userStatus === "pending" && (
               <button
                 disabled
-                className="px-5 py-2 text-on-surface-variant border border-outline-variant font-semibold rounded-lg opacity-60"
+                className="flex items-center justify-center h-11 px-5 text-on-surface-variant border border-outline-variant font-semibold rounded-lg opacity-60"
               >
                 Solicitud en revisión
               </button>
@@ -188,7 +189,7 @@ export default function Navbar({ isAuthenticated, userStatus }: NavbarProps) {
               <Link
                 href="/register/rejected"
                 onClick={closeMenu}
-                className="px-5 py-2 text-primary border border-primary font-semibold rounded-lg text-center"
+                className="flex items-center justify-center h-11 px-5 text-primary border border-primary font-semibold rounded-lg"
               >
                 Ver estado
               </Link>

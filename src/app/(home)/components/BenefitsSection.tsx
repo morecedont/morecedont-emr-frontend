@@ -39,31 +39,33 @@ const benefits = [
 
 export default function BenefitsSection() {
   return (
-    <section className="py-24 bg-surface-container-lowest">
-      <div className="max-w-7xl mx-auto px-6 md:px-8">
-        <div className="text-center mb-16">
-          <h2 className="font-headline text-3xl md:text-4xl font-bold text-brand-dark mb-4">
+    <section className="py-12 sm:py-16 lg:py-24 bg-surface-container-lowest">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16">
+          <h2 className="font-headline text-2xl sm:text-3xl lg:text-4xl font-bold text-brand-dark mb-4">
             Todo lo que necesitas para gestionar tu consulta
           </h2>
-          <p className="text-on-surface-variant max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-on-surface-variant max-w-2xl mx-auto">
             Funcionalidades diseñadas para optimizar cada aspecto de tu labor
             odontológica.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {benefits.map((b) => (
             <div
               key={b.title}
-              className="p-8 rounded-lg border border-outline-variant/10 hover:border-primary/30 transition-all hover:bg-surface-container-low group"
+              className="p-6 sm:p-8 rounded-lg border border-outline-variant/10 hover:border-primary/30 transition-all hover:bg-surface-container-low group"
             >
-              <span className="material-symbols-outlined text-primary text-4xl mb-6 block group-hover:scale-110 transition-transform">
+              <span className="material-symbols-outlined text-primary text-3xl sm:text-4xl mb-5 sm:mb-6 block group-hover:scale-110 transition-transform">
                 {b.icon}
               </span>
-              <h3 className="text-xl font-bold text-brand-dark mb-3">
+              <h3 className="text-lg sm:text-xl font-bold text-brand-dark mb-2 sm:mb-3">
                 {b.title}
               </h3>
-              <p className="text-on-surface-variant">{b.description}</p>
+              <p className="text-sm sm:text-base text-on-surface-variant">
+                {b.description}
+              </p>
             </div>
           ))}
         </div>

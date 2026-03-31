@@ -6,17 +6,17 @@ export const metadata = {
 
 export default function RegisterPage() {
   return (
-    <div className="bg-geometric min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Blob top-left — organic shape */}
+    <div className="bg-geometric min-h-screen flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
+      {/* Blob top-left — hidden on mobile */}
       <div
         aria-hidden="true"
-        className="absolute -top-24 -left-24 w-[600px] h-[600px] bg-[#3F5AA6]/5 pointer-events-none"
+        className="hidden sm:block absolute -top-24 -left-24 w-72 sm:w-[400px] lg:w-[600px] h-72 sm:h-[400px] lg:h-[600px] bg-brand-shape-a/5 pointer-events-none"
         style={{ borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%" }}
       />
-      {/* Blob bottom-right — circle */}
+      {/* Blob bottom-right — hidden on mobile */}
       <div
         aria-hidden="true"
-        className="absolute -bottom-12 -right-12 w-[400px] h-[400px] rounded-full bg-[#3F5AA6]/[0.03] pointer-events-none"
+        className="hidden sm:block absolute -bottom-12 -right-12 w-64 sm:w-[400px] h-64 sm:h-[400px] rounded-full bg-brand-shape-a/[0.03] pointer-events-none"
       />
 
       <div className="w-full max-w-2xl relative z-10">
@@ -44,7 +44,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/20 p-8 md:p-10 shadow-lg">
+        <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/20 p-5 sm:p-8 md:p-10 shadow-lg">
           <RegisterForm />
         </div>
 

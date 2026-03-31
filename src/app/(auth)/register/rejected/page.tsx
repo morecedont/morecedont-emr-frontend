@@ -38,7 +38,7 @@ export default async function RejectedPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/20 shadow-sm p-8 space-y-5">
+        <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/20 shadow-sm p-6 sm:p-8 space-y-5">
           <div className="w-16 h-16 bg-error-container rounded-full flex items-center justify-center mx-auto">
             <span className="material-symbols-outlined text-error text-[2rem] leading-none">
               block
@@ -73,7 +73,7 @@ export default async function RejectedPage() {
 
           <Link
             href="/login"
-            className="inline-block w-full py-3 border-2 border-primary text-primary font-bold text-sm rounded-lg hover:bg-primary-fixed/20 active:scale-95 transition-all duration-200"
+            className="inline-flex items-center justify-center w-full min-h-[44px] py-2.5 border-2 border-primary text-primary font-bold text-sm rounded-lg hover:bg-primary-fixed/20 active:scale-95 transition-all duration-200"
           >
             Volver al inicio de sesión
           </Link>

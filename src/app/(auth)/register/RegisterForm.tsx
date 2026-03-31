@@ -15,7 +15,7 @@ const SPECIALTIES = [
 ]
 
 const inputClass =
-  "w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-4 py-3 text-sm text-on-surface placeholder:text-outline/50 outline-none transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/10 disabled:opacity-60"
+  "w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-4 py-3 text-base text-on-surface placeholder:text-outline/50 outline-none transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/10 disabled:opacity-60"
 
 const labelClass = "block text-sm font-semibold text-on-surface mb-1.5"
 
@@ -267,7 +267,7 @@ export default function RegisterForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary-container text-white font-semibold text-sm py-4 rounded-lg shadow-md hover:brightness-110 hover:shadow-lg active:scale-[0.98] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100"
+          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary-container text-white font-semibold text-base min-h-[44px] py-3 rounded-lg shadow-md hover:brightness-110 hover:shadow-lg active:scale-[0.98] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100"
         >
           {isPending ? (
             <>

@@ -23,38 +23,40 @@ const steps = [
 
 export default function HowItWorksSection() {
   return (
-    <section id="como-funciona" className="py-24 bg-surface-container-low">
-      <div className="max-w-7xl mx-auto px-6 md:px-8">
-        <div className="text-center mb-16">
-          <h2 className="font-headline text-3xl md:text-4xl font-bold text-brand-dark mb-4">
+    <section id="como-funciona" className="py-12 sm:py-16 lg:py-24 bg-surface-container-low">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16">
+          <h2 className="font-headline text-2xl sm:text-3xl lg:text-4xl font-bold text-brand-dark mb-4">
             Empieza en 3 pasos
           </h2>
-          <p className="text-on-surface-variant">
+          <p className="text-sm sm:text-base text-on-surface-variant">
             La digitalización de tu consultorio nunca fue tan sencilla.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-12 relative">
-          {/* Connector line (desktop) */}
-          <div className="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-outline-variant/30 -z-0" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-10 lg:gap-12 relative">
+          {/* Connector line — desktop only */}
+          <div className="hidden sm:block absolute top-11 left-0 w-full h-0.5 bg-outline-variant/30 -z-0" />
 
           {steps.map((step) => (
-            <div key={step.number} className="relative z-10 text-center">
-              <div className="w-24 h-24 bg-surface-container-lowest border-4 border-primary rounded-full flex items-center justify-center text-3xl font-extrabold text-primary mx-auto mb-8 shadow-lg">
+            <div key={step.number} className="relative z-10 text-center flex flex-col items-center">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-surface-container-lowest border-4 border-primary rounded-full flex items-center justify-center text-2xl sm:text-3xl font-extrabold text-primary mb-6 sm:mb-8 shadow-lg">
                 {step.number}
               </div>
-              <h3 className="text-xl font-bold text-brand-dark mb-4">
+              <h3 className="text-lg sm:text-xl font-bold text-brand-dark mb-3 sm:mb-4">
                 {step.title}
               </h3>
-              <p className="text-on-surface-variant">{step.description}</p>
+              <p className="text-sm sm:text-base text-on-surface-variant max-w-xs mx-auto">
+                {step.description}
+              </p>
             </div>
           ))}
         </div>
 
-        <div className="mt-16 text-center">
+        <div className="mt-10 sm:mt-14 lg:mt-16 text-center">
           <Link
             href="/register"
-            className="inline-block px-10 py-4 bg-primary text-on-primary font-bold rounded-lg shadow-xl shadow-primary/20 hover:scale-105 transition-all"
+            className="inline-flex items-center justify-center h-11 sm:h-auto px-8 sm:px-10 py-2.5 sm:py-4 bg-primary text-on-primary font-bold rounded-lg shadow-xl shadow-primary/20 hover:scale-105 transition-all"
           >
             Solicitar acceso ahora
           </Link>

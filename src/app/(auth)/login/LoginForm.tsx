@@ -50,7 +50,7 @@ export default function LoginForm() {
             placeholder="doctor@clinica.com"
             aria-label="Correo electrónico"
             disabled={isPending}
-            className="block w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/30 rounded-lg text-sm text-on-surface placeholder:text-outline/60 outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10 disabled:opacity-60"
+            className="block w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/30 rounded-lg text-base text-on-surface placeholder:text-outline/60 outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10 disabled:opacity-60"
           />
         </div>
       </div>
@@ -87,7 +87,7 @@ export default function LoginForm() {
             placeholder="••••••••"
             aria-label="Contraseña"
             disabled={isPending}
-            className="block w-full pl-10 pr-11 py-3 bg-surface-container-lowest border border-outline-variant/30 rounded-lg text-sm text-on-surface placeholder:text-outline/60 outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10 disabled:opacity-60"
+            className="block w-full pl-10 pr-11 py-3 bg-surface-container-lowest border border-outline-variant/30 rounded-lg text-base text-on-surface placeholder:text-outline/60 outline-none transition-all duration-200 focus:border-primary focus:ring-4 focus:ring-primary/10 disabled:opacity-60"
           />
           <button
             type="button"
@@ -117,7 +117,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary-container text-white font-semibold text-sm py-3.5 rounded-lg shadow-md hover:brightness-110 hover:shadow-lg active:scale-[0.98] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100"
+        className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary-container text-white font-semibold text-base min-h-[44px] py-3 rounded-lg shadow-md hover:brightness-110 hover:shadow-lg active:scale-[0.98] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100"
       >
         {isPending ? (
           <>
