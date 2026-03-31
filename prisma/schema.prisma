@@ -715,6 +715,7 @@ model patients {
   @@schema("public")
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model profiles {
   id                                                  String              @id @db.Uuid
@@ -723,6 +724,10 @@ model profiles {
   phone                                               String?
   role                                                user_role           @default(doctor)
   created_at                                          DateTime            @default(now()) @db.Timestamptz(6)
+  status                                              String              @default("pending")
+  license_number                                      String?
+  specialty                                           String?
+  rejection_reason                                    String?
   clinics                                             clinics[]
   doctor_clinics                                      doctor_clinics[]
   doctor_patients_doctor_patients_doctor_idToprofiles doctor_patients[]   @relation("doctor_patients_doctor_idToprofiles")

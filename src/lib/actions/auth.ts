@@ -16,27 +16,49 @@ export async function signIn(email: string, password: string) {
   redirect("/dashboard")
 }
 
-export async function signUp(email: string, password: string, fullName: string) {
+export type SignUpData = {
+  fullName: string
+  email: string
+  phone: string
+  password: string
+  licenseNumber: string
+  specialty: string
+}
+
+export async function signUp(data: SignUpData) {
   const supabase = await createClient()
 
-  const { data, error } = await supabase.auth.signUp({ email, password })
+  const { data: authData, error } = await supabase.auth.signUp({
+    email: data.email,
+    password: data.password,
+  })
 
   if (error) {
     return { error: error.message }
   }
 
-  if (data.user) {
-    await prisma.profiles.create({
-      data: {
-        id: data.user.id,
-        full_name: fullName,
-        email,
-        role: "doctor",
-      },
-    })
+  if (!authData.user) {
+    return { error: "No se pudo crear el usuario. Intenta de nuevo." }
   }
 
-  redirect("/dashboard")
+  try {
+    await prisma.profiles.create({
+      data: {
+        id: authData.user.id,
+        full_name: data.fullName,
+        email: data.email,
+        phone: data.phone || null,
+        license_number: data.licenseNumber,
+        specialty: data.specialty,
+        role: "doctor",
+        status: "pending",
+      },
+    })
+  } catch {
+    return { error: "Error al guardar el perfil. Contacta a soporte." }
+  }
+
+  redirect("/register/pending")
 }
 
 export async function signOut() {

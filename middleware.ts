@@ -9,14 +9,45 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   const { pathname } = request.nextUrl
-  const isAuthPage =
-    pathname.startsWith("/login") || pathname.startsWith("/register")
 
-  if (!user && !isAuthPage) {
-    return NextResponse.redirect(new URL("/login", request.nextUrl))
+  const isLoginPage = pathname === "/login"
+  const isRegisterPage = pathname === "/register"
+  const isPendingPage = pathname.startsWith("/register/pending")
+  const isRejectedPage = pathname.startsWith("/register/rejected")
+
+  // Unauthenticated: allow only auth pages
+  if (!user) {
+    if (!isLoginPage && !isRegisterPage && !isPendingPage && !isRejectedPage) {
+      return NextResponse.redirect(new URL("/login", request.nextUrl))
+    }
+    return supabaseResponse
   }
 
-  if (user && isAuthPage) {
+  // Authenticated: check profile status
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("status")
+    .eq("id", user.id)
+    .single()
+
+  const status = profile?.status ?? "active"
+
+  if (status === "pending") {
+    if (!isPendingPage) {
+      return NextResponse.redirect(new URL("/register/pending", request.nextUrl))
+    }
+    return supabaseResponse
+  }
+
+  if (status === "rejected") {
+    if (!isRejectedPage) {
+      return NextResponse.redirect(new URL("/register/rejected", request.nextUrl))
+    }
+    return supabaseResponse
+  }
+
+  // Active user: redirect away from auth pages
+  if (isLoginPage || isRegisterPage) {
     return NextResponse.redirect(new URL("/dashboard", request.nextUrl))
   }
 
