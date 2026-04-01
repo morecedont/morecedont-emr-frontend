@@ -47,6 +47,37 @@ export async function sharePatient(
   return { success: true }
 }
 
+// ─── Medical history actions ─────────────────────────────────────────────────
+
+export async function createMedicalHistory(
+  patientId: string,
+  clinicId: string | null,
+  currency: "USD" | "VES" | "EUR"
+): Promise<{ medicalHistoryId?: string; error?: string }> {
+  const profile = await getProfile()
+  if (!profile) return { error: "No autorizado" }
+
+  const access = await prisma.doctor_patients.findUnique({
+    where: { doctor_id_patient_id: { doctor_id: profile.id, patient_id: patientId } },
+  })
+  if (!access) return { error: "No autorizado" }
+
+  try {
+    const history = await prisma.medical_histories.create({
+      data: {
+        patient_id: patientId,
+        doctor_id: profile.id,
+        clinic_id: clinicId || null,
+        currency,
+      },
+    })
+    return { medicalHistoryId: history.id }
+  } catch (err) {
+    console.error("createMedicalHistory error:", err)
+    return { error: "Error al crear historia clínica" }
+  }
+}
+
 // ─── New patient wizard actions ───────────────────────────────────────────────
 
 export async function checkDuplicatePatient(

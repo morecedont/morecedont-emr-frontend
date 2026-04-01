@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container": "#eaeef9",
+              "surface-tint": "#264ee0",
+              "on-primary": "#ffffff",
+              "on-secondary": "#ffffff",
+              "surface-container-high": "#e4e8f3",
+              "on-primary-fixed-variant": "#0035be",
+              "inverse-on-surface": "#edf1fc",
+              "tertiary-fixed": "#dde1ff",
+              "primary-container": "#4367f7",
+              "background": "#f8f9ff",
+              "outline-variant": "#c4c5d8",
+              "primary": "#224bdd",
+              "surface-dim": "#d6dae5",
+              "on-secondary-container": "#515d7e",
+              "inverse-primary": "#b8c3ff",
+              "on-surface-variant": "#444655",
+              "on-primary-fixed": "#001356",
+              "tertiary": "#565b74",
+              "surface-variant": "#dee2ed",
+              "on-tertiary": "#ffffff",
+              "error": "#ba1a1a",
+              "on-error-container": "#93000a",
+              "secondary-container": "#cad6fd",
+              "on-tertiary-fixed": "#151a30",
+              "on-secondary-fixed": "#0d1a38",
+              "on-background": "#171c23",
+              "surface-container-highest": "#dee2ed",
+              "secondary-fixed-dim": "#bac6ec",
+              "secondary-fixed": "#dae2ff",
+              "surface-container-low": "#f0f3ff",
+              "on-tertiary-fixed-variant": "#41455e",
+              "surface-container-lowest": "#ffffff",
+              "primary-fixed": "#dde1ff",
+              "on-error": "#ffffff",
+              "tertiary-fixed-dim": "#c1c5e3",
+              "surface-bright": "#f8f9ff",
+              "secondary": "#525e7f",
+              "on-secondary-fixed-variant": "#3a4666",
+              "tertiary-container": "#6f738e",
+              "primary-fixed-dim": "#b8c3ff",
+              "surface": "#f8f9ff",
+              "on-primary-container": "#fffbff",
+              "on-tertiary-container": "#fffbff",
+              "inverse-surface": "#2c3139",
+              "outline": "#747687",
+              "error-container": "#ffdad6",
+              "on-surface": "#171c23"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        vertical-align: middle;
+      }
+      body {
+        background-color: #f8f9ff;
+        color: #171c23;
+        font-family: 'Inter', sans-serif;
+      }
+    </style>
+</head>
+<body class="min-h-screen">
+<!-- SideNavBar Anchor -->
+<aside class="h-screen w-64 fixed left-0 top-0 z-50 bg-slate-950 flex flex-col h-full py-6 shadow-2xl font-inter text-sm antialiased">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+</div>
+<div>
+<h3 class="text-white font-bold leading-none">The Clinical Curator</h3>
+<p class="text-slate-500 text-[10px] mt-1">SISTEMA DE GESTIÓN</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-slate-400 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-slate-800/50 transition-all ease-in-out duration-300" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span>Overview</span>
+</a>
+<a class="bg-blue-600 text-white rounded-lg mx-2 flex items-center gap-3 px-4 py-3 transition-all ease-in-out duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">monitor_heart</span>
+<span>Patients</span>
+</a>
+<a class="text-slate-400 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-slate-800/50 transition-all ease-in-out duration-300" href="#">
+<span class="material-symbols-outlined">pill</span>
+<span>Medications</span>
+</a>
+<a class="text-slate-400 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-slate-800/50 transition-all ease-in-out duration-300" href="#">
+<span class="material-symbols-outlined">biotech</span>
+<span>Lab Results</span>
+</a>
+<a class="text-slate-400 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-slate-800/50 transition-all ease-in-out duration-300" href="#">
+<span class="material-symbols-outlined">description</span>
+<span>Clinical Notes</span>
+</a>
+</nav>
+<div class="mt-auto px-2 space-y-1 border-t border-slate-800/50 pt-4">
+<div class="px-4 py-3 flex items-center gap-3 mb-4">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="portrait of a professional male doctor in clinical setting with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUTcK4rPtjRytEMIVQ6E9Qv6Mhh1TnKStPQYecwwPSbTOOcRs38q-ZyLj-lR9IVmJmRHDGDaITwcY_a2vRRGMYQbhPfR4sFzCFfKrZyAgmBleCvZFj5B_E-q0C7uaLMh_SSfMD9UHjVgpoqPGQxBZpEbA6ioVHaMiUbMUHY2c-Q8dtzZorZvB762qfvOjPgJG-Vok-fDojnVFjWEdK0jLqQgIA_TbpH2kkyzQj4VyfHiZjX0OWRElZrWvFuRSQUTMIZ7GN1k50WR6f"/>
+<div class="overflow-hidden">
+<p class="text-white text-xs font-medium truncate">Dr. Ricardo M.</p>
+<p class="text-slate-500 text-[10px]">Administrador</p>
+</div>
+</div>
+<a class="text-slate-400 hover:text-white px-4 py-2 flex items-center gap-3 hover:bg-slate-800/50 transition-all text-xs" href="#">
+<span class="material-symbols-outlined text-sm">help_outline</span>
+<span>Support</span>
+</a>
+<a class="text-slate-400 hover:text-white px-4 py-2 flex items-center gap-3 hover:bg-slate-800/50 transition-all text-xs" href="#">
+<span class="material-symbols-outlined text-sm">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="ml-64 min-h-screen pb-12">
+<!-- TopAppBar Anchor -->
+<header class="w-full sticky top-0 z-40 bg-white/80 backdrop-blur-md flex justify-between items-center px-8 h-16 w-full flat no shadows">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 text-xs font-medium tracking-tight text-slate-500 font-manrope">
+<span class="hover:text-primary cursor-pointer">Pacientes</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-slate-900 font-semibold">Elena Rodriguez Vazquez</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-slate-900 cursor-pointer transition-colors">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</div>
+<span class="material-symbols-outlined text-slate-400 hover:text-slate-900 cursor-pointer transition-colors">settings</span>
+<div class="h-8 w-[1px] bg-slate-100 mx-2"></div>
+<h1 class="text-xl font-bold text-slate-900 tracking-tighter font-headline">Perfil del Paciente</h1>
+</div>
+</header>
+<!-- Zone 1: Patient Header -->
+<section class="px-8 mt-8">
+<div class="bg-surface-container-lowest rounded-xl p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex items-center gap-6">
+<div class="relative">
+<div class="w-24 h-24 rounded-full bg-[#4C6FFF] flex items-center justify-center text-white text-3xl font-bold font-headline">
+                            ER
+                        </div>
+<div class="absolute bottom-1 right-1 w-5 h-5 bg-green-500 border-4 border-white rounded-full"></div>
+</div>
+<div class="space-y-1">
+<h2 class="text-3xl font-extrabold text-on-background font-headline tracking-tight">Elena Rodriguez Vazquez</h2>
+<div class="flex flex-wrap items-center gap-4 text-secondary text-sm font-medium">
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">calendar_today</span> 34 años</span>
+<span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">bloodtype</span> O+</span>
+<span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">call</span> (555) 012-3456</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-on-surface bg-surface-container-high hover:bg-surface-container-highest transition-all active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[18px]">share</span>
+                        Compartir expediente
+                    </button>
+<button class="flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold text-white bg-gradient-to-br from-primary to-primary-container shadow-md hover:shadow-lg transition-all active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        Nueva historia clínica
+                    </button>
+</div>
+</div>
+</section>
+<!-- Zone 2: Two Column Layout -->
+<section class="px-8 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Left Column: Treatment History -->
+<div class="lg:col-span-2 space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="text-xl font-bold text-on-background font-headline">Historial de tratamientos</h3>
+<a class="text-sm font-semibold text-primary flex items-center gap-1 hover:underline" href="#">
+                        Ver todo
+                        <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+<div class="space-y-4">
+<!-- Row 1 -->
+<div class="group bg-surface-container-lowest p-6 rounded-xl hover:bg-white transition-all flex items-center justify-between">
+<div class="flex gap-6 items-start">
+<div class="flex flex-col items-center">
+<div class="w-3 h-3 rounded-full bg-green-500 mt-2"></div>
+<div class="w-0.5 h-12 bg-surface-container-high mt-2"></div>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-3">
+<span class="text-xs font-bold text-slate-400 uppercase tracking-widest font-label">Oct 2023 — En curso</span>
+<span class="px-3 py-1 bg-surface-container text-on-surface-variant text-[10px] font-bold rounded-full uppercase">Clínica Dental Moderna</span>
+</div>
+<h4 class="text-lg font-bold text-on-background font-headline">Endodoncia Molar 46</h4>
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-0.5 bg-green-100 text-green-700 text-xs font-bold rounded-full">Activo</span>
+<p class="text-sm text-slate-500">Dr. Adrian M. • Procedimiento complejo fase 2</p>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+<!-- Row 2 -->
+<div class="group bg-surface-container-lowest p-6 rounded-xl hover:bg-white transition-all flex items-center justify-between">
+<div class="flex gap-6 items-start">
+<div class="flex flex-col items-center">
+<div class="w-3 h-3 rounded-full bg-blue-500 mt-2"></div>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-3">
+<span class="text-xs font-bold text-slate-400 uppercase tracking-widest font-label">Mar 2022 — Jun 2022</span>
+<span class="px-3 py-1 bg-surface-container text-on-surface-variant text-[10px] font-bold rounded-full uppercase">Clínica Sanitas</span>
+</div>
+<h4 class="text-lg font-bold text-on-background font-headline">Limpieza y Restauraciones</h4>
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-0.5 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">Completado</span>
+<p class="text-sm text-slate-500">Dra. Lucia G. • 4 Sesiones realizadas</p>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+<!-- Bento style additional stat card for medical context -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-6 rounded-xl border border-white/50">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-lg">clinical_notes</span>
+<span class="text-xs font-bold text-slate-400">ALERTAS</span>
+</div>
+<p class="text-sm font-medium text-on-surface">Alergia confirmada a la Penicilina</p>
+<p class="text-xs text-slate-500 mt-1">Registrado hace 2 años</p>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl border border-white/50">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-lg">history_edu</span>
+<span class="text-xs font-bold text-slate-400">DOCUMENTOS</span>
+</div>
+<p class="text-sm font-medium text-on-surface">Radiografía Panorámica.png</p>
+<p class="text-xs text-slate-500 mt-1">Ver archivos recientes</p>
+</div>
+</div>
+</div>
+<!-- Right Column: Cards -->
+<div class="space-y-6">
+<!-- Card 1: Información Personal -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm ring-1 ring-slate-100/50">
+<div class="flex items-center justify-between mb-6">
+<h4 class="font-bold text-on-background">Información personal</h4>
+<button class="text-primary text-xs font-bold hover:underline">Editar</button>
+</div>
+<div class="space-y-4">
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Nombre Completo</span>
+<p class="text-sm font-medium text-on-surface">Elena Rodriguez Vazquez</p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">DNI / ID</span>
+<p class="text-sm font-medium text-on-surface">12.345.678</p>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">F. Nacimiento</span>
+<p class="text-sm font-medium text-on-surface">12/05/1990</p>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Género</span>
+<p class="text-sm font-medium text-on-surface">Femenino</p>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Dirección</span>
+<p class="text-sm font-medium text-on-surface">Calle 123, CP 08001</p>
+</div>
+</div>
+</div>
+<!-- Card 2: Contacto de Emergencia -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm ring-1 ring-slate-100/50">
+<h4 class="font-bold text-on-background mb-6">Contacto de emergencia</h4>
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-500">person</span>
+</div>
+<div class="space-y-1">
+<p class="text-sm font-bold text-on-surface">Manuel Rodriguez</p>
+<p class="text-xs text-slate-500">Padre</p>
+<p class="text-sm font-medium text-primary mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">call</span>
+                                +52 55 1234 5678
+                            </p>
+</div>
+</div>
+</div>
+<!-- Card 3: Información Clínica -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm ring-1 ring-slate-100/50 relative overflow-hidden">
+<div class="absolute -top-6 -right-6 w-24 h-24 bg-primary/5 rounded-full blur-2xl"></div>
+<h4 class="font-bold text-on-background mb-6">Información clínica</h4>
+<div class="space-y-4">
+<div class="flex justify-between items-center py-2 border-b border-slate-50">
+<span class="text-xs text-slate-500">Última visita</span>
+<span class="text-sm font-bold text-on-surface">15/01/2024</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-slate-50">
+<span class="text-xs text-slate-500">Clínica preferida</span>
+<span class="text-sm font-bold text-on-surface">Moderna</span>
+</div>
+<div class="flex justify-between items-center py-2">
+<span class="text-xs text-slate-500">Moneda preferida</span>
+<span class="text-sm font-bold text-on-surface">USD</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating UI element for high-priority action (Clinical Quick Add) -->
+<div class="fixed bottom-8 right-8 z-50">
+<button class="w-14 h-14 bg-slate-900 text-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+</div>
+</body></html>

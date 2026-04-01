@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<title>Historia Clínica - Elena Rodriguez Vazquez</title>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline-variant": "#c4c5d8",
+              "on-background": "#171c23",
+              "on-secondary-fixed": "#0d1a38",
+              "error-container": "#ffdad6",
+              "on-secondary-container": "#515d7e",
+              "surface-variant": "#dee2ed",
+              "on-surface-variant": "#444655",
+              "inverse-primary": "#b8c3ff",
+              "secondary-container": "#cad6fd",
+              "background": "#f8f9ff",
+              "error": "#ba1a1a",
+              "surface-container-highest": "#dee2ed",
+              "surface-container-low": "#f0f3ff",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed-variant": "#0035be",
+              "surface-dim": "#d6dae5",
+              "surface-container-high": "#e4e8f3",
+              "secondary-fixed": "#dae2ff",
+              "surface-tint": "#264ee0",
+              "primary": "#224bdd",
+              "on-tertiary-fixed-variant": "#41455e",
+              "surface-container": "#eaeef9",
+              "outline": "#747687",
+              "tertiary": "#565b74",
+              "on-tertiary-container": "#fffbff",
+              "on-primary": "#ffffff",
+              "on-primary-fixed": "#001356",
+              "surface": "#f8f9ff",
+              "on-error-container": "#93000a",
+              "surface-bright": "#f8f9ff",
+              "inverse-on-surface": "#edf1fc",
+              "on-tertiary-fixed": "#151a30",
+              "on-secondary": "#ffffff",
+              "primary-fixed-dim": "#b8c3ff",
+              "on-surface": "#171c23",
+              "secondary-fixed-dim": "#bac6ec",
+              "primary-fixed": "#dde1ff",
+              "on-error": "#ffffff",
+              "surface-container-lowest": "#ffffff",
+              "inverse-surface": "#2c3139",
+              "tertiary-fixed": "#dde1ff",
+              "tertiary-container": "#6f738e",
+              "secondary": "#525e7f",
+              "tertiary-fixed-dim": "#c1c5e3",
+              "on-primary-container": "#fffbff",
+              "on-secondary-fixed-variant": "#3a4666",
+              "primary-container": "#4367f7"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .sidebar-active {
+            background-color: rgba(71, 85, 105, 0.5); /* Matching style_active_navigation from JSON */
+            border-left: 4px solid #3b82f6;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface">
+<!-- Sidebar (Morecedont) -->
+<aside class="fixed left-0 top-0 h-screen w-64 bg-slate-800 dark:bg-slate-950 flex flex-col py-6 shadow-xl z-50">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 bg-blue-500 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white">medical_services</span>
+</div>
+<div>
+<h1 class="text-xl font-black text-white leading-tight">Morecedont</h1>
+<p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Dental Care Unit</p>
+</div>
+</div>
+</div>
+<nav class="flex-grow space-y-1">
+<a class="flex items-center px-6 py-3 text-slate-400 hover:bg-slate-700 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center px-6 py-3 sidebar-active transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="person">person</span>
+<span class="text-sm font-medium">Patients</span>
+</a>
+<a class="flex items-center px-6 py-3 text-slate-400 hover:bg-slate-700 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="medical_services">medical_services</span>
+<span class="text-sm font-medium">Clinics</span>
+</a>
+<a class="flex items-center px-6 py-3 text-slate-400 hover:bg-slate-700 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-sm transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span>
+                New Consultation
+            </button>
+</div>
+</aside>
+<!-- Top Navigation Header -->
+<header class="fixed top-0 w-full z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md flex justify-between items-center px-8 h-16 ml-64 border-b border-slate-100 dark:border-slate-800" style="width: calc(100% - 16rem);">
+<div class="flex items-center gap-4 text-sm font-medium">
+<span class="text-slate-500">Pacientes</span>
+<span class="material-symbols-outlined text-slate-300 text-sm">chevron_right</span>
+<span class="text-slate-500">Elena Rodriguez Vazquez</span>
+<span class="material-symbols-outlined text-slate-300 text-sm">chevron_right</span>
+<span class="text-blue-600 dark:text-blue-400 font-semibold">Historia Clínica Oct 2023</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:text-blue-600 transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-slate-200 overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="professional portrait of a medical doctor in white coat clean minimalist studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAt4QwfsI9X1MdRZzx1DrMYIJqcImI1-sC8HGjIqNqHbR-p-h8YBGBcktCGJKc2toJptwdCxstgLYvVXlz-92nHFDb1f9qWtsSP_F7epUDISmfULJrVRKtjqIDuM9llLDyD_xM3jhGBtE4Qa9wws5bGhJIBMAi9MP4jjPUhH27f7K5qlaosN2SKLuGsxyZHWOopPIY8PzKehot7N4FgPJynxW9lK4LhHR_EaeG2MYvydWA6NS-7j5j-TTP6iuMzpdBuTUwWLN8I51iu"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-64 pt-24 pb-12 px-8 min-h-screen">
+<!-- Patient Hero Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+<div class="flex items-start gap-6">
+<div class="h-20 w-20 rounded-2xl bg-primary-fixed flex items-center justify-center text-primary text-2xl font-bold shadow-sm">
+                    ER
+                </div>
+<div>
+<div class="flex items-center gap-3 mb-1">
+<h2 class="text-3xl font-headline font-extrabold text-on-surface tracking-tight">Elena Rodriguez Vazquez</h2>
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant text-xs font-bold rounded-full">34 AÑOS</span>
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant text-xs font-bold rounded-full">O+</span>
+</div>
+<div class="flex items-center gap-3 text-sm">
+<span class="flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg font-semibold text-xs border border-blue-100">
+<span class="material-symbols-outlined text-xs">home_health</span>
+                            Clínica Dental Moderna
+                        </span>
+<span class="text-slate-400 font-medium">Oct 2023 — En curso</span>
+<span class="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-lg font-semibold text-xs border border-emerald-100">
+<span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                            Activo
+                        </span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-5 py-2.5 text-slate-600 hover:bg-slate-100 rounded-lg font-semibold transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="print">print</span>
+                    Imprimir
+                </button>
+<button class="flex items-center gap-2 px-6 py-2.5 bg-primary text-white hover:opacity-90 rounded-lg font-semibold transition-all shadow-md shadow-primary/20">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+                    Editar historia
+                </button>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<div class="mb-8 border-b border-surface-container">
+<div class="flex gap-10">
+<button class="pb-4 border-b-2 border-primary text-primary font-bold text-sm px-1">Antecedentes Médicos</button>
+<button class="pb-4 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-semibold text-sm transition-colors">Examen Clínico</button>
+<button class="pb-4 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-semibold text-sm transition-colors">Endodoncia</button>
+<button class="pb-4 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-semibold text-sm transition-colors">Plan de Tratamiento</button>
+</div>
+</div>
+<!-- Content Canvas -->
+<div class="space-y-6">
+<!-- Red Alert Banner -->
+<div class="flex flex-wrap gap-4 p-4 bg-error-container rounded-xl border border-error/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-error font-bold" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="text-error font-extrabold text-sm tracking-wide">ALERGIA A LA PENICILINA</span>
+</div>
+<div class="h-6 w-px bg-error/20 mx-2"></div>
+<div class="flex items-center gap-3">
+<span class="text-error font-extrabold text-sm tracking-wide">SENSIBLE AL LÁTEX</span>
+</div>
+</div>
+<!-- Bento Grid - Clinical Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="p-6 bg-surface-container-low border border-surface-container rounded-lg transition-transform hover:scale-[1.01]">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-blue-500 bg-white p-2 rounded-lg shadow-sm">favorite</span>
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Cardiovascular</span>
+</div>
+<h3 class="text-lg font-bold text-on-surface">Hipertensión</h3>
+<p class="text-sm text-slate-500 mt-1 leading-relaxed">Controlada con Enalapril 10mg/día. Presión estable.</p>
+</div>
+<!-- Card 2 -->
+<div class="p-6 bg-surface-container-low border border-surface-container rounded-lg transition-transform hover:scale-[1.01]">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-slate-400 bg-white p-2 rounded-lg shadow-sm">air</span>
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Respiratorio</span>
+</div>
+<h3 class="text-lg font-bold text-slate-400">Normal</h3>
+<p class="text-sm text-slate-400 mt-1 leading-relaxed">Sin patologías obstructivas o restrictivas detectadas.</p>
+</div>
+<!-- Card 3 -->
+<div class="p-6 bg-surface-container-low border border-surface-container rounded-lg transition-transform hover:scale-[1.01]">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-blue-500 bg-white p-2 rounded-lg shadow-sm">medication</span>
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Endocrino</span>
+</div>
+<h3 class="text-lg font-bold text-on-surface">Diabetes Tipo II</h3>
+<p class="text-sm text-slate-500 mt-1 leading-relaxed">Última HbA1c: 6.8%. Tratamiento con Metformina.</p>
+</div>
+<!-- Card 4 -->
+<div class="p-6 bg-surface-container-low border border-surface-container rounded-lg transition-transform hover:scale-[1.01]">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-blue-500 bg-white p-2 rounded-lg shadow-sm">psychology</span>
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Neurológico</span>
+</div>
+<h3 class="text-lg font-bold text-on-surface">Epilepsia</h3>
+<p class="text-sm text-slate-500 mt-1 leading-relaxed">Crisis controladas. Último episodio hace 2 años.</p>
+</div>
+<!-- Card 5 -->
+<div class="p-6 bg-surface-container-low border border-surface-container rounded-lg transition-transform hover:scale-[1.01]">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-blue-500 bg-white p-2 rounded-lg shadow-sm">reduce_capacity</span>
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Gástrico y Renal</span>
+</div>
+<h3 class="text-lg font-bold text-on-surface">Reflujo</h3>
+<p class="text-sm text-slate-500 mt-1 leading-relaxed">Gastroesofágico moderado. Posible erosión dental palatina.</p>
+</div>
+<!-- Card 6 -->
+<div class="p-6 bg-surface-container-low border border-surface-container rounded-lg transition-transform hover:scale-[1.01]">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-blue-500 bg-white p-2 rounded-lg shadow-sm">female</span>
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Salud de la Mujer</span>
+</div>
+<h3 class="text-lg font-bold text-on-surface">Anticonceptivos</h3>
+<p class="text-sm text-slate-500 mt-1 leading-relaxed">Uso regular. No se reportan otras incidencias.</p>
+</div>
+</div>
+<!-- Lower Grid Sections -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="p-6 bg-white border border-surface-container rounded-lg shadow-sm">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-blue-600">vaccines</span>
+<h4 class="font-bold text-slate-800">Inmunológico</h4>
+</div>
+<p class="text-sm text-slate-500 mb-2">Sistema inmune competente. Calendario de vacunación al día según protocolos locales.</p>
+<div class="flex flex-wrap gap-2">
+<span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-bold">COVID-19 OK</span>
+<span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-bold">GRIPE 2023</span>
+</div>
+</div>
+<div class="p-6 bg-white border border-surface-container rounded-lg shadow-sm">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-blue-600">bloodtype</span>
+<h4 class="font-bold text-slate-800">Sangre</h4>
+</div>
+<div class="flex items-center justify-between">
+<p class="text-sm text-slate-500">Tiempo de coagulación normal. Sin antecedentes de hemorragias.</p>
+<span class="text-xl font-black text-blue-600">O+</span>
+</div>
+</div>
+</div>
+<!-- Observations Section -->
+<div class="bg-surface-container-lowest border border-surface-container rounded-xl p-8">
+<div class="flex items-center justify-between mb-6">
+<div>
+<h3 class="text-xl font-headline font-bold text-on-surface">Observaciones clínicas y alergias</h3>
+<p class="text-sm text-slate-400">Detalles adicionales recopilados durante la entrevista inicial</p>
+</div>
+<button class="px-5 py-2 text-primary border border-primary-fixed hover:bg-primary-fixed/20 rounded-lg font-semibold text-sm transition-all">
+                        Editar antecedentes
+                    </button>
+</div>
+<div class="relative">
+<div class="w-full min-h-[140px] p-5 bg-slate-50 rounded-lg border-2 border-dashed border-slate-200 text-slate-600 leading-relaxed italic">
+                        "Paciente refiere sensibilidad dentinaria generalizada. Presenta bruxismo nocturno moderado. Se recomienda precaución extrema con materiales que contengan látex debido a reacción dérmica previa reportada. Control estricto de glucemia antes de intervenciones quirúrgicas debido a su condición de Diabetes Tipo II."
+                    </div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Status Bar -->
+<footer class="ml-64 bg-white border-t border-slate-100 px-8 py-4 flex items-center justify-between">
+<div class="flex items-center gap-6 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+<div class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-blue-500"></span>
+                Sincronizado
+            </div>
+<div class="flex items-center gap-2">
+                ID PACIENTE: 99283-ER
+            </div>
+</div>
+<div class="text-[11px] text-slate-400">
+            Última edición: 14 Oct 2023, 10:45 AM por Dr. Martí
+        </div>
+</footer>
+</body></html>
