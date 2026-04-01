@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 import { getProfile } from "@/lib/session"
+import DashboardShell from "./components/DashboardShell"
 
 export default async function DashboardLayout({
   children,
@@ -12,5 +13,12 @@ export default async function DashboardLayout({
     redirect("/login")
   }
 
-  return <div>{children}</div>
+  return (
+    <DashboardShell
+      doctorName={profile.full_name}
+      doctorRole={profile.specialty ?? profile.role}
+    >
+      {children}
+    </DashboardShell>
+  )
 }

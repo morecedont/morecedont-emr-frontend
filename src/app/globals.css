@@ -77,11 +77,15 @@
   --radius-full:    9999px;
 
   /* Brand / landing page tokens */
-  --color-brand-dark:      #1E1E2F;
-  --color-brand-footer:    #2E3A59;
-  --color-brand-shape-a:   #3F5AA6;
-  --color-brand-shape-b:   #C9CDEB;
+  --color-brand-dark:        #1E1E2F;
+  --color-brand-footer:      #2E3A59;
+  --color-brand-shape-a:     #3F5AA6;
+  --color-brand-shape-b:     #C9CDEB;
   --color-brand-section-alt: #E6EAF5;
+
+  /* Dashboard / app-shell tokens */
+  --color-sidebar:           #2E3A59;   /* same as brand-footer */
+  --color-sidebar-active:    #4C6FFF;   /* active nav item */
 }
 
 /* ── Decorative background ───────────────────────────────── */
