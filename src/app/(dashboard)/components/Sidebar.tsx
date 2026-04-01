@@ -72,17 +72,6 @@ export default function Sidebar({ onClose }: SidebarProps) {
           )
         })}
       </nav>
-
-      {/* Storage usage */}
-      <div className="px-4 mt-auto">
-        <div className="bg-white/5 rounded-xl p-4 border border-white/5">
-          <p className="text-xs text-slate-400 mb-2">Almacenamiento</p>
-          <div className="h-1.5 w-full bg-slate-700 rounded-full overflow-hidden">
-            <div className="h-full bg-sidebar-active w-[65%]" />
-          </div>
-          <p className="text-[10px] text-slate-500 mt-2">6.5 GB de 10 GB usados</p>
-        </div>
-      </div>
     </aside>
   )
 }
