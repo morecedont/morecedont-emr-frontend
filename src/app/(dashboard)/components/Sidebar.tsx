@@ -3,11 +3,17 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-const NAV_ITEMS = [
+const NAV_ITEMS: {
+  href: string
+  icon: string
+  label: string
+  /** Temporal: quitar `hidden` para volver a mostrar */
+  hidden?: boolean
+}[] = [
   { href: "/dashboard", icon: "dashboard", label: "Inicio" },
   { href: "/patients", icon: "person", label: "Pacientes" },
-  { href: "/clinics", icon: "medical_services", label: "Clínicas" },
-  { href: "/settings", icon: "settings", label: "Configuración" },
+  { href: "/clinics", icon: "medical_services", label: "Clínicas", hidden: true },
+  { href: "/settings", icon: "settings", label: "Configuración", hidden: true },
 ]
 
 interface SidebarProps {
@@ -33,8 +39,8 @@ export default function Sidebar({ onClose }: SidebarProps) {
           <p className="text-xl font-headline font-bold text-white tracking-tighter leading-none">
             Morecedont
           </p>
-          <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mt-0.5">
-            Clinical Curator
+          <p className="text-[10px] tracking-wide text-slate-400 font-bold mt-0.5">
+            Sonrisas Inteligentes
           </p>
         </div>
       </div>
@@ -51,6 +57,8 @@ export default function Sidebar({ onClose }: SidebarProps) {
               href={item.href}
               onClick={onClose}
               className={`flex items-center gap-3 px-4 h-11 rounded-lg text-sm font-medium tracking-tight transition-all duration-200 active:scale-95 ${
+                item.hidden ? "hidden" : ""
+              } ${
                 isActive
                   ? "bg-sidebar-active text-white"
                   : "text-slate-300 hover:text-white hover:bg-white/10"
