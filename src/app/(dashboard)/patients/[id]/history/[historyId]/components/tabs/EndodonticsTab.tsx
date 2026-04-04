@@ -1,5 +1,7 @@
 "use client"
 
+import FileInstrumentation from "@/components/shared/FileInstrumentation"
+
 export type EndoSession = {
   id: string
   session_date: string | null
@@ -41,6 +43,10 @@ export type EndoRecord = {
   irrigation_edta: boolean | null
   instrumentation: string | null
   obturation: string | null
+  file_initial: string | null
+  file_final: string | null
+  file_length: string | null
+  file_notes: string | null
   endodontic_sessions: EndoSession[]
   endodontic_canals: CanalRecord[]
 }
@@ -287,12 +293,26 @@ export default function EndodonticsTab({ records, patientId, historyId }: Endodo
               )}
             </div>
 
+            {/* Preparación biomecánica */}
+            <FileInstrumentation
+              instrumentationType={rec.instrumentation as "manual" | "rotary_reciprocating" | null}
+              fileInitial={rec.file_initial}
+              fileFinal={rec.file_final}
+              fileLength={rec.file_length ? parseFloat(rec.file_length) : null}
+              fileNotes={rec.file_notes}
+              onInstrumentationChange={() => {}}
+              onFileInitialChange={() => {}}
+              onFileFinalChange={() => {}}
+              onFileLengthChange={() => {}}
+              onFileNotesChange={() => {}}
+              readOnly
+            />
+
             {/* Protocolo */}
-            {(rec.instrumentation || rec.obturation || rec.irrigation_naocl_pct) && (
+            {(rec.obturation || rec.irrigation_naocl_pct) && (
               <div className="bg-surface-container-low rounded-xl p-4 space-y-3">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">Protocolo</p>
                 <div className="flex flex-wrap gap-1.5">
-                  {rec.instrumentation && <Badge label={INSTRUMENTATION_LABELS[rec.instrumentation] ?? rec.instrumentation} color="bg-purple-50 text-purple-700" />}
                   {rec.obturation && <Badge label={OBTURATION_LABELS[rec.obturation] ?? rec.obturation} color="bg-purple-50 text-purple-700" />}
                   {rec.irrigation_naocl_pct && <Badge label={`NaOCl ${rec.irrigation_naocl_pct}%`} color="bg-teal-50 text-teal-700" />}
                   {rec.irrigation_edta && <Badge label="EDTA" color="bg-teal-50 text-teal-700" />}

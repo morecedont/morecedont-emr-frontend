@@ -1,3 +1,13 @@
+export const FILE_SIZES = [
+  "06", "08", "010", "15", "20", "25", "30", "35", "40", "45", "50",
+  "55", "60", "70", "80", "90", "100", "110", "120", "130", "140",
+]
+
+export const FILE_SIZE_OPTIONS = FILE_SIZES.map((size) => ({
+  value: size,
+  label: `Lima #${size}`,
+}))
+
 export type CanalEntry = {
   id?: string
   canal_code: string

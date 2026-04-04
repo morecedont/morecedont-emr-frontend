@@ -167,6 +167,10 @@ export default async function HistoryDetailPage({
     irrigation_edta: e.irrigation_edta ?? null,
     instrumentation: e.instrumentation ?? null,
     obturation: e.obturation ?? null,
+    file_initial: e.file_initial ?? null,
+    file_final: e.file_final ?? null,
+    file_length: e.file_length ? e.file_length.toString() : null,
+    file_notes: e.file_notes ?? null,
     endodontic_sessions: e.endodontic_sessions.map((s) => ({
       id: s.id,
       session_date: s.session_date ? s.session_date.toISOString() : null,

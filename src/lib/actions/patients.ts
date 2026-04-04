@@ -344,6 +344,10 @@ export type EndodonticData = {
   irrigationEdta: boolean
   instrumentation: string | null
   obturation: string | null
+  file_initial: string | null
+  file_final: string | null
+  file_length: number | null
+  file_notes: string | null
 }
 
 export type EndoSession = {
@@ -401,6 +405,10 @@ export async function saveEndodontics(
       irrigation_edta: data.irrigationEdta,
       instrumentation: data.instrumentation as never,
       obturation: data.obturation as never,
+      file_initial: data.file_initial ?? null,
+      file_final: data.file_final ?? null,
+      file_length: data.file_length ?? null,
+      file_notes: data.file_notes ?? null,
     }
 
     if (existing) {

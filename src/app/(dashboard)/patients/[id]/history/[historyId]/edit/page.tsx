@@ -140,6 +140,10 @@ export default async function EditHistoryPage({
         irrigationEdta: firstEndo.irrigation_edta,
         instrumentation: firstEndo.instrumentation,
         obturation: firstEndo.obturation,
+        file_initial: firstEndo.file_initial ?? null,
+        file_final: firstEndo.file_final ?? null,
+        file_length: firstEndo.file_length ? parseFloat(firstEndo.file_length.toString()) : null,
+        file_notes: firstEndo.file_notes ?? null,
         sessions: firstEndo.endodontic_sessions.map((s) => ({
           date: s.session_date ? s.session_date.toISOString().substring(0, 10) : "",
           activity: s.activity,

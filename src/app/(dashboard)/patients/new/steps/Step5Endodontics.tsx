@@ -4,6 +4,7 @@ import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { saveEndodontics, type EndodonticData, type EndoSession } from "@/lib/actions/patients"
 import CanalRow from "@/components/shared/CanalRow"
+import FileInstrumentation from "@/components/shared/FileInstrumentation"
 import { type CanalEntry } from "@/lib/constants/endodontics"
 
 const inputCls =
@@ -79,6 +80,10 @@ export type InitialEndoData = {
   obturation?: string | null
   sessions?: Array<{ date: string; activity: string; notes: string }>
   endodontic_canals?: CanalEntry[]
+  file_initial?: string | null
+  file_final?: string | null
+  file_length?: number | null
+  file_notes?: string | null
 }
 
 interface Step5Props {
@@ -112,7 +117,15 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
   const [canalEntries, setCanalEntries] = useState<CanalEntry[]>(() => initialData?.endodontic_canals ?? [])
   const [naocl, setNaocl] = useState(initialData?.irrigationNaoclPct ?? "")
   const [edta, setEdta] = useState(initialData?.irrigationEdta ?? false)
-  const [instrumentation, setInstrumentation] = useState(initialData?.instrumentation ?? "")
+  const [instrumentationType, setInstrumentationType] = useState<"manual" | "rotary_reciprocating" | null>(
+    (initialData?.instrumentation as "manual" | "rotary_reciprocating" | null) ?? null
+  )
+  const [fileInitial, setFileInitial] = useState<string | null>(initialData?.file_initial ?? null)
+  const [fileFinal, setFileFinal] = useState<string | null>(initialData?.file_final ?? null)
+  const [fileLength, setFileLength] = useState<number | null>(
+    initialData?.file_length ? parseFloat(String(initialData.file_length)) : null
+  )
+  const [fileNotes, setFileNotes] = useState<string>(initialData?.file_notes ?? "")
   const [obturation, setObturation] = useState(initialData?.obturation ?? "")
   const [sessions, setSessions] = useState<EndoSession[]>(
     initialData?.sessions?.length
@@ -169,8 +182,12 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
       canalLength: "",
       irrigationNaoclPct: naocl ? parseFloat(naocl) : null,
       irrigationEdta: edta,
-      instrumentation: instrumentation || null,
+      instrumentation: instrumentationType,
       obturation: obturation || null,
+      file_initial: fileInitial,
+      file_final: fileFinal,
+      file_length: fileLength,
+      file_notes: fileNotes || null,
     }
   }
 
@@ -408,6 +425,20 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
             )}
           </div>
 
+          {/* Biomechanical preparation */}
+          <FileInstrumentation
+            instrumentationType={instrumentationType}
+            fileInitial={fileInitial}
+            fileFinal={fileFinal}
+            fileLength={fileLength}
+            fileNotes={fileNotes}
+            onInstrumentationChange={setInstrumentationType}
+            onFileInitialChange={setFileInitial}
+            onFileFinalChange={setFileFinal}
+            onFileLengthChange={setFileLength}
+            onFileNotesChange={setFileNotes}
+          />
+
           {/* Protocol */}
           <div className={sectionCard}>
             <h3 className="font-bold text-on-surface">Protocolo</h3>
@@ -419,14 +450,6 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
               <input type="checkbox" checked={edta} onChange={(e) => setEdta(e.target.checked)} className="w-4 h-4 rounded text-sidebar-active" />
               <span className="text-sm text-on-surface">EDTA</span>
             </label>
-            <div>
-              <label className={labelCls}>Instrumentación</label>
-              <select value={instrumentation} onChange={(e) => setInstrumentation(e.target.value)} className={selectCls}>
-                <option value="">Seleccionar</option>
-                <option value="manual">Manual</option>
-                <option value="rotary_reciprocating">Rotatoria</option>
-              </select>
-            </div>
             <div>
               <label className={labelCls}>Obturación</label>
               <select value={obturation} onChange={(e) => setObturation(e.target.value)} className={selectCls}>
