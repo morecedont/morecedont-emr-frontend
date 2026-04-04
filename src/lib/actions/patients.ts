@@ -433,6 +433,50 @@ export type TreatmentPayment = {
   payment: number
 }
 
+export type PatientUpdateData = {
+  fullName: string
+  idNumber: string
+  dateOfBirth: string
+  gender: string
+  bloodType: string
+  phone: string
+  email: string
+  address: string
+}
+
+export async function updatePatient(
+  patientId: string,
+  data: PatientUpdateData
+): Promise<{ error?: string }> {
+  const profile = await getProfile()
+  if (!profile) return { error: "No autorizado" }
+
+  const access = await prisma.doctor_patients.findUnique({
+    where: { doctor_id_patient_id: { doctor_id: profile.id, patient_id: patientId } },
+  })
+  if (!access) return { error: "No autorizado" }
+
+  try {
+    await prisma.patients.update({
+      where: { id: patientId },
+      data: {
+        full_name: data.fullName,
+        id_number: data.idNumber || null,
+        date_of_birth: data.dateOfBirth ? new Date(data.dateOfBirth) : null,
+        gender: data.gender || null,
+        blood_type: data.bloodType || null,
+        phone: data.phone || null,
+        email: data.email || null,
+        address: data.address || null,
+      },
+    })
+    return {}
+  } catch (err) {
+    console.error("updatePatient error:", err)
+    return { error: "Error al actualizar el paciente" }
+  }
+}
+
 export async function saveTreatmentPlan(
   medicalHistoryId: string,
   items: TreatmentItem[],

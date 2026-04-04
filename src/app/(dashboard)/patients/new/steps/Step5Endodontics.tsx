@@ -51,40 +51,73 @@ function FieldGroup({ label, children }: { label: string; children: React.ReactN
   )
 }
 
+export type InitialEndoData = {
+  toothNumber?: number | null
+  painType?: string | null
+  painIntensity?: number | null
+  painQuality?: string | null
+  painRelief?: string | null
+  percussionVertical?: string | null
+  percussionHorizontal?: string | null
+  palpationApical?: string | null
+  palpationGum?: string | null
+  mobilityGrade?: string | null
+  thermalTests?: string | null
+  pulpChamber?: string | null
+  canals?: string | null
+  periapicalZone?: string | null
+  pulpDiagnosis?: string | null
+  periapicalDiagnosis?: string | null
+  canalName?: string | null
+  canalReference?: string | null
+  canalLength?: string | null
+  irrigationNaoclPct?: string | null
+  irrigationEdta?: boolean | null
+  instrumentation?: string | null
+  obturation?: string | null
+  sessions?: Array<{ date: string; activity: string; notes: string }>
+}
+
 interface Step5Props {
   medicalHistoryId: string
   patientId: string
+  initialData?: InitialEndoData
+  onSaveAndExit?: () => void
   onNext: () => void
   onBack: () => void
   onSkip: () => void
 }
 
-export default function Step5Endodontics({ medicalHistoryId, patientId, onNext, onBack, onSkip }: Step5Props) {
+export default function Step5Endodontics({ medicalHistoryId, patientId, initialData, onSaveAndExit, onNext, onBack, onSkip }: Step5Props) {
   const router = useRouter()
-  const [toothNumber, setToothNumber] = useState("")
-  const [painType, setPainType] = useState("")
-  const [painIntensity, setPainIntensity] = useState(5)
-  const [painQuality, setPainQuality] = useState("")
-  const [painRelief, setPainRelief] = useState("")
-  const [percV, setPercV] = useState("")
-  const [percH, setPercH] = useState("")
-  const [palA, setPalA] = useState("")
-  const [palG, setPalG] = useState("")
-  const [mobility, setMobility] = useState("")
-  const [thermalTests, setThermalTests] = useState("")
-  const [pulpChamber, setPulpChamber] = useState("")
-  const [canals, setCanals] = useState("")
-  const [periapical, setPeriapical] = useState("")
-  const [pulpDx, setPulpDx] = useState("")
-  const [periapicalDx, setPeriapicalDx] = useState("")
-  const [canalName, setCanalName] = useState("")
-  const [canalRef, setCanalRef] = useState("")
-  const [canalLength, setCanalLength] = useState("")
-  const [naocl, setNaocl] = useState("")
-  const [edta, setEdta] = useState(false)
-  const [instrumentation, setInstrumentation] = useState("")
-  const [obturation, setObturation] = useState("")
-  const [sessions, setSessions] = useState<EndoSession[]>([{ date: "", activity: "", notes: "" }])
+  const [toothNumber, setToothNumber] = useState(initialData?.toothNumber?.toString() ?? "")
+  const [painType, setPainType] = useState(initialData?.painType ?? "")
+  const [painIntensity, setPainIntensity] = useState(initialData?.painIntensity ?? 5)
+  const [painQuality, setPainQuality] = useState(initialData?.painQuality ?? "")
+  const [painRelief, setPainRelief] = useState(initialData?.painRelief ?? "")
+  const [percV, setPercV] = useState(initialData?.percussionVertical ?? "")
+  const [percH, setPercH] = useState(initialData?.percussionHorizontal ?? "")
+  const [palA, setPalA] = useState(initialData?.palpationApical ?? "")
+  const [palG, setPalG] = useState(initialData?.palpationGum ?? "")
+  const [mobility, setMobility] = useState(initialData?.mobilityGrade ?? "")
+  const [thermalTests, setThermalTests] = useState(initialData?.thermalTests ?? "")
+  const [pulpChamber, setPulpChamber] = useState(initialData?.pulpChamber ?? "")
+  const [canals, setCanals] = useState(initialData?.canals ?? "")
+  const [periapical, setPeriapical] = useState(initialData?.periapicalZone ?? "")
+  const [pulpDx, setPulpDx] = useState(initialData?.pulpDiagnosis ?? "")
+  const [periapicalDx, setPeriapicalDx] = useState(initialData?.periapicalDiagnosis ?? "")
+  const [canalName, setCanalName] = useState(initialData?.canalName ?? "")
+  const [canalRef, setCanalRef] = useState(initialData?.canalReference ?? "")
+  const [canalLength, setCanalLength] = useState(initialData?.canalLength ?? "")
+  const [naocl, setNaocl] = useState(initialData?.irrigationNaoclPct ?? "")
+  const [edta, setEdta] = useState(initialData?.irrigationEdta ?? false)
+  const [instrumentation, setInstrumentation] = useState(initialData?.instrumentation ?? "")
+  const [obturation, setObturation] = useState(initialData?.obturation ?? "")
+  const [sessions, setSessions] = useState<EndoSession[]>(
+    initialData?.sessions?.length
+      ? initialData.sessions
+      : [{ date: "", activity: "", notes: "" }]
+  )
   const [serverError, setServerError] = useState<string | null>(null)
   const [isSaving, startSaving] = useTransition()
 
@@ -139,11 +172,12 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, onNext, 
   }
 
   function handleSaveAndExit() {
-    if (!toothNumber) { router.push(`/patients/${patientId}`); return }
+    const exitFn = onSaveAndExit ?? (() => router.push(`/patients/${patientId}`))
+    if (!toothNumber) { exitFn(); return }
     setServerError(null)
     startSaving(async () => {
       await saveEndodontics(medicalHistoryId, buildData(), sessions)
-      router.push(`/patients/${patientId}`)
+      exitFn()
     })
   }
 

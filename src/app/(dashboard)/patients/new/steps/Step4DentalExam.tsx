@@ -47,7 +47,7 @@ const PROBLEMS = [
   { key: "problem_wisdom_extract" as const, label: "Cordales para extraer" },
 ]
 
-type ExamFormData = Omit<DentalExamData, "eruption_status"> & {
+export type ExamFormData = Omit<DentalExamData, "eruption_status"> & {
   eruption_status: "erupted" | "semi" | "not_erupted" | ""
 }
 
@@ -61,14 +61,24 @@ const EMPTY_EXAM: ExamFormData = {
 interface Step4Props {
   medicalHistoryId: string
   patientId: string
+  initialData?: ExamFormData
+  initialToothRecords?: ToothRecord[]
+  onSaveAndExit?: () => void
   onNext: () => void
   onBack: () => void
 }
 
-export default function Step4DentalExam({ medicalHistoryId, patientId, onNext, onBack }: Step4Props) {
+export default function Step4DentalExam({ medicalHistoryId, patientId, initialData, initialToothRecords, onSaveAndExit, onNext, onBack }: Step4Props) {
   const router = useRouter()
-  const [examData, setExamData] = useState<ExamFormData>(EMPTY_EXAM)
-  const [toothMap, setToothMap] = useState<Record<number, ToothStatus>>({})
+  const [examData, setExamData] = useState<ExamFormData>(() => initialData ?? EMPTY_EXAM)
+  const [toothMap, setToothMap] = useState<Record<number, ToothStatus>>(() => {
+    if (!initialToothRecords) return {}
+    const map: Record<number, ToothStatus> = {}
+    for (const r of initialToothRecords) {
+      map[r.toothNumber] = r.vestibularStatus as ToothStatus
+    }
+    return map
+  })
   const [openTooth, setOpenTooth] = useState<number | null>(null)
   const [serverError, setServerError] = useState<string | null>(null)
   const [isSaving, startSaving] = useTransition()
@@ -114,7 +124,11 @@ export default function Step4DentalExam({ medicalHistoryId, patientId, onNext, o
     startSaving(async () => {
       const result = await doSave()
       if (result.error) { setServerError(result.error); return }
-      router.push(`/patients/${patientId}`)
+      if (onSaveAndExit) {
+        onSaveAndExit()
+      } else {
+        router.push(`/patients/${patientId}`)
+      }
     })
   }
 

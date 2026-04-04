@@ -12,16 +12,19 @@ interface Step6Props {
   medicalHistoryId: string
   patientId: string
   currency: string
+  initialItems?: ItemRow[]
+  initialPayments?: PaymentRow[]
+  onComplete?: () => void
   onBack: () => void
 }
 
-type ItemRow = { description: string; cost: string }
-type PaymentRow = { date: string; toothUnit: string; clinicalActivity: string; cost: string; payment: string }
+export type ItemRow = { description: string; cost: string }
+export type PaymentRow = { date: string; toothUnit: string; clinicalActivity: string; cost: string; payment: string }
 
-export default function Step6TreatmentPlan({ medicalHistoryId, patientId, currency, onBack }: Step6Props) {
+export default function Step6TreatmentPlan({ medicalHistoryId, patientId, currency, initialItems, initialPayments, onComplete, onBack }: Step6Props) {
   const router = useRouter()
-  const [items, setItems] = useState<ItemRow[]>([{ description: "", cost: "" }])
-  const [payments, setPayments] = useState<PaymentRow[]>([{ date: "", toothUnit: "", clinicalActivity: "", cost: "", payment: "" }])
+  const [items, setItems] = useState<ItemRow[]>(initialItems ?? [{ description: "", cost: "" }])
+  const [payments, setPayments] = useState<PaymentRow[]>(initialPayments ?? [{ date: "", toothUnit: "", clinicalActivity: "", cost: "", payment: "" }])
   const [serverError, setServerError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [isSaving, startSaving] = useTransition()
@@ -79,7 +82,9 @@ export default function Step6TreatmentPlan({ medicalHistoryId, patientId, curren
     startSaving(async () => {
       const result = await saveTreatmentPlan(medicalHistoryId, buildItems(), buildPayments())
       if (result.error) { setServerError(result.error); return }
-      if (exit) {
+      if (onComplete) {
+        onComplete()
+      } else if (exit) {
         router.push(`/patients/${patientId}`)
       } else {
         setSuccess(true)

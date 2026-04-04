@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { useRouter } from "next/navigation"
 import { saveMedicalBackground, type MedicalBackgroundData } from "@/lib/actions/patients"
 
 type BooleanKeys = keyof MedicalBackgroundData
@@ -130,6 +129,7 @@ const EMPTY_BG: MedicalBackgroundData = {
 interface Step3Props {
   medicalHistoryId: string
   patientId: string
+  initialData?: MedicalBackgroundData
   onNext: () => void
   onBack: () => void
   onSaveAndExit: () => void
@@ -137,13 +137,12 @@ interface Step3Props {
 
 export default function Step3MedicalBackground({
   medicalHistoryId,
-  patientId,
   onNext,
   onBack,
   onSaveAndExit,
+  initialData,
 }: Step3Props) {
-  const router = useRouter()
-  const [bgData, setBgData] = useState<MedicalBackgroundData>(EMPTY_BG)
+  const [bgData, setBgData] = useState<MedicalBackgroundData>(() => initialData ?? EMPTY_BG)
   const [observations, setObservations] = useState("")
   const [allergyInput, setAllergyInput] = useState("")
   const [allergyTags, setAllergyTags] = useState<string[]>([])
@@ -185,7 +184,7 @@ export default function Step3MedicalBackground({
     startSaving(async () => {
       const result = await doSave()
       if (result.error) { setServerError(result.error); return }
-      router.push(`/patients/${patientId}`)
+      onSaveAndExit()
     })
   }
 
