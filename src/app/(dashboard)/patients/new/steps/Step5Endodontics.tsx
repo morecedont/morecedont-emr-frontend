@@ -353,16 +353,6 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
           <div className="col-span-1 md:col-span-2 bg-surface-container-low rounded-xl p-5 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-on-surface">Conductometría (LR)</h3>
-              {canalEntries.length > 0 && (
-                <button
-                  type="button"
-                  onClick={addCanalEntry}
-                  className="hidden md:flex h-9 px-4 items-center gap-2 text-sm font-semibold text-sidebar-active border border-sidebar-active/30 rounded-lg hover:bg-sidebar-active/5 transition-colors"
-                >
-                  <span className="material-symbols-outlined text-[16px]">add</span>
-                  Agregar conducto
-                </button>
-              )}
             </div>
 
             {canalEntries.length === 0 ? (
