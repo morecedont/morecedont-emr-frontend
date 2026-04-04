@@ -3,7 +3,9 @@
 import { useState, useTransition } from "react"
 import { saveMedicalBackground, type MedicalBackgroundData } from "@/lib/actions/patients"
 
-type BooleanKeys = keyof MedicalBackgroundData
+type BooleanKeys = {
+  [K in keyof MedicalBackgroundData]: MedicalBackgroundData[K] extends boolean ? K : never
+}[keyof MedicalBackgroundData]
 
 const SYSTEM_CARDS = [
   {
@@ -124,7 +126,19 @@ const EMPTY_BG: MedicalBackgroundData = {
   immun_drug_allergy: false, immun_autoimmune_disease: false, immun_immunosuppressants: false,
   blood_anemia: false, blood_leukemia: false, blood_easy_bleeding: false,
   female_contraceptives: false, female_osteoporosis: false, female_pregnant: false, female_breastfeeding: false,
+  family_hypertension: false, family_diabetes: false, family_cardiovascular: false,
+  family_cancer: false, family_renal: false, family_mental_health: false,
+  family_other: "",
 }
+
+const FAMILY_FIELDS: { key: BooleanKeys; label: string }[] = [
+  { key: "family_hypertension", label: "Hipertensión arterial" },
+  { key: "family_diabetes", label: "Diabetes" },
+  { key: "family_cardiovascular", label: "Enfermedad cardiovascular" },
+  { key: "family_cancer", label: "Cáncer" },
+  { key: "family_renal", label: "Enfermedad renal" },
+  { key: "family_mental_health", label: "Salud mental" },
+]
 
 interface Step3Props {
   medicalHistoryId: string
@@ -257,6 +271,50 @@ export default function Step3MedicalBackground({
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Antecedentes Familiares */}
+          <div>
+            <div className="bg-surface-container-low rounded-xl p-5 border-2 border-primary/10">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-9 h-9 bg-primary-fixed text-sidebar-active rounded-lg flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[18px]">group</span>
+                </div>
+                <div>
+                  <h3 className="font-bold text-on-surface text-sm">Antecedentes Familiares</h3>
+                  <p className="text-xs text-secondary mt-0.5">
+                    Indique si algún familiar directo (padres, hermanos, abuelos) ha padecido las siguientes condiciones
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                {FAMILY_FIELDS.map((field) => (
+                  <label key={field.key} className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={bgData[field.key]}
+                      onChange={() => toggleField(field.key)}
+                      className="w-4 h-4 rounded border-outline-variant text-sidebar-active focus:ring-sidebar-active/20 cursor-pointer shrink-0"
+                    />
+                    <span className="text-sm text-secondary group-hover:text-on-surface transition-colors">
+                      {field.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
+              <div className="mt-4">
+                <label className="block text-sm font-semibold text-on-surface-variant mb-1.5">
+                  Otros antecedentes familiares
+                </label>
+                <textarea
+                  value={bgData.family_other}
+                  onChange={(e) => setBgData((prev) => ({ ...prev, family_other: e.target.value }))}
+                  placeholder="Describa otros antecedentes familiares relevantes..."
+                  rows={2}
+                  className="w-full text-base bg-white border border-outline-variant/30 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Observations & allergies */}

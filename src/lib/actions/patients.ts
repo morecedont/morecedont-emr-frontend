@@ -201,6 +201,14 @@ export type MedicalBackgroundData = {
   female_osteoporosis: boolean
   female_pregnant: boolean
   female_breastfeeding: boolean
+  // Antecedentes familiares
+  family_hypertension: boolean
+  family_diabetes: boolean
+  family_cardiovascular: boolean
+  family_cancer: boolean
+  family_renal: boolean
+  family_mental_health: boolean
+  family_other: string
 }
 
 export async function saveMedicalBackground(

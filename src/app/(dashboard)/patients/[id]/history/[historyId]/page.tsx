@@ -104,6 +104,13 @@ export default async function HistoryDetailPage({
         female_osteoporosis: history.medical_backgrounds.female_osteoporosis ?? false,
         female_pregnant: history.medical_backgrounds.female_pregnant ?? false,
         female_breastfeeding: history.medical_backgrounds.female_breastfeeding ?? false,
+        family_hypertension: history.medical_backgrounds.family_hypertension ?? false,
+        family_diabetes: history.medical_backgrounds.family_diabetes ?? false,
+        family_cardiovascular: history.medical_backgrounds.family_cardiovascular ?? false,
+        family_cancer: history.medical_backgrounds.family_cancer ?? false,
+        family_renal: history.medical_backgrounds.family_renal ?? false,
+        family_mental_health: history.medical_backgrounds.family_mental_health ?? false,
+        family_other: history.medical_backgrounds.family_other ?? null,
       }
     : null
 

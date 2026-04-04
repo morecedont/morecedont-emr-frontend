@@ -12,7 +12,19 @@ type BgData = {
   immun_drug_allergy: boolean; immun_autoimmune_disease: boolean; immun_immunosuppressants: boolean
   blood_anemia: boolean; blood_leukemia: boolean; blood_easy_bleeding: boolean
   female_contraceptives: boolean; female_osteoporosis: boolean; female_pregnant: boolean; female_breastfeeding: boolean
+  family_hypertension?: boolean | null; family_diabetes?: boolean | null; family_cardiovascular?: boolean | null
+  family_cancer?: boolean | null; family_renal?: boolean | null; family_mental_health?: boolean | null
+  family_other?: string | null
 } | null
+
+const FAMILY_CONDITIONS = [
+  { key: "family_hypertension" as const, label: "Hipertensión arterial" },
+  { key: "family_diabetes" as const, label: "Diabetes" },
+  { key: "family_cardiovascular" as const, label: "Enfermedad cardiovascular" },
+  { key: "family_cancer" as const, label: "Cáncer" },
+  { key: "family_renal" as const, label: "Enfermedad renal" },
+  { key: "family_mental_health" as const, label: "Salud mental" },
+]
 
 const SYSTEMS = [
   {
@@ -181,6 +193,52 @@ export default function MedicalBackgroundTab({ bg, patientId, historyId }: Medic
               )}
             </div>
           </div>
+
+          {/* Antecedentes Familiares */}
+          {(() => {
+            const hasAnyFamily = FAMILY_CONDITIONS.some((c) => bg?.[c.key])
+            const familyOther = bg?.family_other
+            const hasContent = hasAnyFamily || !!familyOther
+            return (
+              <div className="bg-surface-container-low rounded-xl p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-primary-fixed text-sidebar-active flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-[16px]">group</span>
+                  </div>
+                  <p className="text-[9px] font-bold uppercase tracking-widest text-secondary">
+                    Antecedentes Familiares
+                  </p>
+                </div>
+                {!hasContent ? (
+                  <p className="text-sm text-secondary">Sin antecedentes familiares reportados</p>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                      {FAMILY_CONDITIONS.map((c) => {
+                        const active = !!bg?.[c.key]
+                        return (
+                          <div key={c.key} className="flex items-center gap-2">
+                            <span
+                              className={`w-2 h-2 rounded-full shrink-0 ${active ? "bg-sidebar-active" : "bg-gray-300"}`}
+                            />
+                            <span className={`text-sm ${active ? "font-bold text-on-surface" : "text-[#9CA3AF]"}`}>
+                              {c.label}
+                            </span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                    {familyOther && (
+                      <p className="text-xs text-secondary mt-2">
+                        <span className="font-semibold text-on-surface-variant">Otros: </span>
+                        {familyOther}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )
+          })()}
 
           {/* Observations */}
           <div>

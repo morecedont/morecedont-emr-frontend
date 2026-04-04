@@ -77,6 +77,13 @@ export default async function EditHistoryPage({
         female_osteoporosis: bg.female_osteoporosis ?? false,
         female_pregnant: bg.female_pregnant ?? false,
         female_breastfeeding: bg.female_breastfeeding ?? false,
+        family_hypertension: bg.family_hypertension ?? false,
+        family_diabetes: bg.family_diabetes ?? false,
+        family_cardiovascular: bg.family_cardiovascular ?? false,
+        family_cancer: bg.family_cancer ?? false,
+        family_renal: bg.family_renal ?? false,
+        family_mental_health: bg.family_mental_health ?? false,
+        family_other: bg.family_other ?? "",
       }
     : null
 
