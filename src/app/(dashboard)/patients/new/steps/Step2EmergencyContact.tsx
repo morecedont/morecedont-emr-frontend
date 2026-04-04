@@ -65,6 +65,7 @@ export default function Step2EmergencyContact({
           dateOfBirth: personalData.dateOfBirth,
           gender: personalData.gender,
           bloodType: personalData.bloodType,
+          occupation: personalData.occupation,
           phone: personalData.phone,
           email: personalData.email,
           address: personalData.address,

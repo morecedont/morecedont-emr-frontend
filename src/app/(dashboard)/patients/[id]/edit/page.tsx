@@ -58,6 +58,7 @@ export default async function EditPatientPage({
                 : "",
               gender: patient.gender ?? "",
               bloodType: patient.blood_type ?? "",
+              occupation: patient.occupation ?? "",
               phone: patient.phone ?? "",
               email: patient.email ?? "",
               address: patient.address ?? "",

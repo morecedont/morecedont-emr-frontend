@@ -15,6 +15,7 @@ export type PersonalFormData = {
   dateOfBirth: string
   gender: string
   bloodType: string
+  occupation: string
   phone: string
   email: string
   address: string
@@ -156,6 +157,18 @@ export default function Step1PersonalData({ data, onChange, onNext, onCancel }: 
                 <option>O+</option>
                 <option>O-</option>
               </select>
+            </div>
+
+            {/* Occupation */}
+            <div className="md:col-span-8">
+              <label className={labelCls}>Ocupación / Profesión</label>
+              <input
+                type="text"
+                value={data.occupation}
+                onChange={(e) => set("occupation", e.target.value)}
+                placeholder="Ej. Médico, Ingeniero, Docente..."
+                className={inputCls}
+              />
             </div>
 
             {/* Phone */}

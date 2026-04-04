@@ -17,7 +17,7 @@ interface NewPatientWizardProps {
 
 const EMPTY_PERSONAL: PersonalFormData = {
   fullName: "", idNumber: "", dateOfBirth: "", gender: "",
-  bloodType: "", phone: "", email: "", address: "",
+  bloodType: "", occupation: "", phone: "", email: "", address: "",
 }
 
 const EMPTY_EMERGENCY: EmergencyFormData = {

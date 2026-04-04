@@ -720,6 +720,7 @@ model patients {
   address           String?
   created_by        String              @db.Uuid
   created_at        DateTime            @default(now()) @db.Timestamptz(6)
+  occupation        String?
   doctor_patients   doctor_patients[]
   medical_histories medical_histories[]
   profiles          profiles            @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)

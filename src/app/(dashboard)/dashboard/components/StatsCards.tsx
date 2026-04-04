@@ -67,7 +67,7 @@ export default function StatsCards({
           <p className="text-white/80 text-sm font-medium">Citas de hoy</p>
           <h3 className="text-2xl sm:text-3xl font-extrabold mt-1">0</h3>
           <p className="text-[11px] text-white/60 mt-4">
-            Sin citas programadas
+            Próximamente, con la integración con Google Calendar, podrás ver aquí las citas del día.
           </p>
         </div>
         <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl pointer-events-none" />

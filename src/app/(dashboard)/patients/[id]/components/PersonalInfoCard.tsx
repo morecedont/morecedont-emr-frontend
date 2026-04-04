@@ -11,6 +11,7 @@ export type PersonalInfo = {
   idNumber: string | null
   dateOfBirth: string | null
   gender: string | null
+  occupation: string | null
   address: string | null
 }
 
@@ -47,6 +48,12 @@ export default function PersonalInfoCard({ patient }: { patient: PersonalInfo })
           <p className={lbl}>Género</p>
           <p className={val}>{patient.gender ?? "—"}</p>
         </div>
+        {patient.occupation && (
+          <div>
+            <p className={lbl}>Ocupación</p>
+            <p className={val}>{patient.occupation}</p>
+          </div>
+        )}
         <div>
           <p className={lbl}>Dirección</p>
           <p className={`${val} break-words`}>{patient.address ?? "—"}</p>

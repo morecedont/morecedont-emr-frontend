@@ -109,6 +109,7 @@ export default async function PatientPage({
     idNumber: patient.id_number ?? null,
     dateOfBirth: patient.date_of_birth?.toISOString() ?? null,
     gender: patient.gender ?? null,
+    occupation: patient.occupation ?? null,
     address: patient.address ?? null,
   }
 

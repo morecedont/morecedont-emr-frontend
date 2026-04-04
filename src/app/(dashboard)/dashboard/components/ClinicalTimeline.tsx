@@ -2,48 +2,6 @@
 
 import Link from "next/link"
 
-// TODO: connect to real appointments/events data
-const TIMELINE_ITEMS = [
-  {
-    time: "09:00 AM",
-    title: "Reunión de equipo",
-    description: "Revisión de casos complejos de la semana",
-    type: "primary" as const,
-  },
-  {
-    time: "10:30 AM",
-    title: "Sarah Jenkins",
-    description: "Chequeo y limpieza (Consultorio 302)",
-    type: "secondary" as const,
-  },
-  {
-    time: "01:15 PM",
-    title: "Caso de emergencia",
-    description: "Paciente Mike Ross — Dolor agudo",
-    type: "error" as const,
-  },
-  {
-    time: "04:00 PM",
-    title: "Revisión de registros",
-    description: "Actualización de historias clínicas",
-    type: "muted" as const,
-  },
-]
-
-const DOT_CLASSES: Record<string, string> = {
-  primary: "border-primary",
-  secondary: "border-secondary-container",
-  error: "border-error/30",
-  muted: "border-primary-fixed",
-}
-
-const TIME_CLASSES: Record<string, string> = {
-  primary: "text-primary",
-  secondary: "text-secondary",
-  error: "text-error",
-  muted: "text-outline",
-}
-
 export default function ClinicalTimeline() {
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -58,29 +16,20 @@ export default function ClinicalTimeline() {
         </button>
       </div>
 
-      {/* Timeline */}
       <div className="bg-surface-container-low rounded-xl p-5 sm:p-6 relative">
-        {/* Vertical line */}
-        <div className="absolute left-[2.25rem] sm:left-[2.5rem] top-8 bottom-8 w-[2px] bg-primary-fixed" />
-
-        <div className="space-y-6 sm:space-y-8 relative">
-          {TIMELINE_ITEMS.map((item) => (
-            <div key={item.time} className="flex gap-3 sm:gap-4 relative">
-              {/* Dot */}
-              <div
-                className={`w-4 h-4 rounded-full bg-surface-container-lowest border-4 z-10 mt-1 shadow-sm shrink-0 ${DOT_CLASSES[item.type]}`}
-              />
-              <div>
-                <p
-                  className={`text-[11px] font-bold uppercase ${TIME_CLASSES[item.type]}`}
-                >
-                  {item.time}
-                </p>
-                <p className="text-sm font-bold text-on-surface">{item.title}</p>
-                <p className="text-xs text-secondary mt-0.5">{item.description}</p>
-              </div>
-            </div>
-          ))}
+        <div className="flex min-h-[240px] flex-col items-center justify-center rounded-lg border border-dashed border-outline-variant/30 bg-surface-container-lowest/60 px-6 py-8 text-center">
+          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <span className="material-symbols-outlined text-[28px]">calendar_month</span>
+          </div>
+          <h4 className="text-sm font-bold text-on-surface sm:text-base">
+            Agenda clínica próximamente sincronizada
+          </h4>
+          <p className="mt-2 max-w-sm text-sm text-secondary">
+            Próximamente integraremos esta sección con Google Calendar para gestionar las citas de los pacientes desde un solo lugar.
+          </p>
+          <p className="mt-3 text-xs text-outline">
+            Cuando la integración esté disponible, aquí verás tu agenda diaria en tiempo real.
+          </p>
         </div>
       </div>
 

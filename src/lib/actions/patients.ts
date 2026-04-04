@@ -99,6 +99,7 @@ export type PersonalData = {
   dateOfBirth: string
   gender: string
   bloodType: string
+  occupation: string
   phone: string
   email: string
   address: string
@@ -131,6 +132,7 @@ export async function createPatient(
         phone: personalData.phone || null,
         email: personalData.email || null,
         address: personalData.address || null,
+        occupation: personalData.occupation || null,
         created_by: doctorId,
       },
     })
@@ -479,6 +481,7 @@ export type PatientUpdateData = {
   dateOfBirth: string
   gender: string
   bloodType: string
+  occupation: string
   phone: string
   email: string
   address: string
@@ -508,6 +511,7 @@ export async function updatePatient(
         phone: data.phone || null,
         email: data.email || null,
         address: data.address || null,
+        occupation: data.occupation || null,
       },
     })
     return {}

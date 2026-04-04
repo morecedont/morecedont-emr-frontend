@@ -108,6 +108,17 @@ export default function PatientEditForm({ patientId, initialData }: PatientEditF
           </div>
 
           <div>
+            <label className={labelCls}>Ocupación / Profesión</label>
+            <input
+              type="text"
+              value={form.occupation}
+              onChange={(e) => handleChange("occupation", e.target.value)}
+              placeholder="Ej. Médico, Ingeniero, Docente..."
+              className={inputCls}
+            />
+          </div>
+
+          <div>
             <label className={labelCls}>Teléfono</label>
             <input
               type="tel"
