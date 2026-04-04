@@ -8,6 +8,9 @@ interface PaginationProps {
   totalPages: number
   totalCount: number
   pageSize: number
+  basePath?: string
+  pageParam?: string
+  itemLabel?: string
 }
 
 export default function Pagination({
@@ -15,6 +18,9 @@ export default function Pagination({
   totalPages,
   totalCount,
   pageSize,
+  basePath = "/patients",
+  pageParam = "page",
+  itemLabel = "pacientes",
 }: PaginationProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -22,10 +28,10 @@ export default function Pagination({
   const goToPage = useCallback(
     (page: number) => {
       const params = new URLSearchParams(searchParams.toString())
-      params.set("page", String(page))
-      router.push(`/patients?${params.toString()}`)
+      params.set(pageParam, String(page))
+      router.push(`${basePath}?${params.toString()}`)
     },
-    [router, searchParams]
+    [basePath, pageParam, router, searchParams]
   )
 
   // Build page buttons: first 3, ellipsis, last page
@@ -50,7 +56,7 @@ export default function Pagination({
   return (
     <div className="px-4 sm:px-6 py-4 border-t border-outline-variant/10 flex flex-col sm:flex-row items-center justify-between gap-3 bg-surface-container-low/30">
       <p className="text-xs font-medium text-secondary order-2 sm:order-1">
-        Mostrando {startItem}-{endItem} de {totalCount} pacientes
+        Mostrando {startItem}-{endItem} de {totalCount} {itemLabel}
       </p>
 
       <div className="flex items-center gap-1 order-1 sm:order-2">

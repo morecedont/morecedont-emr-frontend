@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
+import Pagination from "../../components/Pagination"
 
 export type HistoryRow = {
   id: string
@@ -40,16 +41,24 @@ const STATUS_LABEL: Record<string, string> = {
 interface TreatmentHistoryListProps {
   histories: HistoryRow[]
   patientId: string
+  currentPage: number
+  totalPages: number
+  totalCount: number
+  pageSize: number
 }
 
-export default function TreatmentHistoryList({ histories, patientId }: TreatmentHistoryListProps) {
+export default function TreatmentHistoryList({
+  histories,
+  patientId,
+  currentPage,
+  totalPages,
+  totalCount,
+  pageSize,
+}: TreatmentHistoryListProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-base font-bold text-on-surface">Historial de tratamientos</h2>
-        <Link href={`/patients/${patientId}`} className="text-sm font-semibold text-sidebar-active hover:underline">
-          Ver todo →
-        </Link>
       </div>
 
       {histories.length === 0 ? (
@@ -66,43 +75,53 @@ export default function TreatmentHistoryList({ histories, patientId }: Treatment
           </Link>
         </div>
       ) : (
-        <div className="space-y-3">
-          {histories.map((h) => (
-            <Link
-              key={h.id}
-              href={`/patients/${patientId}/history/${h.id}`}
-              className="flex items-center gap-4 bg-white rounded-xl border border-outline-variant/10 px-5 py-4 hover:border-primary/30 hover:shadow-sm transition-all group"
-            >
-              {/* Colored dot */}
-              <span className={`w-2.5 h-2.5 rounded-full ${STATUS_DOT[h.status]} shrink-0 mt-0.5`} />
+        <div className="bg-white rounded-2xl border border-outline-variant/10 shadow-sm overflow-hidden">
+          <div className="space-y-3 p-4 sm:p-5">
+            {histories.map((h) => (
+              <Link
+                key={h.id}
+                href={`/patients/${patientId}/history/${h.id}`}
+                className="flex items-center gap-4 rounded-xl border border-outline-variant/10 px-5 py-4 hover:border-primary/30 hover:shadow-sm transition-all group"
+              >
+                <span className={`w-2.5 h-2.5 rounded-full ${STATUS_DOT[h.status]} shrink-0 mt-0.5`} />
 
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">
-                    {formatDateRange(h.createdAt, h.status)}
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 mb-1">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">
+                      {formatDateRange(h.createdAt, h.status)}
+                    </p>
+                    {h.clinicName && (
+                      <span className="text-[10px] font-semibold px-2 py-0.5 bg-[#E6EAF5] text-secondary rounded-full uppercase tracking-wide">
+                        {h.clinicName}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm font-bold text-on-surface truncate">
+                    {h.firstProcedure ?? "Sin procedimientos registrados"}
                   </p>
-                  {h.clinicName && (
-                    <span className="text-[10px] font-semibold px-2 py-0.5 bg-[#E6EAF5] text-secondary rounded-full uppercase tracking-wide">
-                      {h.clinicName}
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${STATUS_BADGE[h.status]}`}>
+                      {STATUS_LABEL[h.status]}
                     </span>
-                  )}
+                  </div>
                 </div>
-                <p className="text-sm font-bold text-on-surface truncate">
-                  {h.firstProcedure ?? "Sin procedimientos registrados"}
-                </p>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${STATUS_BADGE[h.status]}`}>
-                    {STATUS_LABEL[h.status]}
-                  </span>
-                </div>
-              </div>
 
-              <span className="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-[20px] shrink-0">
-                chevron_right
-              </span>
-            </Link>
-          ))}
+                <span className="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-[20px] shrink-0">
+                  chevron_right
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalCount={totalCount}
+            pageSize={pageSize}
+            basePath={`/patients/${patientId}`}
+            pageParam="historyPage"
+            itemLabel="historias"
+          />
         </div>
       )}
     </div>

@@ -9,6 +9,8 @@ import PersonalInfoCard, { type PersonalInfo } from "./components/PersonalInfoCa
 import EmergencyContactCard, { type EmergencyInfo } from "./components/EmergencyContactCard"
 import ClinicalInfoCard, { type ClinicalInfo } from "./components/ClinicalInfoCard"
 
+const HISTORY_PAGE_SIZE = 5
+
 function calcAge(dob: Date | null | undefined): number | null {
   if (!dob) return null
   const today = new Date()
@@ -26,23 +28,30 @@ function deriveStatus(createdAt: Date): "active" | "completed" | "paused" {
 
 export default async function PatientPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ historyPage?: string }>
 }) {
   const { id } = await params
+  const resolvedSearchParams = await searchParams
   const profile = await getProfile()
   if (!profile) redirect("/login")
+  const currentHistoryPage = Math.max(1, parseInt(resolvedSearchParams.historyPage ?? "1", 10))
 
   const doctorPatient = await prisma.doctor_patients.findUnique({
     where: { doctor_id_patient_id: { doctor_id: profile.id, patient_id: id } },
   })
   if (!doctorPatient) notFound()
 
-  const patient = await prisma.patients.findUnique({
+  const [patient, totalHistoryCount] = await Promise.all([
+    prisma.patients.findUnique({
     where: { id },
     include: {
       medical_histories: {
         orderBy: { created_at: "desc" },
+        skip: (currentHistoryPage - 1) * HISTORY_PAGE_SIZE,
+        take: HISTORY_PAGE_SIZE,
         include: {
           clinics: true,
           treatment_items: { orderBy: { item_number: "asc" }, take: 1 },
@@ -50,7 +59,11 @@ export default async function PatientPage({
         },
       },
     },
-  })
+    }),
+    prisma.medical_histories.count({
+      where: { patient_id: id, doctor_id: profile.id },
+    }),
+  ])
   if (!patient) notFound()
 
   const attachmentsRaw = await prisma.attachments.findMany({
@@ -85,6 +98,7 @@ export default async function PatientPage({
     createdAt: h.created_at.toISOString(),
     status: deriveStatus(h.created_at),
   }))
+  const totalHistoryPages = Math.max(1, Math.ceil(totalHistoryCount / HISTORY_PAGE_SIZE))
 
   // Alerts
   const bg = latestHistory?.medical_backgrounds
@@ -142,7 +156,14 @@ export default async function PatientPage({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left: 2/3 */}
           <div className="lg:col-span-2 space-y-6">
-            <TreatmentHistoryList histories={histories} patientId={id} />
+            <TreatmentHistoryList
+              histories={histories}
+              patientId={id}
+              currentPage={currentHistoryPage}
+              totalPages={totalHistoryPages}
+              totalCount={totalHistoryCount}
+              pageSize={HISTORY_PAGE_SIZE}
+            />
             <PatientAlertsDocuments alerts={alertData} attachments={attachments} />
           </div>
 
