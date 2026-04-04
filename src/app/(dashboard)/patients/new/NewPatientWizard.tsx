@@ -12,7 +12,6 @@ import Step6TreatmentPlan from "./steps/Step6TreatmentPlan"
 
 interface NewPatientWizardProps {
   doctorId: string
-  clinics: { id: string; name: string }[]
 }
 
 const EMPTY_PERSONAL: PersonalFormData = {
@@ -24,7 +23,7 @@ const EMPTY_EMERGENCY: EmergencyFormData = {
   emergencyContact: "", emergencyPhone: "", lastDentalVisit: "", clinicId: "", currency: "USD",
 }
 
-export default function NewPatientWizard({ doctorId, clinics }: NewPatientWizardProps) {
+export default function NewPatientWizard({ doctorId }: NewPatientWizardProps) {
   const router = useRouter()
   const [step, setStep] = useState(1)
   const [personalData, setPersonalData] = useState<PersonalFormData>(EMPTY_PERSONAL)
@@ -57,7 +56,6 @@ export default function NewPatientWizard({ doctorId, clinics }: NewPatientWizard
           onChange={setEmergencyData}
           personalData={personalData}
           doctorId={doctorId}
-          clinics={clinics}
           onNext={handleStep2Success}
           onBack={() => setStep(1)}
         />

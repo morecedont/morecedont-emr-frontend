@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react"
 import { createPatient } from "@/lib/actions/patients"
 import type { PersonalFormData } from "./Step1PersonalData"
+import ClinicSelector, { type SelectedClinic } from "@/components/shared/ClinicSelector"
 
 const inputCls =
   "w-full text-base bg-white border border-outline-variant/40 rounded-lg px-4 py-3 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-outline/50"
@@ -23,7 +24,6 @@ interface Step2Props {
   onChange: (data: EmergencyFormData) => void
   personalData: PersonalFormData
   doctorId: string
-  clinics: { id: string; name: string }[]
   onNext: (patientId: string, medicalHistoryId: string) => void
   onBack: () => void
 }
@@ -33,13 +33,13 @@ export default function Step2EmergencyContact({
   onChange,
   personalData,
   doctorId,
-  clinics,
   onNext,
   onBack,
 }: Step2Props) {
   const [errors, setErrors] = useState<Partial<Record<keyof EmergencyFormData, string>>>({})
   const [serverError, setServerError] = useState<string | null>(null)
   const [isSaving, startSaving] = useTransition()
+  const [selectedClinic, setSelectedClinic] = useState<SelectedClinic | null>(null)
 
   function set(field: keyof EmergencyFormData, value: string) {
     onChange({ ...data, [field]: value })
@@ -74,7 +74,7 @@ export default function Step2EmergencyContact({
           emergencyContact: data.emergencyContact,
           emergencyPhone: data.emergencyPhone,
           lastDentalVisit: data.lastDentalVisit,
-          clinicId: data.clinicId,
+          clinicId: selectedClinic?.id ?? "",
           currency: data.currency,
         },
         doctorId
@@ -163,19 +163,15 @@ export default function Step2EmergencyContact({
 
           {/* Clinic */}
           <div className="md:col-span-2">
-            <label className={labelCls}>Clínica</label>
-            <select
-              value={data.clinicId}
-              onChange={(e) => set("clinicId", e.target.value)}
-              className={selectCls}
-            >
-              <option value="">Sin clínica asignada</option>
-              {clinics.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+            <label className={labelCls}>
+              Clínica <span className="text-xs font-normal text-secondary ml-1">(opcional)</span>
+            </label>
+            <ClinicSelector
+              value={selectedClinic}
+              doctorId={doctorId}
+              onChange={setSelectedClinic}
+              placeholder="Buscar o crear clínica..."
+            />
           </div>
         </div>
 
