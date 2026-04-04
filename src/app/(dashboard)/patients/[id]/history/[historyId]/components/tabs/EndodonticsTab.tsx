@@ -7,6 +7,15 @@ export type EndoSession = {
   notes: string | null
 }
 
+export type CanalRecord = {
+  id: string
+  canal_code: string
+  canal_label: string
+  reference: string | null
+  length_mm: string | null
+  notes: string | null
+}
+
 export type EndoRecord = {
   id: string
   tooth_number: number
@@ -33,6 +42,7 @@ export type EndoRecord = {
   instrumentation: string | null
   obturation: string | null
   endodontic_sessions: EndoSession[]
+  endodontic_canals: CanalRecord[]
 }
 
 interface EndodonticsTabProps {
@@ -203,15 +213,79 @@ export default function EndodonticsTab({ records, patientId, historyId }: Endodo
               {rec.periapical_diagnosis && <InfoRow label="Diagnóstico periapical" value={rec.periapical_diagnosis} />}
             </div>
 
-            {/* Conductometría */}
-            {(rec.canal_name || rec.canal_reference || rec.canal_length) && (
-              <div className="bg-surface-container-low rounded-xl p-4 space-y-3">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">Conductometría</p>
-                {rec.canal_name && <InfoRow label="Nombre del conducto" value={rec.canal_name} />}
-                {rec.canal_reference && <InfoRow label="Referencia" value={rec.canal_reference} />}
-                {rec.canal_length && <InfoRow label="Longitud" value={`${rec.canal_length} mm`} />}
-              </div>
-            )}
+            {/* Conductometría — multi-canal */}
+            <div className="col-span-1 sm:col-span-2 bg-surface-container-low rounded-xl p-4 space-y-3">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">Conductometría (LR)</p>
+              {rec.endodontic_canals.length === 0 ? (
+                <p className="text-sm text-secondary">Sin conductos registrados</p>
+              ) : (
+                <>
+                  {/* Summary bar */}
+                  {(() => {
+                    const withLen = rec.endodontic_canals.filter((c) => c.length_mm !== null)
+                    const nums = withLen.map((c) => parseFloat(c.length_mm!))
+                    const avg = nums.length > 0 ? (nums.reduce((s, n) => s + n, 0) / nums.length).toFixed(1) : null
+                    const min = nums.length > 0 ? Math.min(...nums) : null
+                    const max = nums.length > 0 ? Math.max(...nums) : null
+                    return (
+                      <div className="bg-primary/5 border border-primary/10 rounded-lg px-4 py-2.5 text-xs text-secondary flex flex-wrap gap-x-4 gap-y-1">
+                        <span>Total: <strong className="text-on-surface">{rec.endodontic_canals.length}</strong></span>
+                        {avg && <span>Promedio: <strong className="text-on-surface">{avg} mm</strong></span>}
+                        {min !== null && <span>Mín: <strong className="text-on-surface">{min} mm</strong></span>}
+                        {max !== null && <span>Máx: <strong className="text-on-surface">{max} mm</strong></span>}
+                      </div>
+                    )
+                  })()}
+
+                  {/* Desktop table */}
+                  <table className="hidden md:table w-full text-sm">
+                    <thead>
+                      <tr className="text-xs text-secondary uppercase border-b border-outline-variant/20">
+                        <th className="text-left py-2 font-semibold">Canal</th>
+                        <th className="text-left py-2 font-semibold">Referencia</th>
+                        <th className="text-left py-2 font-semibold">Longitud</th>
+                        <th className="text-left py-2 font-semibold">Notas</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rec.endodontic_canals.map((canal) => (
+                        <tr key={canal.id} className="border-b border-outline-variant/10 hover:bg-surface-container">
+                          <td className="py-2 font-semibold text-sidebar-active">{canal.canal_code}</td>
+                          <td className="py-2 text-secondary">{canal.reference || "—"}</td>
+                          <td className="py-2">
+                            {canal.length_mm
+                              ? <span className="font-medium text-on-surface">{canal.length_mm} mm</span>
+                              : <span className="text-outline">—</span>
+                            }
+                          </td>
+                          <td className="py-2 text-secondary">{canal.notes || "—"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                  {/* Mobile cards */}
+                  <div className="md:hidden space-y-2">
+                    {rec.endodontic_canals.map((canal) => (
+                      <div key={canal.id} className="bg-white border border-outline-variant/20 rounded-lg p-3">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="font-semibold text-sidebar-active">{canal.canal_code}</span>
+                          {canal.length_mm && (
+                            <span className="text-sm font-medium text-on-surface">{canal.length_mm} mm</span>
+                          )}
+                        </div>
+                        {canal.reference && (
+                          <p className="text-xs text-secondary">Ref: {canal.reference}</p>
+                        )}
+                        {canal.notes && (
+                          <p className="text-xs text-outline mt-1">{canal.notes}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
 
             {/* Protocolo */}
             {(rec.instrumentation || rec.obturation || rec.irrigation_naocl_pct) && (

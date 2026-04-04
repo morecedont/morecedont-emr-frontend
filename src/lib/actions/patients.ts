@@ -352,10 +352,19 @@ export type EndoSession = {
   notes: string
 }
 
+export type CanalEntry = {
+  canal_code: string
+  canal_label: string
+  reference: string
+  length_mm: number | null
+  notes: string
+}
+
 export async function saveEndodontics(
   medicalHistoryId: string,
   data: EndodonticData,
-  sessions: EndoSession[]
+  sessions: EndoSession[],
+  canals: CanalEntry[] = []
 ): Promise<{ error?: string }> {
   const profile = await getProfile()
   if (!profile) return { error: "No autorizado" }
@@ -404,6 +413,21 @@ export async function saveEndodontics(
         data: { medical_history_id: medicalHistoryId, ...payload },
       })
       endoId = endo.id
+    }
+
+    // Replace canals
+    await prisma.endodontic_canals.deleteMany({ where: { endodontic_id: endoId } })
+    if (canals.length > 0) {
+      await prisma.endodontic_canals.createMany({
+        data: canals.map((c) => ({
+          endodontic_id: endoId,
+          canal_code: c.canal_code,
+          canal_label: c.canal_label,
+          reference: c.reference || null,
+          length_mm: c.length_mm,
+          notes: c.notes || null,
+        })),
+      })
     }
 
     // Insert sessions

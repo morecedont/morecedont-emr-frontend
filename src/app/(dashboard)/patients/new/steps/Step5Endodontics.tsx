@@ -3,6 +3,8 @@
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { saveEndodontics, type EndodonticData, type EndoSession } from "@/lib/actions/patients"
+import CanalRow from "@/components/shared/CanalRow"
+import { type CanalEntry } from "@/lib/constants/endodontics"
 
 const inputCls =
   "w-full text-base bg-white border border-outline-variant/40 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-outline/50"
@@ -76,6 +78,7 @@ export type InitialEndoData = {
   instrumentation?: string | null
   obturation?: string | null
   sessions?: Array<{ date: string; activity: string; notes: string }>
+  endodontic_canals?: CanalEntry[]
 }
 
 interface Step5Props {
@@ -106,9 +109,7 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
   const [periapical, setPeriapical] = useState(initialData?.periapicalZone ?? "")
   const [pulpDx, setPulpDx] = useState(initialData?.pulpDiagnosis ?? "")
   const [periapicalDx, setPeriapicalDx] = useState(initialData?.periapicalDiagnosis ?? "")
-  const [canalName, setCanalName] = useState(initialData?.canalName ?? "")
-  const [canalRef, setCanalRef] = useState(initialData?.canalReference ?? "")
-  const [canalLength, setCanalLength] = useState(initialData?.canalLength ?? "")
+  const [canalEntries, setCanalEntries] = useState<CanalEntry[]>(() => initialData?.endodontic_canals ?? [])
   const [naocl, setNaocl] = useState(initialData?.irrigationNaoclPct ?? "")
   const [edta, setEdta] = useState(initialData?.irrigationEdta ?? false)
   const [instrumentation, setInstrumentation] = useState(initialData?.instrumentation ?? "")
@@ -120,6 +121,18 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
   )
   const [serverError, setServerError] = useState<string | null>(null)
   const [isSaving, startSaving] = useTransition()
+
+  function addCanalEntry() {
+    setCanalEntries((prev) => [...prev, { canal_code: "", canal_label: "", reference: "", length_mm: null, notes: "" }])
+  }
+
+  function updateCanalEntry(index: number, field: keyof CanalEntry, value: string | number | null) {
+    setCanalEntries((prev) => prev.map((c, i) => i === index ? { ...c, [field]: value } : c))
+  }
+
+  function removeCanalEntry(index: number) {
+    setCanalEntries((prev) => prev.filter((_, i) => i !== index))
+  }
 
   function addSession() {
     setSessions((prev) => [...prev, { date: "", activity: "", notes: "" }])
@@ -151,9 +164,9 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
       periapicalZone: periapical || null,
       pulpDiagnosis: pulpDx,
       periapicalDiagnosis: periapicalDx,
-      canalName,
-      canalReference: canalRef,
-      canalLength,
+      canalName: "",
+      canalReference: "",
+      canalLength: "",
       irrigationNaoclPct: naocl ? parseFloat(naocl) : null,
       irrigationEdta: edta,
       instrumentation: instrumentation || null,
@@ -165,7 +178,7 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
     if (!toothNumber) return
     setServerError(null)
     startSaving(async () => {
-      const result = await saveEndodontics(medicalHistoryId, buildData(), sessions)
+      const result = await saveEndodontics(medicalHistoryId, buildData(), sessions, canalEntries)
       if (result.error) { setServerError(result.error); return }
       onNext()
     })
@@ -176,7 +189,7 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
     if (!toothNumber) { exitFn(); return }
     setServerError(null)
     startSaving(async () => {
-      await saveEndodontics(medicalHistoryId, buildData(), sessions)
+      await saveEndodontics(medicalHistoryId, buildData(), sessions, canalEntries)
       exitFn()
     })
   }
@@ -336,21 +349,73 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
             </div>
           </div>
 
-          {/* Conductometry */}
-          <div className={sectionCard}>
-            <h3 className="font-bold text-on-surface">Conductometría</h3>
-            <div>
-              <label className={labelCls}>Conducto</label>
-              <input type="text" value={canalName} onChange={(e) => setCanalName(e.target.value)} className={inputCls} />
+          {/* Conductometry — multi-canal */}
+          <div className="col-span-1 md:col-span-2 bg-surface-container-low rounded-xl p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-on-surface">Conductometría (LR)</h3>
+              {canalEntries.length > 0 && (
+                <button
+                  type="button"
+                  onClick={addCanalEntry}
+                  className="hidden md:flex h-9 px-4 items-center gap-2 text-sm font-semibold text-sidebar-active border border-sidebar-active/30 rounded-lg hover:bg-sidebar-active/5 transition-colors"
+                >
+                  <span className="material-symbols-outlined text-[16px]">add</span>
+                  Agregar conducto
+                </button>
+              )}
             </div>
-            <div>
-              <label className={labelCls}>Referencia</label>
-              <input type="text" value={canalRef} onChange={(e) => setCanalRef(e.target.value)} className={inputCls} />
-            </div>
-            <div>
-              <label className={labelCls}>Longitud</label>
-              <input type="text" value={canalLength} onChange={(e) => setCanalLength(e.target.value)} className={inputCls} />
-            </div>
+
+            {canalEntries.length === 0 ? (
+              <button
+                type="button"
+                onClick={addCanalEntry}
+                className="w-full py-8 border-2 border-dashed border-outline-variant/40 rounded-xl flex flex-col items-center gap-2 text-secondary hover:border-sidebar-active/40 hover:text-sidebar-active transition-colors"
+              >
+                <span className="material-symbols-outlined text-3xl">add_circle</span>
+                <span className="text-sm font-semibold">Agregar primer conducto</span>
+              </button>
+            ) : (
+              <>
+                <div className="space-y-3">
+                  {canalEntries.map((canal, i) => (
+                    <CanalRow
+                      key={i}
+                      canal={canal}
+                      index={i}
+                      onChange={updateCanalEntry}
+                      onRemove={removeCanalEntry}
+                    />
+                  ))}
+                </div>
+
+                {/* Summary stats */}
+                {(() => {
+                  const withLen = canalEntries.filter((c) => c.length_mm !== null)
+                  const avg = withLen.length > 0
+                    ? (withLen.reduce((s, c) => s + c.length_mm!, 0) / withLen.length).toFixed(1)
+                    : null
+                  const min = withLen.length > 0 ? Math.min(...withLen.map((c) => c.length_mm!)) : null
+                  const max = withLen.length > 0 ? Math.max(...withLen.map((c) => c.length_mm!)) : null
+                  return (
+                    <div className="bg-primary/5 border border-primary/10 rounded-lg px-4 py-2.5 text-xs text-secondary flex flex-wrap gap-x-4 gap-y-1">
+                      <span>Total: <strong className="text-on-surface">{canalEntries.length}</strong></span>
+                      {avg && <span>Promedio: <strong className="text-on-surface">{avg} mm</strong></span>}
+                      {min !== null && <span>Mín: <strong className="text-on-surface">{min} mm</strong></span>}
+                      {max !== null && <span>Máx: <strong className="text-on-surface">{max} mm</strong></span>}
+                    </div>
+                  )
+                })()}
+
+                <button
+                  type="button"
+                  onClick={addCanalEntry}
+                  className="w-full md:w-auto h-9 px-4 flex items-center justify-center gap-2 text-sm font-semibold text-sidebar-active border border-sidebar-active/30 rounded-lg hover:bg-sidebar-active/5 transition-colors"
+                >
+                  <span className="material-symbols-outlined text-[16px]">add</span>
+                  Agregar otro conducto
+                </button>
+              </>
+            )}
           </div>
 
           {/* Protocol */}

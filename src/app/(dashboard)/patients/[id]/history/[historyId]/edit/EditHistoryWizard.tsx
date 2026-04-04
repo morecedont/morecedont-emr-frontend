@@ -108,7 +108,7 @@ export default function EditHistoryWizard({
         <Step5Endodontics
           medicalHistoryId={historyId}
           patientId={patientId}
-          initialData={endoData ?? undefined}
+          initialData={endoData ? { ...endoData, endodontic_canals: endoData.endodontic_canals ?? [] } : undefined}
           onSaveAndExit={handleSaveAndExit}
           onNext={() => setStep(4)}
           onBack={() => setStep(2)}

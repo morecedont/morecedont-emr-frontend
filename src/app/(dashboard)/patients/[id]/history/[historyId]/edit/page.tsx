@@ -23,7 +23,10 @@ export default async function EditHistoryPage({
         include: { tooth_records: true },
       },
       endodontics: {
-        include: { endodontic_sessions: true },
+        include: {
+          endodontic_sessions: true,
+          endodontic_canals: { orderBy: { created_at: "asc" } },
+        },
         orderBy: { created_at: "asc" },
       },
       treatment_items: { orderBy: { item_number: "asc" } },
@@ -141,6 +144,14 @@ export default async function EditHistoryPage({
           date: s.session_date ? s.session_date.toISOString().substring(0, 10) : "",
           activity: s.activity,
           notes: s.notes ?? "",
+        })),
+        endodontic_canals: firstEndo.endodontic_canals.map((c) => ({
+          id: c.id,
+          canal_code: c.canal_code,
+          canal_label: c.canal_label,
+          reference: c.reference ?? "",
+          length_mm: c.length_mm ? parseFloat(c.length_mm.toString()) : null,
+          notes: c.notes ?? "",
         })),
       }
     : null

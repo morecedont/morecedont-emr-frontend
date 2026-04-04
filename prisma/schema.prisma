@@ -612,6 +612,7 @@ model endodontics {
   obturation            obturation_type?
   created_at            DateTime              @default(now()) @db.Timestamptz(6)
   updated_at            DateTime              @default(now()) @db.Timestamptz(6)
+  endodontic_canals     endodontic_canals[]
   endodontic_sessions   endodontic_sessions[]
   medical_histories     medical_histories     @relation(fields: [medical_history_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
@@ -790,6 +791,22 @@ model treatment_payments {
   medical_histories  medical_histories @relation(fields: [medical_history_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([medical_history_id], map: "idx_treatment_payments_history")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model endodontic_canals {
+  id            String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  endodontic_id String      @db.Uuid
+  canal_code    String
+  canal_label   String
+  reference     String?
+  length_mm     Decimal?    @db.Decimal(5, 2)
+  notes         String?
+  created_at    DateTime    @default(now()) @db.Timestamptz(6)
+  endodontics   endodontics @relation(fields: [endodontic_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([endodontic_id], map: "idx_endodontic_canals_endodontic")
   @@schema("public")
 }
 

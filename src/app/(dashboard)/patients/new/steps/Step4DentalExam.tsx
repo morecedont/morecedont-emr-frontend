@@ -37,6 +37,22 @@ const UPPER_RIGHT = [21, 22, 23, 24, 25, 26, 27, 28]
 const LOWER_LEFT = [48, 47, 46, 45, 44, 43, 42, 41]
 const LOWER_RIGHT = [31, 32, 33, 34, 35, 36, 37, 38]
 
+function getPopoverAlignClass(number: number) {
+  const upperLeftIndex = UPPER_LEFT.indexOf(number)
+  if (upperLeftIndex >= 0 && upperLeftIndex <= 2) return "left-0"
+
+  const lowerLeftIndex = LOWER_LEFT.indexOf(number)
+  if (lowerLeftIndex >= 0 && lowerLeftIndex <= 2) return "left-0"
+
+  const upperRightIndex = UPPER_RIGHT.indexOf(number)
+  if (upperRightIndex >= UPPER_RIGHT.length - 3) return "right-0"
+
+  const lowerRightIndex = LOWER_RIGHT.indexOf(number)
+  if (lowerRightIndex >= LOWER_RIGHT.length - 3) return "right-0"
+
+  return "left-1/2 -translate-x-1/2"
+}
+
 const PROBLEMS = [
   { key: "problem_atm" as const, label: "ATM" },
   { key: "problem_crowding" as const, label: "Apiñamiento" },
@@ -135,24 +151,32 @@ export default function Step4DentalExam({ medicalHistoryId, patientId, initialDa
   function ToothCell({ number }: { number: number }) {
     const status = toothMap[number] ?? "healthy"
     const isOpen = openTooth === number
+    const opensUpward = number >= 31
+    const popoverPositionClass = opensUpward
+      ? "bottom-10 sm:bottom-11"
+      : "top-10 sm:top-11"
+    const popoverAlignClass = getPopoverAlignClass(number)
+
     return (
       <div className="relative">
         <button
           type="button"
           onClick={() => setOpenTooth(isOpen ? null : number)}
-          className={`w-9 h-9 sm:w-10 sm:h-10 rounded border-2 flex items-center justify-center text-[10px] font-bold transition-all hover:scale-105 ${TOOTH_BG[status]}`}
+          className={`h-8 w-8 rounded border-2 text-[9px] font-bold transition-all hover:scale-105 sm:h-9 sm:w-9 sm:text-[10px] ${TOOTH_BG[status]} flex items-center justify-center`}
           title={`Diente ${number}`}
         >
           {number}
         </button>
         {isOpen && (
-          <div className="absolute top-11 left-1/2 -translate-x-1/2 z-20 bg-white rounded-xl shadow-2xl border border-outline-variant/20 p-2 w-36">
+          <div
+            className={`absolute ${popoverPositionClass} ${popoverAlignClass} z-20 w-32 rounded-xl border border-outline-variant/20 bg-white p-1.5 shadow-2xl`}
+          >
             {TOOTH_STATUS_OPTIONS.map((opt) => (
               <button
                 key={opt.value}
                 type="button"
                 onClick={() => setStatus(number, opt.value)}
-                className={`w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-left transition-colors ${
+                className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-[11px] leading-4 transition-colors ${
                   status === opt.value
                     ? "bg-primary/10 text-primary font-semibold"
                     : "hover:bg-surface-container text-on-surface"
@@ -169,7 +193,7 @@ export default function Step4DentalExam({ medicalHistoryId, patientId, initialDa
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-outline-variant/10 overflow-hidden">
+    <div className="bg-white rounded-xl shadow-sm border border-outline-variant/10">
       <div className="p-6 sm:p-8 border-b border-surface-container">
         <h2 className="text-xl sm:text-2xl font-bold text-on-surface tracking-tight">
           Examen clínico y odontograma
@@ -246,22 +270,21 @@ export default function Step4DentalExam({ medicalHistoryId, patientId, initialDa
             ))}
           </div>
 
-          {/* Scrollable odontogram */}
-          <div className="overflow-x-auto pb-2">
-            <div className="min-w-max space-y-2 p-4 bg-surface-container-low rounded-xl">
+          <div className="pb-2">
+            <div className="space-y-2 rounded-xl bg-surface-container-low p-3 sm:p-4">
               {/* Upper jaw */}
-              <div className="flex items-center gap-1">
-                <div className="flex gap-1">{UPPER_LEFT.map((n) => <ToothCell key={n} number={n} />)}</div>
+              <div className="flex items-center justify-between gap-1 sm:gap-1.5">
+                <div className="flex gap-1 sm:gap-1.5">{UPPER_LEFT.map((n) => <ToothCell key={n} number={n} />)}</div>
                 <div className="w-px h-8 bg-outline-variant/30 mx-1" />
-                <div className="flex gap-1">{UPPER_RIGHT.map((n) => <ToothCell key={n} number={n} />)}</div>
+                <div className="flex gap-1 sm:gap-1.5">{UPPER_RIGHT.map((n) => <ToothCell key={n} number={n} />)}</div>
               </div>
               {/* Divider */}
               <div className="h-px bg-outline-variant/30 my-2" />
               {/* Lower jaw */}
-              <div className="flex items-center gap-1">
-                <div className="flex gap-1">{LOWER_LEFT.map((n) => <ToothCell key={n} number={n} />)}</div>
+              <div className="flex items-center justify-between gap-1 sm:gap-1.5">
+                <div className="flex gap-1 sm:gap-1.5">{LOWER_LEFT.map((n) => <ToothCell key={n} number={n} />)}</div>
                 <div className="w-px h-8 bg-outline-variant/30 mx-1" />
-                <div className="flex gap-1">{LOWER_RIGHT.map((n) => <ToothCell key={n} number={n} />)}</div>
+                <div className="flex gap-1 sm:gap-1.5">{LOWER_RIGHT.map((n) => <ToothCell key={n} number={n} />)}</div>
               </div>
             </div>
           </div>

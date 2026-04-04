@@ -36,7 +36,10 @@ export default async function HistoryDetailPage({
         include: { tooth_records: true },
       },
       endodontics: {
-        include: { endodontic_sessions: { orderBy: { session_date: "asc" } } },
+        include: {
+          endodontic_sessions: { orderBy: { session_date: "asc" } },
+          endodontic_canals: { orderBy: { created_at: "asc" } },
+        },
         orderBy: { created_at: "asc" },
       },
       treatment_items: { orderBy: { item_number: "asc" } },
@@ -169,6 +172,14 @@ export default async function HistoryDetailPage({
       session_date: s.session_date ? s.session_date.toISOString() : null,
       activity: s.activity,
       notes: s.notes ?? null,
+    })),
+    endodontic_canals: e.endodontic_canals.map((c) => ({
+      id: c.id,
+      canal_code: c.canal_code,
+      canal_label: c.canal_label,
+      reference: c.reference ?? null,
+      length_mm: c.length_mm ? c.length_mm.toString() : null,
+      notes: c.notes ?? null,
     })),
   }))
 
