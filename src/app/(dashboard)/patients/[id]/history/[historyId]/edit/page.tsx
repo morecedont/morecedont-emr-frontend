@@ -178,6 +178,7 @@ export default async function EditHistoryPage({
       <EditHistoryWizard
         historyId={historyId}
         patientId={id}
+        doctorId={history.doctor_id}
         currency={history.currency}
         medicalBackground={medicalBackground}
         dentalExam={dentalExam}

@@ -14,6 +14,7 @@ export type AttachmentData = {
   fileName: string
   fileType: string | null
   uploadedAt: string
+  signedUrl?: string | null
 }
 
 interface PatientAlertsDocumentsProps {
@@ -72,9 +73,17 @@ export default function PatientAlertsDocuments({ alerts, attachments }: PatientA
           <div className="space-y-2">
             {attachments.map((a) => (
               <div key={a.id} className="flex items-center gap-2 text-sm">
-                <span className="material-symbols-outlined text-[16px] text-secondary shrink-0">
-                  description
-                </span>
+                {a.signedUrl && a.fileType?.startsWith("image/") ? (
+                  <img
+                    src={a.signedUrl}
+                    alt={a.fileName}
+                    className="w-8 h-8 rounded object-cover shrink-0"
+                  />
+                ) : (
+                  <span className="material-symbols-outlined text-[16px] text-secondary shrink-0">
+                    description
+                  </span>
+                )}
                 <span className="text-on-surface truncate">{a.fileName}</span>
               </div>
             ))}

@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation"
 import Link from "next/link"
 import { getProfile } from "@/lib/session"
 import { prisma } from "@/lib/prisma"
+import { getSignedUrls } from "@/lib/storage"
 import PatientProfileHeader, { type PatientHeaderData } from "./components/PatientProfileHeader"
 import TreatmentHistoryList, { type HistoryRow } from "./components/TreatmentHistoryList"
 import PatientAlertsDocuments, { type AlertData, type AttachmentData } from "./components/PatientAlertsDocuments"
@@ -108,12 +109,14 @@ export default async function PatientPage({
     createdAt: latestHistory?.created_at.toISOString() ?? null,
   }
 
-  // Attachments
+  // Attachments with signed URLs
+  const signedUrlMap = await getSignedUrls(attachmentsRaw.map((a) => a.file_url))
   const attachments: AttachmentData[] = attachmentsRaw.map((a) => ({
     id: a.id,
-    fileName: a.file_url.split("/").pop() ?? a.file_url,
+    fileName: a.description ?? a.file_url.split("/").pop() ?? a.file_url,
     fileType: a.file_type ?? null,
     uploadedAt: a.uploaded_at.toISOString(),
+    signedUrl: signedUrlMap[a.file_url] ?? null,
   }))
 
   // Sidebar info

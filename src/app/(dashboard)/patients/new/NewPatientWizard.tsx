@@ -94,6 +94,7 @@ export default function NewPatientWizard({ doctorId }: NewPatientWizardProps) {
         <Step6TreatmentPlan
           medicalHistoryId={medicalHistoryId}
           patientId={patientId}
+          doctorId={doctorId}
           currency={emergencyData.currency}
           onBack={() => setStep(5)}
         />

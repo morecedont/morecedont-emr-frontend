@@ -3,6 +3,8 @@
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { saveTreatmentPlan, type TreatmentItem, type TreatmentPayment } from "@/lib/actions/patients"
+import FileUploader from "@/components/shared/FileUploader"
+import type { AttachmentRecord } from "@/lib/actions/attachments"
 
 const inputCls =
   "w-full text-base bg-white border border-outline-variant/40 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
@@ -11,6 +13,7 @@ const labelCls = "block text-xs font-semibold text-on-surface-variant mb-1"
 interface Step6Props {
   medicalHistoryId: string
   patientId: string
+  doctorId: string
   currency: string
   initialItems?: ItemRow[]
   initialPayments?: PaymentRow[]
@@ -21,10 +24,11 @@ interface Step6Props {
 export type ItemRow = { description: string; cost: string }
 export type PaymentRow = { date: string; toothUnit: string; clinicalActivity: string; cost: string; payment: string }
 
-export default function Step6TreatmentPlan({ medicalHistoryId, patientId, currency, initialItems, initialPayments, onComplete, onBack }: Step6Props) {
+export default function Step6TreatmentPlan({ medicalHistoryId, patientId, doctorId, currency, initialItems, initialPayments, onComplete, onBack }: Step6Props) {
   const router = useRouter()
   const [items, setItems] = useState<ItemRow[]>(initialItems ?? [{ description: "", cost: "" }])
   const [payments, setPayments] = useState<PaymentRow[]>(initialPayments ?? [{ date: "", toothUnit: "", clinicalActivity: "", cost: "", payment: "" }])
+  const [uploadedFiles, setUploadedFiles] = useState<AttachmentRecord[]>([])
   const [serverError, setServerError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [isSaving, startSaving] = useTransition()
@@ -231,6 +235,32 @@ export default function Step6TreatmentPlan({ medicalHistoryId, patientId, curren
               </span>
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* File upload section */}
+      <div className="bg-white rounded-xl shadow-sm border border-outline-variant/10 overflow-hidden">
+        <div className="p-6 sm:p-8 border-b border-surface-container">
+          <h2 className="text-xl font-bold text-on-surface">
+            Archivos adjuntos{" "}
+            <span className="text-xs text-secondary font-normal ml-1">opcional</span>
+          </h2>
+          <p className="text-secondary mt-0.5 text-sm">
+            Sube radiografías, informes o imágenes relacionadas a esta historia.
+          </p>
+        </div>
+        <div className="p-6 sm:p-8">
+          <FileUploader
+            medicalHistoryId={medicalHistoryId}
+            patientId={patientId}
+            doctorId={doctorId}
+            onUploadComplete={(att) => setUploadedFiles((prev) => [...prev, att])}
+          />
+          {uploadedFiles.length > 0 && (
+            <p className="text-xs text-secondary mt-3">
+              {uploadedFiles.length} archivo{uploadedFiles.length > 1 ? "s" : ""} subido{uploadedFiles.length > 1 ? "s" : ""}
+            </p>
+          )}
         </div>
       </div>
 

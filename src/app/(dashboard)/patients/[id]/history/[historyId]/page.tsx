@@ -190,6 +190,7 @@ export default async function HistoryDetailPage({
   const tabsData: HistoryTabsData = {
     historyId: history.id,
     patientId: id,
+    doctorId: history.doctor_id,
     currency: history.currency,
     bg,
     exam,

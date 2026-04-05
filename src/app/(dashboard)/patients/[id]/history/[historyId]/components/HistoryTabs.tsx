@@ -5,6 +5,7 @@ import MedicalBackgroundTab from "./tabs/MedicalBackgroundTab"
 import DentalExamTab, { type DentalExamData, type DentalExamTabProps } from "./tabs/DentalExamTab"
 import EndodonticsTab, { type EndoRecord } from "./tabs/EndodonticsTab"
 import TreatmentPlanTab, { type TreatmentItem, type TreatmentPayment } from "./tabs/TreatmentPlanTab"
+import AttachmentsTab from "./tabs/AttachmentsTab"
 import { type ToothRecord } from "@/components/shared/Odontogram"
 
 type BgData = Parameters<typeof MedicalBackgroundTab>[0]["bg"]
@@ -12,6 +13,7 @@ type BgData = Parameters<typeof MedicalBackgroundTab>[0]["bg"]
 export type HistoryTabsData = {
   historyId: string
   patientId: string
+  doctorId: string
   currency: string
   bg: BgData
   exam: DentalExamData
@@ -26,6 +28,7 @@ const TABS = [
   { key: "exam", label: "Examen Clínico", icon: "search" },
   { key: "endo", label: "Endodoncia", icon: "dentistry" },
   { key: "plan", label: "Plan de Tratamiento", icon: "assignment" },
+  { key: "archivos", label: "Archivos", icon: "attach_file" },
 ] as const
 
 type TabKey = typeof TABS[number]["key"]
@@ -87,6 +90,14 @@ export default function HistoryTabs({ data }: { data: HistoryTabsData }) {
             payments={data.payments}
             currency={data.currency}
             historyId={data.historyId}
+          />
+        )}
+        {active === "archivos" && (
+          <AttachmentsTab
+            historyId={data.historyId}
+            patientId={data.patientId}
+            doctorId={data.doctorId}
+            canDelete={true}
           />
         )}
       </div>

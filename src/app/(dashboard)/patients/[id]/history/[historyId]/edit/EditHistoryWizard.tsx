@@ -16,6 +16,7 @@ import type { ItemRow, PaymentRow } from "@/app/(dashboard)/patients/new/steps/S
 export type EditHistoryWizardProps = {
   historyId: string
   patientId: string
+  doctorId: string
   currency: string
   medicalBackground: MedicalBackgroundData | null
   dentalExam: ExamFormData | null
@@ -28,6 +29,7 @@ export type EditHistoryWizardProps = {
 export default function EditHistoryWizard({
   historyId,
   patientId,
+  doctorId,
   currency,
   medicalBackground,
   dentalExam,
@@ -120,6 +122,7 @@ export default function EditHistoryWizard({
         <Step6TreatmentPlan
           medicalHistoryId={historyId}
           patientId={patientId}
+          doctorId={doctorId}
           currency={currency}
           initialItems={itemsData.length > 0 ? itemsData : undefined}
           initialPayments={paymentsData.length > 0 ? paymentsData : undefined}
