@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { formatDistanceToNow } from "date-fns"
 import { es } from "date-fns/locale"
 
@@ -15,14 +16,16 @@ export type AttachmentData = {
   fileType: string | null
   uploadedAt: string
   signedUrl?: string | null
+  historyId?: string
 }
 
 interface PatientAlertsDocumentsProps {
   alerts: AlertData
   attachments: AttachmentData[]
+  patientId: string
 }
 
-export default function PatientAlertsDocuments({ alerts, attachments }: PatientAlertsDocumentsProps) {
+export default function PatientAlertsDocuments({ alerts, attachments, patientId }: PatientAlertsDocumentsProps) {
   const hasAlerts = alerts.hasAllergy || alerts.hasEasyBleeding
 
   return (
@@ -87,13 +90,13 @@ export default function PatientAlertsDocuments({ alerts, attachments }: PatientA
                 <span className="text-on-surface truncate">{a.fileName}</span>
               </div>
             ))}
-            <a
-              href="#"
-              className="inline-flex items-center gap-1 text-xs font-semibold text-sidebar-active hover:underline mt-2"
+            <Link
+              href={`/patients/${patientId}/files`}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-[#4C6FFF] hover:underline mt-2"
             >
               Ver archivos recientes
               <span className="material-symbols-outlined text-[12px]">arrow_forward</span>
-            </a>
+            </Link>
           </div>
         )}
       </div>

@@ -71,6 +71,15 @@ export default async function PatientPage({
     where: {
       medical_histories: { patient_id: id, doctor_id: profile.id },
     },
+    include: {
+      medical_histories: {
+        select: {
+          id: true,
+          created_at: true,
+          clinics: { select: { name: true } },
+        },
+      },
+    },
     orderBy: { uploaded_at: "desc" },
     take: 3,
   })
@@ -117,6 +126,7 @@ export default async function PatientPage({
     fileType: a.file_type ?? null,
     uploadedAt: a.uploaded_at.toISOString(),
     signedUrl: signedUrlMap[a.file_url] ?? null,
+    historyId: a.medical_histories.id,
   }))
 
   // Sidebar info
@@ -167,7 +177,7 @@ export default async function PatientPage({
               totalCount={totalHistoryCount}
               pageSize={HISTORY_PAGE_SIZE}
             />
-            <PatientAlertsDocuments alerts={alertData} attachments={attachments} />
+            <PatientAlertsDocuments alerts={alertData} attachments={attachments} patientId={id} />
           </div>
 
           {/* Right: 1/3 */}

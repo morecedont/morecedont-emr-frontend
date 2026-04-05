@@ -112,6 +112,75 @@ export async function getAttachmentsWithUrls(
   }
 }
 
+export interface PatientAttachmentRecord {
+  id: string
+  fileName: string
+  fileType: string
+  filePath: string
+  signedUrl: string | null
+  uploadedAt: string
+  description: string | null
+  historyId: string
+  historyCreatedAt: string
+  clinicName: string | null
+}
+
+export async function getPatientAttachmentsWithUrls(
+  patientId: string
+): Promise<{ attachments?: PatientAttachmentRecord[]; error?: string }> {
+  const profile = await getProfile()
+  if (!profile) return { error: "No autorizado" }
+
+  const access = await prisma.doctor_patients.findUnique({
+    where: {
+      doctor_id_patient_id: {
+        doctor_id: profile.id,
+        patient_id: patientId,
+      },
+    },
+  })
+  if (!access) return { error: "No autorizado" }
+
+  const attachments = await prisma.attachments.findMany({
+    where: {
+      medical_histories: {
+        patient_id: patientId,
+        doctor_id: profile.id,
+      },
+    },
+    include: {
+      medical_histories: {
+        select: {
+          id: true,
+          created_at: true,
+          clinics: { select: { name: true } },
+        },
+      },
+    },
+    orderBy: { uploaded_at: "desc" },
+  })
+
+  if (attachments.length === 0) return { attachments: [] }
+
+  const filePaths = attachments.map((a) => a.file_url)
+  const signedUrls = await getSignedUrls(filePaths)
+
+  return {
+    attachments: attachments.map((a) => ({
+      id: a.id,
+      fileName: a.description ?? a.file_url.split("/").pop() ?? "Archivo",
+      fileType: a.file_type ?? "",
+      filePath: a.file_url,
+      signedUrl: signedUrls[a.file_url] ?? null,
+      uploadedAt: a.uploaded_at.toISOString(),
+      description: a.description,
+      historyId: a.medical_histories.id,
+      historyCreatedAt: a.medical_histories.created_at.toISOString(),
+      clinicName: a.medical_histories.clinics?.name ?? null,
+    })),
+  }
+}
+
 // Delete attachment — removes from DB and storage
 export async function deleteAttachment(
   attachmentId: string,
