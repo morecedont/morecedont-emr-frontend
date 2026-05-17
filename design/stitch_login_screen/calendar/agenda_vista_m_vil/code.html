@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Morecedont Agenda - Clinical Curator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#264ee0",
+                    "inverse-primary": "#b8c3ff",
+                    "primary-fixed-dim": "#b8c3ff",
+                    "on-secondary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "primary": "#224bdd",
+                    "outline": "#747687",
+                    "on-primary-container": "#fffbff",
+                    "surface-variant": "#dee2ed",
+                    "surface-container-low": "#f0f3ff",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed": "#0d1a38",
+                    "tertiary": "#565b74",
+                    "on-tertiary-container": "#fffbff",
+                    "tertiary-fixed": "#dde1ff",
+                    "on-error": "#ffffff",
+                    "on-background": "#171c23",
+                    "secondary": "#525e7f",
+                    "outline-variant": "#c4c5d8",
+                    "on-tertiary-fixed-variant": "#41455e",
+                    "surface-container": "#eaeef9",
+                    "surface-container-highest": "#dee2ed",
+                    "surface-dim": "#d6dae5",
+                    "background": "#f8f9ff",
+                    "tertiary-fixed-dim": "#c1c5e3",
+                    "secondary-fixed-dim": "#bac6ec",
+                    "primary-container": "#4367f7",
+                    "secondary-fixed": "#dae2ff",
+                    "on-secondary-container": "#515d7e",
+                    "error": "#ba1a1a",
+                    "inverse-surface": "#2c3139",
+                    "on-primary": "#ffffff",
+                    "on-surface-variant": "#444655",
+                    "on-secondary-fixed-variant": "#3a4666",
+                    "surface": "#f8f9ff",
+                    "primary-fixed": "#dde1ff",
+                    "on-primary-fixed": "#001356",
+                    "tertiary-container": "#6f738e",
+                    "on-surface": "#171c23",
+                    "inverse-on-surface": "#edf1fc",
+                    "surface-bright": "#f8f9ff",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-high": "#e4e8f3",
+                    "on-tertiary-fixed": "#151a30",
+                    "secondary-container": "#cad6fd",
+                    "on-primary-fixed-variant": "#0035be",
+                    "teal-accent": "#0D9488"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "display": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface">
+<!-- TopAppBar Fragment (Mobile Adapted) -->
+<header class="fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-md z-40 border-b border-outline-variant/20 flex items-center justify-between px-6">
+<div class="flex items-center gap-3">
+<span class="text-teal-accent font-extrabold text-xl tracking-tighter">Morecedont</span>
+<span class="text-on-surface font-headline font-bold text-lg">Agenda</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1 bg-surface-container px-3 py-1.5 rounded-full cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="text-label-sm font-semibold text-on-surface-variant">Octubre</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="A professional close-up portrait of a male clinician in a clean, modern medical setting. He is wearing a white coat and has a friendly, authoritative expression. The lighting is bright and high-key, mirroring the clinical curator aesthetic with soft shadows and a pristine, minimalist background of soft blues and whites." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGcGc6ZL6zneiN2WTKbXGbmauuSXbXQDDy78PI9G_KEcPhBpGsF4l8p7lRAfzyE1jjYOWnN97-yvef5JZHUirNzP2650ALGGNrfKzjuXDi1uKAPBWOXVUZPMHV3tHRC7si9D0De1hObRYkNMDjPda4nIVGlvgv7c5KCfZxL-BdMLSg-S7ui-E1Eb_s4D2RdKT3owbK70bZRRvafYnb0z35oSQCtleGV2t05EpAB01O2NIS90BhNX9TB2qliB1HDaNAFPGEwEnpt_Eg"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-20 pb-24 px-4 min-h-screen">
+<!-- Today Header -->
+<div class="mb-6">
+<h2 class="font-headline text-on-surface text-xl font-bold tracking-tight">Lunes, 16 de Octubre</h2>
+<p class="text-on-surface-variant text-sm font-medium opacity-70">8 citas programadas</p>
+</div>
+<!-- Agenda List -->
+<div class="flex flex-col gap-4">
+<!-- Appointment Card: Ongoing/Current -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm border-l-4 border-teal-accent relative overflow-hidden">
+<div class="flex justify-between items-start mb-3">
+<div>
+<span class="text-teal-accent font-bold text-sm block mb-1">09:00 - 09:45</span>
+<h3 class="font-headline font-extrabold text-on-surface text-lg">Adrián González</h3>
+</div>
+<span class="bg-teal-accent/10 text-teal-accent px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">En curso</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">medical_services</span>
+<p class="text-sm font-medium">Limpieza Profunda &amp; Profilaxis</p>
+</div>
+<div class="mt-3 flex items-center gap-2">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-white bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px]">person</span>
+</div>
+</div>
+<span class="text-xs text-on-surface-variant">Dr. Julian Curator</span>
+</div>
+</div>
+<!-- Appointment Card: Completed -->
+<div class="bg-surface-container/50 rounded-xl p-4 border border-outline-variant/10 opacity-70">
+<div class="flex justify-between items-start mb-3">
+<div>
+<span class="text-on-surface-variant font-medium text-sm block mb-1">08:00 - 08:30</span>
+<h3 class="font-headline font-bold text-on-surface text-lg">Lucía Méndez</h3>
+</div>
+<span class="material-symbols-outlined text-teal-accent">check_circle</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">clinical_notes</span>
+<p class="text-sm font-medium">Revisión de Ortodoncia</p>
+</div>
+</div>
+<!-- Time Gap Indicator -->
+<div class="flex items-center gap-4 py-2 opacity-40">
+<div class="h-[1px] flex-1 bg-outline-variant"></div>
+<span class="text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">10:00 AM</span>
+<div class="h-[1px] flex-1 bg-outline-variant"></div>
+</div>
+<!-- Appointment Card: Upcoming -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm border border-outline-variant/20">
+<div class="flex justify-between items-start mb-3">
+<div>
+<span class="text-secondary font-bold text-sm block mb-1">10:15 - 11:30</span>
+<h3 class="font-headline font-extrabold text-on-surface text-lg">Marcos Valenzuela</h3>
+</div>
+<span class="bg-surface-container-highest text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Confirmado</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">settings_suggest</span>
+<p class="text-sm font-medium">Implante Dental (Fase 1)</p>
+</div>
+<div class="mt-4 flex gap-2">
+<button class="flex-1 py-2 bg-surface-container text-on-surface text-xs font-bold rounded-lg active:scale-95 transition-transform">Ver Historial</button>
+<button class="flex-1 py-2 bg-teal-accent text-white text-xs font-bold rounded-lg active:scale-95 transition-transform shadow-md shadow-teal-accent/20">Preparar Box</button>
+</div>
+</div>
+<!-- Appointment Card: Urgent/Special -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm border border-error/20 bg-gradient-to-br from-white to-error-container/10">
+<div class="flex justify-between items-start mb-3">
+<div>
+<span class="text-error font-bold text-sm block mb-1">11:45 - 12:15</span>
+<h3 class="font-headline font-extrabold text-on-surface text-lg">Sofía Rivas</h3>
+</div>
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">priority_high</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">emergency</span>
+<p class="text-sm font-medium text-error">Urgencia: Dolor agudo molar</p>
+</div>
+</div>
+<!-- Next Day Header -->
+<div class="mt-8 mb-6">
+<h2 class="font-headline text-on-surface text-xl font-bold tracking-tight">Martes, 17 de Octubre</h2>
+<p class="text-on-surface-variant text-sm font-medium opacity-70">5 citas programadas</p>
+</div>
+<!-- Next Day Preview Card -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm border border-outline-variant/20 mb-4">
+<div class="flex justify-between items-start mb-3">
+<div>
+<span class="text-on-surface-variant font-medium text-sm block mb-1">09:00 - 10:00</span>
+<h3 class="font-headline font-bold text-on-surface text-lg">Roberto Carlos</h3>
+</div>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">history_edu</span>
+<p class="text-sm font-medium">Evaluación Inicial</p>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB for New Appointment -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-teal-accent text-white rounded-full flex items-center justify-center shadow-xl shadow-teal-accent/40 z-50 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<!-- BottomNavBar Fragment (Mobile) -->
+<nav class="fixed bottom-0 left-0 right-0 h-20 bg-white/95 backdrop-blur-md border-t border-outline-variant/10 px-6 flex items-center justify-between z-50 md:hidden">
+<div class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-bold tracking-tighter">Dashboard</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-teal-accent">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+<span class="text-[10px] font-bold tracking-tighter">Agenda</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold tracking-tighter">Pacientes</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-bold tracking-tighter">Ajustes</span>
+</div>
+</nav>
+</body></html>

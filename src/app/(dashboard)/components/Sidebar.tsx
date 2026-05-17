@@ -11,6 +11,7 @@ const NAV_ITEMS: {
   hidden?: boolean
 }[] = [
   { href: "/dashboard", icon: "dashboard", label: "Inicio" },
+  { href: "/agenda", icon: "calendar_month", label: "Agenda" },
   { href: "/patients", icon: "person", label: "Pacientes" },
   { href: "/clinics", icon: "medical_services", label: "Clínicas", hidden: true },
   { href: "/settings", icon: "settings", label: "Configuración", hidden: true },

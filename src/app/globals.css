@@ -86,6 +86,13 @@
   /* Dashboard / app-shell tokens */
   --color-sidebar:           #2E3A59;   /* same as brand-footer */
   --color-sidebar-active:    #4C6FFF;   /* active nav item */
+
+  /* Agenda / appointment accent tokens */
+  --color-teal-accent:       #0D9488;   /* citas confirmadas + CTAs de agenda */
+  --color-teal-accent-hover: #0f766e;   /* hover de CTAs teal */
+  --color-teal-surface:      #f0fdfa;   /* fondo de pills de cita */
+  --color-teal-border:       #ccfbf1;   /* borde suave de pills */
+  --color-amber-accent:      #f59e0b;   /* citas en estado "scheduled" */
 }
 
 /* ── Decorative background ───────────────────────────────── */
