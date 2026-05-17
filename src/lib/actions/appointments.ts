@@ -35,8 +35,8 @@ async function syncAppointmentToGoogle(
         data: {
           appointment_id: appointmentId,
           operation: "create",
-          direction: "outbound",
-          status: "success",
+          direction: "push",
+          status: "ok",
         },
       })
     } else {
@@ -48,7 +48,7 @@ async function syncAppointmentToGoogle(
         data: {
           appointment_id: appointmentId,
           operation: "create",
-          direction: "outbound",
+          direction: "push",
           status: "error",
           error_message: result.error,
         },
@@ -61,7 +61,7 @@ async function syncAppointmentToGoogle(
         data: {
           appointment_id: appointmentId,
           operation: "create",
-          direction: "outbound",
+          direction: "push",
           status: "error",
           error_message: err instanceof Error ? err.message : "unknown",
         },
