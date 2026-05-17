@@ -17,6 +17,21 @@ export type CanalEntry = {
   notes: string
 }
 
+// Irrigantes seleccionables en el protocolo de endodoncia (multi-select).
+// El valor guardado en endodontics.irrigation_protocols es la etiqueta exacta.
+export const IRRIGATION_PROTOCOLS: string[] = [
+  "NaOCl 5.25%",
+  "NaOCl 2.5%",
+  "NaOCl 3%",
+  "EDTA 17%",
+  "Agua ozonizada",
+  "Gas de ozono",
+  "Clorhexidina (CHX 2%)",
+  "Solución fisiológica",
+  "Solución fisiológica con azul de metileno",
+  "Láser",
+]
+
 export const CANAL_CODES = [
   { code: "P",      label: "P — Palatino" },
   { code: "B",      label: "B — Vestibular" },

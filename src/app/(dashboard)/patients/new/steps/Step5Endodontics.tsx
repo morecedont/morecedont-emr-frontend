@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { saveEndodontics, type EndodonticData, type EndoSession } from "@/lib/actions/patients"
 import CanalRow from "@/components/shared/CanalRow"
 import FileInstrumentation from "@/components/shared/FileInstrumentation"
-import { type CanalEntry } from "@/lib/constants/endodontics"
+import { type CanalEntry, IRRIGATION_PROTOCOLS } from "@/lib/constants/endodontics"
 
 const inputCls =
   "w-full text-base bg-white border border-outline-variant/40 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-outline/50"
@@ -74,8 +74,7 @@ export type InitialEndoData = {
   canalName?: string | null
   canalReference?: string | null
   canalLength?: string | null
-  irrigationNaoclPct?: string | null
-  irrigationEdta?: boolean | null
+  irrigationProtocols?: string[] | null
   instrumentation?: string | null
   obturation?: string | null
   sessions?: Array<{ date: string; activity: string; notes: string }>
@@ -115,8 +114,17 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
   const [pulpDx, setPulpDx] = useState(initialData?.pulpDiagnosis ?? "")
   const [periapicalDx, setPeriapicalDx] = useState(initialData?.periapicalDiagnosis ?? "")
   const [canalEntries, setCanalEntries] = useState<CanalEntry[]>(() => initialData?.endodontic_canals ?? [])
-  const [naocl, setNaocl] = useState(initialData?.irrigationNaoclPct ?? "")
-  const [edta, setEdta] = useState(initialData?.irrigationEdta ?? false)
+  const [irrigationProtocols, setIrrigationProtocols] = useState<string[]>(
+    initialData?.irrigationProtocols ?? []
+  )
+
+  function toggleProtocol(protocol: string) {
+    setIrrigationProtocols((prev) =>
+      prev.includes(protocol)
+        ? prev.filter((p) => p !== protocol)
+        : [...prev, protocol]
+    )
+  }
   const [instrumentationType, setInstrumentationType] = useState<"manual" | "rotary_reciprocating" | null>(
     (initialData?.instrumentation as "manual" | "rotary_reciprocating" | null) ?? null
   )
@@ -180,8 +188,7 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
       canalName: "",
       canalReference: "",
       canalLength: "",
-      irrigationNaoclPct: naocl ? parseFloat(naocl) : null,
-      irrigationEdta: edta,
+      irrigationProtocols,
       instrumentation: instrumentationType,
       obturation: obturation || null,
       file_initial: fileInitial,
@@ -443,13 +450,28 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
           <div className={sectionCard}>
             <h3 className="font-bold text-on-surface">Protocolo</h3>
             <div>
-              <label className={labelCls}>NaOCl %</label>
-              <input type="number" step="0.5" min={0} max={6} value={naocl} onChange={(e) => setNaocl(e.target.value)} className={inputCls} />
+              <label className={labelCls}>Irrigantes</label>
+              <div className="flex flex-wrap gap-2">
+                {IRRIGATION_PROTOCOLS.map((protocol) => {
+                  const selected = irrigationProtocols.includes(protocol)
+                  return (
+                    <button
+                      key={protocol}
+                      type="button"
+                      onClick={() => toggleProtocol(protocol)}
+                      aria-pressed={selected}
+                      className={`min-h-11 px-4 rounded-full text-sm font-semibold border transition-colors ${
+                        selected
+                          ? "bg-sidebar-active text-white border-sidebar-active"
+                          : "bg-white text-on-surface border-outline-variant/40 hover:bg-surface-container-low"
+                      }`}
+                    >
+                      {protocol}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input type="checkbox" checked={edta} onChange={(e) => setEdta(e.target.checked)} className="w-4 h-4 rounded text-sidebar-active" />
-              <span className="text-sm text-on-surface">EDTA</span>
-            </label>
             <div>
               <label className={labelCls}>Obturación</label>
               <select value={obturation} onChange={(e) => setObturation(e.target.value)} className={selectCls}>

@@ -342,8 +342,7 @@ export type EndodonticData = {
   canalName: string
   canalReference: string
   canalLength: string
-  irrigationNaoclPct: number | null
-  irrigationEdta: boolean
+  irrigationProtocols: string[]
   instrumentation: string | null
   obturation: string | null
   file_initial: string | null
@@ -403,8 +402,7 @@ export async function saveEndodontics(
       canal_name: data.canalName || null,
       canal_reference: data.canalReference || null,
       canal_length: data.canalLength || null,
-      irrigation_naocl_pct: data.irrigationNaoclPct ?? null,
-      irrigation_edta: data.irrigationEdta,
+      irrigation_protocols: data.irrigationProtocols,
       instrumentation: data.instrumentation as never,
       obturation: data.obturation as never,
       file_initial: data.file_initial ?? null,

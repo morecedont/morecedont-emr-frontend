@@ -39,8 +39,7 @@ export type EndoRecord = {
   canal_name: string | null
   canal_reference: string | null
   canal_length: string | null
-  irrigation_naocl_pct: string | null
-  irrigation_edta: boolean | null
+  irrigation_protocols: string[]
   instrumentation: string | null
   obturation: string | null
   file_initial: string | null
@@ -309,13 +308,14 @@ export default function EndodonticsTab({ records, patientId, historyId }: Endodo
             />
 
             {/* Protocolo */}
-            {(rec.obturation || rec.irrigation_naocl_pct) && (
+            {(rec.obturation || rec.irrigation_protocols.length > 0) && (
               <div className="bg-surface-container-low rounded-xl p-4 space-y-3">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">Protocolo</p>
                 <div className="flex flex-wrap gap-1.5">
                   {rec.obturation && <Badge label={OBTURATION_LABELS[rec.obturation] ?? rec.obturation} color="bg-purple-50 text-purple-700" />}
-                  {rec.irrigation_naocl_pct && <Badge label={`NaOCl ${rec.irrigation_naocl_pct}%`} color="bg-teal-50 text-teal-700" />}
-                  {rec.irrigation_edta && <Badge label="EDTA" color="bg-teal-50 text-teal-700" />}
+                  {rec.irrigation_protocols.map((p) => (
+                    <Badge key={p} label={p} color="bg-teal-50 text-teal-700" />
+                  ))}
                 </div>
               </div>
             )}

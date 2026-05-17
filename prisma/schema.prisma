@@ -607,8 +607,7 @@ model endodontics {
   canal_name            String?
   canal_reference       String?
   canal_length          String?
-  irrigation_naocl_pct  Decimal?              @db.Decimal(5, 2)
-  irrigation_edta       Boolean?              @default(false)
+  irrigation_protocols  String[]              @default([])
   instrumentation       instrumentation_type?
   obturation            obturation_type?
   created_at            DateTime              @default(now()) @db.Timestamptz(6)
