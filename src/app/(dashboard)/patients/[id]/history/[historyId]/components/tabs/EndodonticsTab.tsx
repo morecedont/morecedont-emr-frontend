@@ -92,7 +92,6 @@ const MOBILITY_LABELS: Record<string, string> = { grade_1: "Grado I", grade_2: "
 const PULP_LABELS: Record<string, string> = { normal: "Normal", calcified: "Calcificada", open: "Abierta" }
 const CANAL_LABELS: Record<string, string> = { visible: "Visible", atretic: "Atréticos", curvature: "Curvatura" }
 const PERIAPICAL_LABELS: Record<string, string> = { radiolucency: "Radiolucidez", thickened_lp: "LP engrosado" }
-const INSTRUMENTATION_LABELS: Record<string, string> = { manual: "Manual", rotary_reciprocating: "Rotatorio / Reciprocante" }
 const OBTURATION_LABELS: Record<string, string> = { lateral_condensation: "Condensación lateral", thermoplastic: "Termoplástica" }
 
 function Badge({ label, color = "bg-surface-container text-secondary" }: { label: string; color?: string }) {

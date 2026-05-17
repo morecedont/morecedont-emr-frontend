@@ -52,8 +52,9 @@ export default async function HistoryDetailPage({
   if (history.patient_id !== id) notFound()
 
   const patient = history.patients
-  const isActive =
-    history.created_at >= new Date(Date.now() - 6 * 30 * 24 * 60 * 60 * 1000)
+  const sixMonthsAgo = new Date()
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
+  const isActive = history.created_at >= sixMonthsAgo
 
   // Header data
   const headerData: HistoryHeaderData = {
