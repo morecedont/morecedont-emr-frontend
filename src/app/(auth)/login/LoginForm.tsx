@@ -65,7 +65,7 @@ export default function LoginForm() {
             Contraseña
           </label>
           <a
-            href="#"
+            href="/forgot-password"
             className="text-xs font-medium text-primary hover:underline transition-colors"
           >
             ¿Olvidaste tu contraseña?

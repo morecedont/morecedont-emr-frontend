@@ -15,10 +15,22 @@ export async function middleware(request: NextRequest) {
   const isRegisterPage = pathname === "/register"
   const isPendingPage = pathname.startsWith("/register/pending")
   const isRejectedPage = pathname.startsWith("/register/rejected")
+  // Flujo de recuperación de contraseña (accesible sin sesión).
+  const isPasswordRecovery =
+    pathname === "/forgot-password" ||
+    pathname === "/reset-password" ||
+    pathname === "/auth/confirm"
 
   // Unauthenticated: allow public pages
   if (!user) {
-    if (!isHomePage && !isLoginPage && !isRegisterPage && !isPendingPage && !isRejectedPage) {
+    if (
+      !isHomePage &&
+      !isLoginPage &&
+      !isRegisterPage &&
+      !isPendingPage &&
+      !isRejectedPage &&
+      !isPasswordRecovery
+    ) {
       return NextResponse.redirect(new URL("/login", request.nextUrl))
     }
     return supabaseResponse
