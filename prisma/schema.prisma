@@ -832,6 +832,7 @@ model appointments {
   status           appointment_status     @default(scheduled)
   gcal_event_id    String?
   gcal_sync_status gcal_sync_status       @default(pending)
+  gcal_sync_enabled Boolean               @default(true)
   created_at       DateTime               @default(now()) @db.Timestamptz(6)
   updated_at       DateTime               @default(now()) @db.Timestamptz(6)
   doctor           profiles               @relation(fields: [doctor_id], references: [id], onDelete: NoAction)

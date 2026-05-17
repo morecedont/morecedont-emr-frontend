@@ -40,8 +40,15 @@ export async function createAppointment(
   const profile = await getProfile()
   if (!profile) return { error: "No autorizado" }
 
-  const { patientId, clinicId, scheduledAt, durationMinutes, treatmentType, notes } =
-    input
+  const {
+    patientId,
+    clinicId,
+    scheduledAt,
+    durationMinutes,
+    treatmentType,
+    notes,
+    gcalSyncEnabled,
+  } = input
 
   if (!patientId || !clinicId || !scheduledAt) {
     return { error: "Paciente, clínica y fecha/hora son requeridos" }
@@ -74,6 +81,8 @@ export async function createAppointment(
         status: "scheduled",
         // La sync real con Google Calendar es fase 2; siempre arranca pendiente.
         gcal_sync_status: "pending",
+        // Opt-out por cita: el doctor puede excluir esta cita del sync.
+        gcal_sync_enabled: gcalSyncEnabled,
       },
     })
 

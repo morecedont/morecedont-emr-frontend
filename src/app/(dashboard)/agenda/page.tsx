@@ -51,6 +51,7 @@ export default async function AgendaPage({
     status: a.status,
     gcal_event_id: a.gcal_event_id,
     gcal_sync_status: a.gcal_sync_status,
+    gcal_sync_enabled: a.gcal_sync_enabled,
     patient: { full_name: a.patient.full_name },
     clinic: { name: a.clinic.name },
   }))

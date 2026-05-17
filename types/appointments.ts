@@ -26,6 +26,7 @@ export interface Appointment {
   status: AppointmentStatus
   gcal_event_id: string | null
   gcal_sync_status: GcalSyncStatus
+  gcal_sync_enabled: boolean
   patient: { full_name: string }
   clinic: { name: string }
 }
