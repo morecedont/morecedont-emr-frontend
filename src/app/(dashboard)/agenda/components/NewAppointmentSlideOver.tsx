@@ -27,6 +27,7 @@ interface NewAppointmentSlideOverProps {
   onClose: () => void
   doctorId: string
   defaultDate: Date | null
+  isGoogleConnected: boolean
   onCreated: () => void
 }
 
@@ -34,6 +35,7 @@ export default function NewAppointmentSlideOver({
   onClose,
   doctorId,
   defaultDate,
+  isGoogleConnected,
   onCreated,
 }: NewAppointmentSlideOverProps) {
   const [visible, setVisible] = useState(false)
@@ -327,7 +329,11 @@ export default function NewAppointmentSlideOver({
 
           {/* Toggle sync */}
           <div className="pt-4">
-            <label className="flex items-center justify-between cursor-pointer">
+            <label
+              className={`flex items-center justify-between ${
+                isGoogleConnected ? "cursor-pointer" : "opacity-60"
+              }`}
+            >
               <span className="flex items-center gap-3">
                 <span className="w-8 h-8 bg-teal-surface rounded-lg flex items-center justify-center">
                   <span className="material-symbols-outlined text-teal-accent text-lg">
@@ -343,11 +349,18 @@ export default function NewAppointmentSlideOver({
                   className="text-base sr-only peer"
                   type="checkbox"
                   checked={gcalSync}
+                  disabled={!isGoogleConnected}
                   onChange={(e) => setGcalSync(e.target.checked)}
                 />
-                <span className="w-10 h-5 bg-outline-variant/40 rounded-full peer-checked:bg-teal-accent transition-all after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5" />
+                <span className="w-10 h-5 bg-outline-variant/40 rounded-full peer-checked:bg-teal-accent peer-disabled:opacity-50 transition-all after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5" />
               </span>
             </label>
+            {!isGoogleConnected && (
+              <p className="mt-2 text-xs text-secondary">
+                Conectá Google Calendar (botón arriba) para que esta cita se
+                sincronice. La preferencia se guarda igual.
+              </p>
+            )}
           </div>
 
           {error && (

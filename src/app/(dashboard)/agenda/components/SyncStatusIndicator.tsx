@@ -49,12 +49,8 @@ export default function SyncStatusIndicator({
 
   // not_connected — botón placeholder (la integración real es fase 2).
   return (
-    <button
-      type="button"
-      onClick={() => {
-        // Fase 2: redirigir a la pantalla de OAuth de Google.
-        console.log("[agenda] Google Calendar connect — pendiente (fase 2)")
-      }}
+    <a
+      href="/api/google/auth"
       className="flex items-center gap-2 h-11 px-3 bg-surface-container hover:bg-surface-container-high rounded-full transition-colors"
     >
       <span className="material-symbols-outlined text-secondary text-sm">
@@ -63,6 +59,6 @@ export default function SyncStatusIndicator({
       <span className="text-[10px] font-bold text-secondary uppercase tracking-tighter">
         Connect Google
       </span>
-    </button>
+    </a>
   )
 }

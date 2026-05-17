@@ -3,6 +3,7 @@ import { startOfMonth, addMonths, isValid, parse } from "date-fns"
 import { getProfile } from "@/lib/session"
 import { prisma } from "@/lib/prisma"
 import type { Appointment } from "@/types/appointments"
+import { isGoogleConnected } from "@/lib/google/calendar"
 import AgendaClient from "./components/AgendaClient"
 
 export const dynamic = "force-dynamic"
@@ -27,17 +28,20 @@ export default async function AgendaPage({
   const monthStart = resolveMonth(month)
   const monthEnd = startOfMonth(addMonths(monthStart, 1))
 
-  const rows = await prisma.appointments.findMany({
-    where: {
-      doctor_id: profile.id,
-      scheduled_at: { gte: monthStart, lt: monthEnd },
-    },
-    include: {
-      patient: { select: { full_name: true } },
-      clinic: { select: { name: true } },
-    },
-    orderBy: { scheduled_at: "asc" },
-  })
+  const [rows, googleConnected] = await Promise.all([
+    prisma.appointments.findMany({
+      where: {
+        doctor_id: profile.id,
+        scheduled_at: { gte: monthStart, lt: monthEnd },
+      },
+      include: {
+        patient: { select: { full_name: true } },
+        clinic: { select: { name: true } },
+      },
+      orderBy: { scheduled_at: "asc" },
+    }),
+    isGoogleConnected(profile.id),
+  ])
 
   // Objetos planos serializables para los Client Components.
   const appointments: Appointment[] = rows.map((a) => ({
@@ -61,6 +65,7 @@ export default async function AgendaPage({
       appointments={appointments}
       monthIso={monthStart.toISOString()}
       doctorId={profile.id}
+      isGoogleConnected={googleConnected}
     />
   )
 }

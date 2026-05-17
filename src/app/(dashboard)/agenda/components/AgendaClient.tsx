@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { format, addMonths } from "date-fns"
 import { es } from "date-fns/locale"
 import type { Appointment } from "@/types/appointments"
@@ -18,18 +18,27 @@ interface AgendaClientProps {
   appointments: Appointment[]
   monthIso: string
   doctorId: string
+  isGoogleConnected: boolean
 }
 
 export default function AgendaClient({
   appointments,
   monthIso,
   doctorId,
+  isGoogleConnected,
 }: AgendaClientProps) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const monthDate = new Date(monthIso)
   const monthLabel = capitalize(
     format(monthDate, "LLLL yyyy", { locale: es })
   )
+  const googleFeedback = searchParams.get("google")
+
+  function dismissFeedback() {
+    const month = format(monthDate, "yyyy-MM")
+    router.replace(`/agenda?month=${month}`)
+  }
 
   const [slideOverOpen, setSlideOverOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
@@ -56,6 +65,31 @@ export default function AgendaClient({
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-4rem)]">
+      {/* Feedback de conexión Google */}
+      {googleFeedback && (
+        <div
+          className={`flex items-center justify-between gap-3 px-4 sm:px-6 py-3 text-sm font-medium ${
+            googleFeedback === "connected"
+              ? "bg-green-50 text-green-700"
+              : "bg-error-container text-error"
+          }`}
+        >
+          <span>
+            {googleFeedback === "connected"
+              ? "Google Calendar conectado. Tus próximas citas se sincronizarán."
+              : "No se pudo conectar Google Calendar. Intentá de nuevo."}
+          </span>
+          <button
+            type="button"
+            onClick={dismissFeedback}
+            className="flex items-center justify-center w-11 h-11 -mr-2 rounded-full hover:bg-black/5 transition-colors shrink-0"
+            aria-label="Cerrar aviso"
+          >
+            <span className="material-symbols-outlined text-[18px]">close</span>
+          </button>
+        </div>
+      )}
+
       {/* Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-6 py-4 bg-surface-container-low/40">
         <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
@@ -87,7 +121,9 @@ export default function AgendaClient({
               </span>
             </button>
           </div>
-          <SyncStatusIndicator status="not_connected" />
+          <SyncStatusIndicator
+            status={isGoogleConnected ? "synced" : "not_connected"}
+          />
         </div>
 
         <button
@@ -136,6 +172,7 @@ export default function AgendaClient({
           onClose={() => setSlideOverOpen(false)}
           doctorId={doctorId}
           defaultDate={selectedDate}
+          isGoogleConnected={isGoogleConnected}
           onCreated={() => router.refresh()}
         />
       )}
