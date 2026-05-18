@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { format, addMonths } from "date-fns"
+import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import type { Appointment } from "@/types/appointments"
 import CalendarGrid from "./CalendarGrid"
@@ -14,29 +14,44 @@ function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
+/**
+ * El mes viaja como string "YYYY-MM" (TZ-agnóstico). Se reconstruye como
+ * fecha LOCAL (1ro del mes a medianoche local), nunca con new Date(isoUTC),
+ * para que server (UTC en Vercel) y navegador (TZ local) coincidan.
+ */
+function parseMonth(month: string): Date {
+  const [y, m] = month.split("-").map(Number)
+  return new Date(y, m - 1, 1)
+}
+
+function shiftMonth(month: string, delta: number): string {
+  const [y, m] = month.split("-").map(Number)
+  const d = new Date(y, m - 1 + delta, 1)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`
+}
+
 interface AgendaClientProps {
   appointments: Appointment[]
-  monthIso: string
+  month: string
   doctorId: string
   isGoogleConnected: boolean
 }
 
 export default function AgendaClient({
   appointments,
-  monthIso,
+  month,
   doctorId,
   isGoogleConnected,
 }: AgendaClientProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const monthDate = new Date(monthIso)
+  const monthDate = parseMonth(month)
   const monthLabel = capitalize(
     format(monthDate, "LLLL yyyy", { locale: es })
   )
   const googleFeedback = searchParams.get("google")
 
   function dismissFeedback() {
-    const month = format(monthDate, "yyyy-MM")
     router.replace(`/agenda?month=${month}`)
   }
 
@@ -44,8 +59,7 @@ export default function AgendaClient({
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
   function navigateMonth(delta: number) {
-    const target = format(addMonths(monthDate, delta), "yyyy-MM")
-    router.push(`/agenda?month=${target}`)
+    router.push(`/agenda?month=${shiftMonth(month, delta)}`)
   }
 
   function openForDay(date: Date) {

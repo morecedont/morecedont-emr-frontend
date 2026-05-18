@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation"
-import { startOfMonth, addMonths, isValid, parse } from "date-fns"
+import { startOfMonth, addMonths, isValid, parse, format } from "date-fns"
 import { getProfile } from "@/lib/session"
 import { prisma } from "@/lib/prisma"
 import type { Appointment } from "@/types/appointments"
@@ -63,7 +63,7 @@ export default async function AgendaPage({
   return (
     <AgendaClient
       appointments={appointments}
-      monthIso={monthStart.toISOString()}
+      month={format(monthStart, "yyyy-MM")}
       doctorId={profile.id}
       isGoogleConnected={googleConnected}
     />
