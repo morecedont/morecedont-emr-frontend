@@ -6,6 +6,7 @@ import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { formatDistanceToNow } from "date-fns"
 import type { PatientAttachmentRecord, AttachmentRecord } from "@/lib/actions/attachments"
+import { deleteAttachment } from "@/lib/actions/attachments"
 import FilePreviewModal from "@/components/shared/FilePreviewModal"
 import { getFileCategory } from "@/lib/storage-utils"
 
@@ -17,10 +18,23 @@ interface Props {
   patientId: string
 }
 
-export default function PatientFilesGallery({ patient, attachments, patientId }: Props) {
+export default function PatientFilesGallery({ patient, attachments: initialAttachments, patientId }: Props) {
+  const [attachments, setAttachments] = useState(initialAttachments)
   const [activeFilter, setActiveFilter] = useState<FilterType>("all")
   const [previewFile, setPreviewFile] = useState<PatientAttachmentRecord | null>(null)
   const [previewFiles, setPreviewFiles] = useState<PatientAttachmentRecord[]>([])
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  async function handleDelete(attachmentId: string) {
+    setDeletingId(attachmentId)
+    const result = await deleteAttachment(attachmentId, patientId)
+    setDeletingId(null)
+    setConfirmDeleteId(null)
+    if (!result.error) {
+      setAttachments((prev) => prev.filter((a) => a.id !== attachmentId))
+    }
+  }
 
   const filteredAttachments = useMemo(() => {
     if (activeFilter === "all") return attachments
@@ -199,15 +213,19 @@ export default function PatientFilesGallery({ patient, attachments, patientId }:
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
                       {group.files.map((file) => {
                         const category = getFileCategory(file.fileType, file.fileName)
+                        const isConfirming = confirmDeleteId === file.id
+                        const isDeleting = deletingId === file.id
 
                         return (
-                          <button
+                          <div
                             key={file.id}
-                            onClick={() => openPreview(file, group.files)}
-                            className="group bg-white rounded-xl border border-outline-variant/10 overflow-hidden flex flex-col text-left hover:shadow-md hover:scale-[1.02] transition-all duration-150"
+                            className="group bg-white rounded-xl border border-outline-variant/10 overflow-hidden flex flex-col"
                           >
-                            {/* Thumbnail */}
-                            <div className="aspect-square relative overflow-hidden">
+                            {/* Thumbnail — clickable for preview */}
+                            <button
+                              onClick={() => openPreview(file, group.files)}
+                              className="aspect-square relative overflow-hidden w-full hover:opacity-90 transition-opacity"
+                            >
                               {category === "image" && file.signedUrl ? (
                                 <img
                                   src={file.signedUrl}
@@ -239,21 +257,50 @@ export default function PatientFilesGallery({ patient, attachments, patientId }:
                                   </span>
                                 </div>
                               )}
-                            </div>
+                            </button>
 
-                            {/* Info */}
-                            <div className="p-2.5">
-                              <p className="text-xs font-semibold text-on-surface truncate">
-                                {file.fileName}
-                              </p>
-                              <p className="text-[11px] text-secondary mt-0.5">
-                                {formatDistanceToNow(new Date(file.uploadedAt), {
-                                  addSuffix: true,
-                                  locale: es,
-                                })}
-                              </p>
+                            {/* Info + actions */}
+                            <div className="p-2.5 flex flex-col gap-2">
+                              <div>
+                                <p className="text-xs font-semibold text-on-surface truncate">
+                                  {file.fileName}
+                                </p>
+                                <p className="text-[11px] text-secondary mt-0.5">
+                                  {formatDistanceToNow(new Date(file.uploadedAt), {
+                                    addSuffix: true,
+                                    locale: es,
+                                  })}
+                                </p>
+                              </div>
+
+                              {isConfirming ? (
+                                <div className="flex items-center gap-1.5">
+                                  <p className="text-[11px] text-error flex-1">¿Eliminar?</p>
+                                  <button
+                                    onClick={() => handleDelete(file.id)}
+                                    disabled={isDeleting}
+                                    className="h-7 px-2.5 text-[11px] font-bold text-white bg-error rounded-lg hover:bg-error/90 transition-colors disabled:opacity-60"
+                                  >
+                                    {isDeleting ? "..." : "Sí"}
+                                  </button>
+                                  <button
+                                    onClick={() => setConfirmDeleteId(null)}
+                                    className="h-7 px-2.5 text-[11px] font-semibold text-secondary border border-outline-variant/30 rounded-lg hover:bg-surface-container transition-colors"
+                                  >
+                                    No
+                                  </button>
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={() => setConfirmDeleteId(file.id)}
+                                  className="h-7 w-full flex items-center justify-center gap-1 text-[11px] font-semibold text-error/60 border border-outline-variant/20 rounded-lg hover:bg-error/5 hover:text-error transition-colors"
+                                >
+                                  <span className="material-symbols-outlined text-[14px]">delete</span>
+                                  Eliminar
+                                </button>
+                              )}
                             </div>
-                          </button>
+                          </div>
                         )
                       })}
                     </div>
