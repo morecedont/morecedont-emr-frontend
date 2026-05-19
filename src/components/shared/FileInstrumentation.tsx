@@ -3,12 +3,12 @@
 import { FILE_SIZES, FILE_SIZE_OPTIONS } from "@/lib/constants/endodontics"
 
 interface FileInstrumentationProps {
-  instrumentationType: "manual" | "rotary_reciprocating" | null
+  instrumentationTypes: string[]
   fileInitial: string | null
   fileFinal: string | null
   fileLength: number | null
   fileNotes: string | null
-  onInstrumentationChange: (value: "manual" | "rotary_reciprocating") => void
+  onInstrumentationChange: (value: string) => void
   onFileInitialChange: (value: string) => void
   onFileFinalChange: (value: string) => void
   onFileLengthChange: (value: number | null) => void
@@ -35,7 +35,7 @@ function getSequence(fileInitial: string | null, fileFinal: string | null): stri
 }
 
 export default function FileInstrumentation({
-  instrumentationType,
+  instrumentationTypes,
   fileInitial,
   fileFinal,
   fileLength,
@@ -58,10 +58,10 @@ export default function FileInstrumentation({
         <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">Preparación biomecánica</p>
 
         <div className="flex flex-wrap gap-2">
-          {instrumentationType === "manual" && (
+          {instrumentationTypes.includes("manual") && (
             <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700">Manual</span>
           )}
-          {instrumentationType === "rotary_reciprocating" && (
+          {instrumentationTypes.includes("rotary_reciprocating") && (
             <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-purple-50 text-purple-700">Rotatoria / Reciprocante</span>
           )}
           {fileInitial && fileFinal && (
@@ -110,10 +110,9 @@ export default function FileInstrumentation({
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
-              type="radio"
-              name="instrumentation_type"
+              type="checkbox"
               value="manual"
-              checked={instrumentationType === "manual"}
+              checked={instrumentationTypes.includes("manual")}
               onChange={() => onInstrumentationChange("manual")}
               className="text-sidebar-active focus:ring-sidebar-active/20"
             />
@@ -121,10 +120,9 @@ export default function FileInstrumentation({
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <input
-              type="radio"
-              name="instrumentation_type"
+              type="checkbox"
               value="rotary_reciprocating"
-              checked={instrumentationType === "rotary_reciprocating"}
+              checked={instrumentationTypes.includes("rotary_reciprocating")}
               onChange={() => onInstrumentationChange("rotary_reciprocating")}
               className="text-sidebar-active focus:ring-sidebar-active/20"
             />

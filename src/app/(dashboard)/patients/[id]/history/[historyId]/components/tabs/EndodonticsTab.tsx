@@ -5,7 +5,7 @@ import FileInstrumentation from "@/components/shared/FileInstrumentation"
 export type EndoSession = {
   id: string
   session_date: string | null
-  activity: string
+  activities: string[]
   notes: string | null
 }
 
@@ -40,7 +40,7 @@ export type EndoRecord = {
   canal_reference: string | null
   canal_length: string | null
   irrigation_protocols: string[]
-  instrumentation: string | null
+  instrumentation: string[]
   obturation: string | null
   file_initial: string | null
   file_final: string | null
@@ -90,9 +90,19 @@ const PAIN_RELIEF_LABELS: Record<string, string> = { cold: "Frío", heat: "Calor
 const PERCUSSION_LABELS: Record<string, string> = { positive: "Positivo", negative: "Negativo" }
 const MOBILITY_LABELS: Record<string, string> = { grade_1: "Grado I", grade_2: "Grado II", grade_3: "Grado III" }
 const PULP_LABELS: Record<string, string> = { normal: "Normal", calcified: "Calcificada", open: "Abierta" }
-const CANAL_LABELS: Record<string, string> = { visible: "Visible", atretic: "Atréticos", curvature: "Curvatura" }
+const CANAL_LABELS: Record<string, string> = { visible: "Visible", atretic: "Atrésicos", curvature: "Curvatura" }
 const PERIAPICAL_LABELS: Record<string, string> = { radiolucency: "Radiolucidez", thickened_lp: "LP engrosado" }
 const OBTURATION_LABELS: Record<string, string> = { lateral_condensation: "Condensación lateral", thermoplastic: "Termoplástica" }
+
+function getIrrigationBadgeColor(protocol: string): string {
+  if (protocol.startsWith("NaOCl")) return "bg-red-50 text-red-700"
+  if (protocol.startsWith("EDTA") || protocol.startsWith("Ácido cítrico")) return "bg-blue-50 text-blue-700"
+  if (protocol.startsWith("CHX")) return "bg-green-50 text-green-700"
+  if (protocol.startsWith("Agua ozonizada") || protocol.startsWith("Gas de ozono")) return "bg-cyan-50 text-cyan-700"
+  if (protocol.startsWith("Solución")) return "bg-gray-50 text-gray-600"
+  if (protocol.startsWith("Láser")) return "bg-purple-50 text-purple-700"
+  return "bg-teal-50 text-teal-700"
+}
 
 function Badge({ label, color = "bg-surface-container text-secondary" }: { label: string; color?: string }) {
   return <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${color}`}>{label}</span>
@@ -293,7 +303,7 @@ export default function EndodonticsTab({ records, patientId, historyId }: Endodo
 
             {/* Preparación biomecánica */}
             <FileInstrumentation
-              instrumentationType={rec.instrumentation as "manual" | "rotary_reciprocating" | null}
+              instrumentationTypes={rec.instrumentation}
               fileInitial={rec.file_initial}
               fileFinal={rec.file_final}
               fileLength={rec.file_length ? parseFloat(rec.file_length) : null}
@@ -313,7 +323,7 @@ export default function EndodonticsTab({ records, patientId, historyId }: Endodo
                 <div className="flex flex-wrap gap-1.5">
                   {rec.obturation && <Badge label={OBTURATION_LABELS[rec.obturation] ?? rec.obturation} color="bg-purple-50 text-purple-700" />}
                   {rec.irrigation_protocols.map((p) => (
-                    <Badge key={p} label={p} color="bg-teal-50 text-teal-700" />
+                    <Badge key={p} label={p} color={getIrrigationBadgeColor(p)} />
                   ))}
                 </div>
               </div>
@@ -344,9 +354,11 @@ export default function EndodonticsTab({ records, patientId, historyId }: Endodo
                             })}
                           </span>
                         )}
-                        <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold uppercase ${ACTIVITY_COLORS[s.activity] ?? "bg-surface-container text-secondary"}`}>
-                          {ACTIVITY_LABELS[s.activity] ?? s.activity}
-                        </span>
+                        {s.activities.map((act) => (
+                          <span key={act} className={`px-2 py-0.5 rounded-full text-[11px] font-bold uppercase ${ACTIVITY_COLORS[act] ?? "bg-surface-container text-secondary"}`}>
+                            {ACTIVITY_LABELS[act] ?? act}
+                          </span>
+                        ))}
                       </div>
                       {s.notes && <p className="text-sm text-secondary leading-relaxed">{s.notes}</p>}
                     </div>

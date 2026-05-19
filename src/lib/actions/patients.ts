@@ -343,7 +343,7 @@ export type EndodonticData = {
   canalReference: string
   canalLength: string
   irrigationProtocols: string[]
-  instrumentation: string | null
+  instrumentation: string[]
   obturation: string | null
   file_initial: string | null
   file_final: string | null
@@ -353,7 +353,7 @@ export type EndodonticData = {
 
 export type EndoSession = {
   date: string
-  activity: string
+  activities: string[]
   notes: string
 }
 
@@ -440,12 +440,12 @@ export async function saveEndodontics(
 
     // Insert sessions
     for (const s of sessions) {
-      if (s.date && s.activity) {
+      if (s.date && s.activities.length > 0) {
         await prisma.endodontic_sessions.create({
           data: {
             endodontic_id: endoId,
             session_date: new Date(s.date),
-            activity: s.activity as never,
+            activities: s.activities as never,
             notes: s.notes || null,
           },
         })

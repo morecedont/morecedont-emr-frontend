@@ -165,7 +165,7 @@ export default async function HistoryDetailPage({
     canal_reference: e.canal_reference ?? null,
     canal_length: e.canal_length ?? null,
     irrigation_protocols: e.irrigation_protocols,
-    instrumentation: e.instrumentation ?? null,
+    instrumentation: e.instrumentation as string[],
     obturation: e.obturation ?? null,
     file_initial: e.file_initial ?? null,
     file_final: e.file_final ?? null,
@@ -174,7 +174,7 @@ export default async function HistoryDetailPage({
     endodontic_sessions: e.endodontic_sessions.map((s) => ({
       id: s.id,
       session_date: s.session_date ? s.session_date.toISOString() : null,
-      activity: s.activity,
+      activities: s.activities as string[],
       notes: s.notes ?? null,
     })),
     endodontic_canals: e.endodontic_canals.map((c) => ({

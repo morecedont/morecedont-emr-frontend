@@ -20,16 +20,27 @@ export type CanalEntry = {
 // Irrigantes seleccionables en el protocolo de endodoncia (multi-select).
 // El valor guardado en endodontics.irrigation_protocols es la etiqueta exacta.
 export const IRRIGATION_PROTOCOLS: string[] = [
+  // NaOCl
   "NaOCl 5.25%",
-  "NaOCl 2.5%",
   "NaOCl 3%",
+  "NaOCl 2.5%",
+  "NaOCl 0.5%",
+  // Quelantes
   "EDTA 17%",
-  "Agua ozonizada",
-  "Gas de ozono",
-  "Clorhexidina (CHX 2%)",
-  "Solución fisiológica",
-  "Solución fisiológica con azul de metileno",
-  "Láser",
+  "Ácido cítrico 10%",
+  "Ácido cítrico 25%",
+  "Ácido cítrico 50%",
+  // Antimicrobianos
+  "CHX 2%",
+  // Ozono
+  "Agua ozonizada 60 µg/ml",
+  "Agua ozonizada 120 µg/ml",
+  "Gas de ozono 60 µg/ml",
+  // Soluciones / Coadyuvantes
+  "Solución fisiológica 0.9%",
+  "Solución fisiológica + azul de metileno (0.9% + 0.01%)",
+  // Activación
+  "Láser (diodo)",
 ]
 
 export const CANAL_CODES = [

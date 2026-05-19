@@ -137,7 +137,7 @@ export default async function EditHistoryPage({
         canalReference: firstEndo.canal_reference,
         canalLength: firstEndo.canal_length,
         irrigationProtocols: firstEndo.irrigation_protocols,
-        instrumentation: firstEndo.instrumentation,
+        instrumentation: firstEndo.instrumentation as string[],
         obturation: firstEndo.obturation,
         file_initial: firstEndo.file_initial ?? null,
         file_final: firstEndo.file_final ?? null,
@@ -145,7 +145,7 @@ export default async function EditHistoryPage({
         file_notes: firstEndo.file_notes ?? null,
         sessions: firstEndo.endodontic_sessions.map((s) => ({
           date: s.session_date ? s.session_date.toISOString().substring(0, 10) : "",
-          activity: s.activity,
+          activities: s.activities as string[],
           notes: s.notes ?? "",
         })),
         endodontic_canals: firstEndo.endodontic_canals.map((c) => ({

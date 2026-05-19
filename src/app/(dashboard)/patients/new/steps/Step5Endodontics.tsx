@@ -75,9 +75,9 @@ export type InitialEndoData = {
   canalReference?: string | null
   canalLength?: string | null
   irrigationProtocols?: string[] | null
-  instrumentation?: string | null
+  instrumentation?: string[]
   obturation?: string | null
-  sessions?: Array<{ date: string; activity: string; notes: string }>
+  sessions?: Array<{ date: string; activities: string[]; notes: string }>
   endodontic_canals?: CanalEntry[]
   file_initial?: string | null
   file_final?: string | null
@@ -117,16 +117,35 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
   const [irrigationProtocols, setIrrigationProtocols] = useState<string[]>(
     initialData?.irrigationProtocols ?? []
   )
+  const [irrigationWarning, setIrrigationWarning] = useState<string | null>(null)
 
   function toggleProtocol(protocol: string) {
-    setIrrigationProtocols((prev) =>
-      prev.includes(protocol)
+    setIrrigationProtocols((prev) => {
+      const updated = prev.includes(protocol)
         ? prev.filter((p) => p !== protocol)
         : [...prev, protocol]
-    )
+
+      const hasNaOCl = updated.some(p => p.startsWith("NaOCl"))
+      const hasCHX = updated.includes("CHX 2%")
+      const hasEDTA = updated.includes("EDTA 17%")
+      const hasSaline = updated.some(p => p.startsWith("Solución fisiológica"))
+      const hasAcidoCitrico = updated.some(p => p.startsWith("Ácido cítrico"))
+
+      if (hasNaOCl && hasCHX && !hasSaline && !hasEDTA && !hasAcidoCitrico) {
+        setIrrigationWarning(
+          "NaOCl y CHX no deben usarse en secuencia directa. Agregar Solución fisiológica o EDTA como enjuague intermedio para evitar precipitado (PCA)."
+        )
+      } else {
+        setIrrigationWarning(null)
+      }
+
+      return updated
+    })
   }
-  const [instrumentationType, setInstrumentationType] = useState<"manual" | "rotary_reciprocating" | null>(
-    (initialData?.instrumentation as "manual" | "rotary_reciprocating" | null) ?? null
+  const [openActivityIndex, setOpenActivityIndex] = useState<number | null>(null)
+
+  const [instrumentationTypes, setInstrumentationTypes] = useState<string[]>(
+    initialData?.instrumentation ?? []
   )
   const [fileInitial, setFileInitial] = useState<string | null>(initialData?.file_initial ?? null)
   const [fileFinal, setFileFinal] = useState<string | null>(initialData?.file_final ?? null)
@@ -138,7 +157,7 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
   const [sessions, setSessions] = useState<EndoSession[]>(
     initialData?.sessions?.length
       ? initialData.sessions
-      : [{ date: "", activity: "", notes: "" }]
+      : [{ date: "", activities: [], notes: "" }]
   )
   const [serverError, setServerError] = useState<string | null>(null)
   const [isSaving, startSaving] = useTransition()
@@ -156,10 +175,10 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
   }
 
   function addSession() {
-    setSessions((prev) => [...prev, { date: "", activity: "", notes: "" }])
+    setSessions((prev) => [...prev, { date: "", activities: [], notes: "" }])
   }
 
-  function updateSession(i: number, field: keyof EndoSession, value: string) {
+  function updateSession(i: number, field: keyof EndoSession, value: string | string[]) {
     setSessions((prev) => prev.map((s, idx) => idx === i ? { ...s, [field]: value } : s))
   }
 
@@ -189,7 +208,7 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
       canalReference: "",
       canalLength: "",
       irrigationProtocols,
-      instrumentation: instrumentationType,
+      instrumentation: instrumentationTypes,
       obturation: obturation || null,
       file_initial: fileInitial,
       file_final: fileFinal,
@@ -217,6 +236,33 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
       exitFn()
     })
   }
+
+  const IRRIGATION_GROUPS = [
+    {
+      label: "Hipoclorito de sodio",
+      protocols: ["NaOCl 5.25%", "NaOCl 3%", "NaOCl 2.5%", "NaOCl 0.5%"],
+    },
+    {
+      label: "Quelantes",
+      protocols: ["EDTA 17%", "Ácido cítrico 10%", "Ácido cítrico 25%", "Ácido cítrico 50%"],
+    },
+    {
+      label: "Antimicrobianos",
+      protocols: ["CHX 2%"],
+    },
+    {
+      label: "Ozono",
+      protocols: ["Agua ozonizada 60 µg/ml", "Agua ozonizada 120 µg/ml", "Gas de ozono 60 µg/ml"],
+    },
+    {
+      label: "Soluciones y coadyuvantes",
+      protocols: [
+        "Solución fisiológica 0.9%",
+        "Solución fisiológica + azul de metileno (0.9% + 0.01%)",
+        "Láser (diodo)",
+      ],
+    },
+  ]
 
   const sectionCard = "bg-surface-container-low rounded-xl p-5 space-y-4"
 
@@ -346,7 +392,7 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
               <select value={canals} onChange={(e) => setCanals(e.target.value)} className={selectCls}>
                 <option value="">Seleccionar</option>
                 <option value="visible">Visibles</option>
-                <option value="atretic">Atresiados</option>
+                <option value="atretic">Atrésicos</option>
                 <option value="curvature">Curvatura</option>
               </select>
             </div>
@@ -434,12 +480,16 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
 
           {/* Biomechanical preparation */}
           <FileInstrumentation
-            instrumentationType={instrumentationType}
+            instrumentationTypes={instrumentationTypes}
             fileInitial={fileInitial}
             fileFinal={fileFinal}
             fileLength={fileLength}
             fileNotes={fileNotes}
-            onInstrumentationChange={setInstrumentationType}
+            onInstrumentationChange={(v) =>
+              setInstrumentationTypes((prev) =>
+                prev.includes(v) ? prev.filter((x) => x !== v) : [...prev, v]
+              )
+            }
             onFileInitialChange={setFileInitial}
             onFileFinalChange={setFileFinal}
             onFileLengthChange={setFileLength}
@@ -451,26 +501,38 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
             <h3 className="font-bold text-on-surface">Protocolo</h3>
             <div>
               <label className={labelCls}>Irrigantes</label>
-              <div className="flex flex-wrap gap-2">
-                {IRRIGATION_PROTOCOLS.map((protocol) => {
-                  const selected = irrigationProtocols.includes(protocol)
-                  return (
-                    <button
-                      key={protocol}
-                      type="button"
-                      onClick={() => toggleProtocol(protocol)}
-                      aria-pressed={selected}
-                      className={`min-h-11 px-4 rounded-full text-sm font-semibold border transition-colors ${
-                        selected
-                          ? "bg-sidebar-active text-white border-sidebar-active"
-                          : "bg-white text-on-surface border-outline-variant/40 hover:bg-surface-container-low"
-                      }`}
-                    >
-                      {protocol}
-                    </button>
-                  )
-                })}
-              </div>
+              {irrigationWarning && (
+                <div className="mb-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-sm text-amber-800">
+                  ⚠️ {irrigationWarning}
+                </div>
+              )}
+              {IRRIGATION_GROUPS.map((group) => (
+                <div key={group.label} className="mb-4">
+                  <p className="text-xs font-semibold text-on-surface/50 uppercase tracking-wide mb-2">
+                    {group.label}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {group.protocols.map((protocol) => {
+                      const selected = irrigationProtocols.includes(protocol)
+                      return (
+                        <button
+                          key={protocol}
+                          type="button"
+                          onClick={() => toggleProtocol(protocol)}
+                          aria-pressed={selected}
+                          className={`min-h-11 px-4 rounded-full text-sm font-semibold border transition-colors ${
+                            selected
+                              ? "bg-sidebar-active text-white border-sidebar-active"
+                              : "bg-white text-on-surface border-outline-variant/40 hover:bg-surface-container-low"
+                          }`}
+                        >
+                          {protocol}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
             <div>
               <label className={labelCls}>Obturación</label>
@@ -504,13 +566,51 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
                   <input type="date" value={s.date} onChange={(e) => updateSession(i, "date", e.target.value)} className={inputCls} />
                 </div>
                 <div>
-                  <label className={labelCls}>Actividad</label>
-                  <select value={s.activity} onChange={(e) => updateSession(i, "activity", e.target.value)} className={selectCls}>
-                    <option value="">Seleccionar</option>
-                    {ENDO_ACTIVITIES.map((a) => (
-                      <option key={a.value} value={a.value}>{a.label}</option>
-                    ))}
-                  </select>
+                  <label className={labelCls}>Actividades</label>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setOpenActivityIndex(openActivityIndex === i ? null : i)}
+                      className="w-full text-base bg-white border border-outline-variant/40 rounded-lg px-4 py-3 flex items-center justify-between gap-2 outline-none transition-all focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    >
+                      <span className={`truncate text-left ${s.activities.length === 0 ? "text-outline/50" : "text-on-surface"}`}>
+                        {s.activities.length === 0
+                          ? "Seleccionar actividades"
+                          : s.activities.map((v) => ENDO_ACTIVITIES.find((a) => a.value === v)?.label ?? v).join(", ")}
+                      </span>
+                      <span className="material-symbols-outlined text-[18px] text-secondary shrink-0">
+                        {openActivityIndex === i ? "expand_less" : "expand_more"}
+                      </span>
+                    </button>
+                    {openActivityIndex === i && (
+                      <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-white border border-outline-variant/40 rounded-lg shadow-lg overflow-hidden max-h-52 overflow-y-auto">
+                        {ENDO_ACTIVITIES.map((a) => {
+                          const checked = s.activities.includes(a.value)
+                          return (
+                            <label
+                              key={a.value}
+                              className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors ${
+                                checked ? "bg-sidebar-active/10 text-sidebar-active" : "hover:bg-surface-container-low text-on-surface"
+                              }`}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={() => {
+                                  const updated = checked
+                                    ? s.activities.filter((v) => v !== a.value)
+                                    : [...s.activities, a.value]
+                                  updateSession(i, "activities", updated)
+                                }}
+                                className="text-sidebar-active focus:ring-sidebar-active/20 shrink-0"
+                              />
+                              <span className="text-sm">{a.label}</span>
+                            </label>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="relative">
                   <label className={labelCls}>Notas</label>
