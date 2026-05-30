@@ -858,6 +858,7 @@ model doctor_google_tokens {
   refresh_token String
   token_expiry  DateTime @db.Timestamptz(6)
   calendar_id   String   @default("primary")
+  google_email  String?
   created_at    DateTime @default(now()) @db.Timestamptz(6)
   updated_at    DateTime @default(now()) @db.Timestamptz(6)
   doctor        profiles @relation(fields: [doctor_id], references: [id], onDelete: Cascade)

@@ -8,7 +8,11 @@ import ClinicSelector, {
 import {
   searchPatientsForAppointment,
   createAppointment,
+  updateAppointment,
+  cancelAppointment,
+  deleteAppointment,
 } from "@/lib/actions/appointments"
+import type { Appointment } from "@/types/appointments"
 
 const DURATIONS = [30, 45, 60, 90]
 const TREATMENTS = [
@@ -21,14 +25,21 @@ const TREATMENTS = [
   "Otro",
 ]
 
-type PatientResult = { id: string; full_name: string; id_number: string | null }
+type PatientResult = {
+  id: string
+  full_name: string
+  id_number: string | null
+  email?: string | null
+}
 
 interface NewAppointmentSlideOverProps {
   onClose: () => void
   doctorId: string
   defaultDate: Date | null
   isGoogleConnected: boolean
-  onCreated: () => void
+  onSaved: () => void
+  /** Si viene, el slide-over abre en modo edición de esa cita. */
+  appointment?: Appointment | null
 }
 
 export default function NewAppointmentSlideOver({
@@ -36,30 +47,51 @@ export default function NewAppointmentSlideOver({
   doctorId,
   defaultDate,
   isGoogleConnected,
-  onCreated,
+  onSaved,
+  appointment,
 }: NewAppointmentSlideOverProps) {
+  const isEdit = !!appointment
+  const apptDate = appointment ? new Date(appointment.scheduled_at) : null
+
   const [visible, setVisible] = useState(false)
 
   const [patientQuery, setPatientQuery] = useState("")
   const [patientResults, setPatientResults] = useState<PatientResult[]>([])
   const [selectedPatient, setSelectedPatient] = useState<PatientResult | null>(
-    null
+    appointment
+      ? {
+          id: appointment.patient_id,
+          full_name: appointment.patient.full_name,
+          id_number: null,
+          email: appointment.patient.email,
+        }
+      : null
   )
   const [searched, setSearched] = useState(false)
 
-  const [clinic, setClinic] = useState<SelectedClinic | null>(null)
-  const [dateStr, setDateStr] = useState(() =>
-    format(defaultDate ?? new Date(), "yyyy-MM-dd")
+  const [clinic, setClinic] = useState<SelectedClinic | null>(
+    appointment
+      ? { id: appointment.clinic_id, name: appointment.clinic.name }
+      : null
   )
-  const [timeStr, setTimeStr] = useState("09:00")
-  const [duration, setDuration] = useState(45)
-  const [treatment, setTreatment] = useState(TREATMENTS[0])
-  const [notes, setNotes] = useState("")
-  const [gcalSync, setGcalSync] = useState(true)
+  const [dateStr, setDateStr] = useState(() =>
+    format(apptDate ?? defaultDate ?? new Date(), "yyyy-MM-dd")
+  )
+  const [timeStr, setTimeStr] = useState(() =>
+    apptDate ? format(apptDate, "HH:mm") : "09:00"
+  )
+  const [duration, setDuration] = useState(appointment?.duration_minutes ?? 45)
+  const [treatment, setTreatment] = useState(
+    appointment?.treatment_type ?? TREATMENTS[0]
+  )
+  const [notes, setNotes] = useState(appointment?.notes ?? "")
+  const [gcalSync, setGcalSync] = useState(appointment?.gcal_sync_enabled ?? true)
 
   const [error, setError] = useState<string | null>(null)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [isSearching, startSearch] = useTransition()
   const [isSaving, startSave] = useTransition()
+  const [isRemoving, startRemove] = useTransition()
 
   // El componente se monta recién al abrir (key en el padre), así que el
   // estado ya arranca limpio: el effect solo dispara la transición de entrada.
@@ -98,7 +130,7 @@ export default function NewAppointmentSlideOver({
     if (isNaN(scheduledAt.getTime())) return setError("Fecha u hora inválida")
 
     startSave(async () => {
-      const result = await createAppointment({
+      const payload = {
         patientId: selectedPatient.id,
         clinicId: clinic.id,
         scheduledAt: scheduledAt.toISOString(),
@@ -106,12 +138,44 @@ export default function NewAppointmentSlideOver({
         treatmentType: treatment,
         notes,
         gcalSyncEnabled: gcalSync,
-      })
+      }
+      const result =
+        isEdit && appointment
+          ? await updateAppointment({ id: appointment.id, ...payload })
+          : await createAppointment(payload)
       if (result.error) {
         setError(result.error)
         return
       }
-      onCreated()
+      onSaved()
+      onClose()
+    })
+  }
+
+  function handleCancelAppointment() {
+    if (!appointment) return
+    setError(null)
+    startRemove(async () => {
+      const result = await cancelAppointment(appointment.id)
+      if (result.error) {
+        setError(result.error)
+        return
+      }
+      onSaved()
+      onClose()
+    })
+  }
+
+  function handleDeleteAppointment() {
+    if (!appointment) return
+    setError(null)
+    startRemove(async () => {
+      const result = await deleteAppointment(appointment.id)
+      if (result.error) {
+        setError(result.error)
+        return
+      }
+      onSaved()
       onClose()
     })
   }
@@ -136,7 +200,7 @@ export default function NewAppointmentSlideOver({
         {/* Header */}
         <div className="p-6 flex justify-between items-center bg-surface-container-lowest">
           <h3 className="font-headline font-bold text-lg text-on-surface">
-            Nueva cita
+            {isEdit ? "Editar cita" : "Nueva cita"}
           </h3>
           <button
             type="button"
@@ -361,6 +425,33 @@ export default function NewAppointmentSlideOver({
                 sincronice. La preferencia se guarda igual.
               </p>
             )}
+
+            {/* Aviso de invitación al paciente */}
+            {isGoogleConnected && gcalSync && selectedPatient && (
+              <div className="mt-2 flex items-start gap-2 text-xs">
+                <span
+                  className={`material-symbols-outlined text-[15px] shrink-0 ${
+                    selectedPatient.email ? "text-teal-accent" : "text-secondary"
+                  }`}
+                >
+                  {selectedPatient.email ? "mail" : "mail_off"}
+                </span>
+                {selectedPatient.email ? (
+                  <p className="text-secondary">
+                    Se invitará a{" "}
+                    <span className="font-semibold text-on-surface">
+                      {selectedPatient.email}
+                    </span>{" "}
+                    — recibirá el evento en su Google Calendar.
+                  </p>
+                ) : (
+                  <p className="text-secondary">
+                    Este paciente no tiene email registrado: se creará el evento
+                    pero no recibirá invitación.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
           {error && (
@@ -371,23 +462,61 @@ export default function NewAppointmentSlideOver({
         </div>
 
         {/* Acciones */}
-        <div className="p-6 bg-surface-container-low/60 grid grid-cols-2 gap-4">
-          <button
-            type="button"
-            onClick={handleClose}
-            disabled={isSaving}
-            className="h-11 px-4 rounded-lg font-bold text-sm text-secondary hover:bg-surface-container-high transition-all active:scale-95 disabled:opacity-60"
-          >
-            Cancelar
-          </button>
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={isSaving}
-            className="h-11 px-4 bg-teal-accent hover:bg-teal-accent-hover text-white rounded-lg font-bold text-sm transition-all active:scale-95 disabled:opacity-60"
-          >
-            {isSaving ? "Guardando..." : "Guardar cita"}
-          </button>
+        <div className="p-6 bg-surface-container-low/60 space-y-3">
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={handleClose}
+              disabled={isSaving || isRemoving}
+              className="h-11 px-4 rounded-lg font-bold text-sm text-secondary hover:bg-surface-container-high transition-all active:scale-95 disabled:opacity-60"
+            >
+              Cerrar
+            </button>
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={isSaving || isRemoving}
+              className="h-11 px-4 bg-teal-accent hover:bg-teal-accent-hover text-white rounded-lg font-bold text-sm transition-all active:scale-95 disabled:opacity-60"
+            >
+              {isSaving
+                ? "Guardando..."
+                : isEdit
+                  ? "Guardar cambios"
+                  : "Guardar cita"}
+            </button>
+          </div>
+
+          {isEdit && (
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                type="button"
+                onClick={handleCancelAppointment}
+                disabled={isSaving || isRemoving}
+                className="h-11 px-4 rounded-lg font-bold text-sm text-on-surface border border-outline-variant/40 hover:bg-surface-container-high transition-all active:scale-95 disabled:opacity-60"
+              >
+                {isRemoving ? "..." : "Cancelar cita"}
+              </button>
+              {confirmingDelete ? (
+                <button
+                  type="button"
+                  onClick={handleDeleteAppointment}
+                  disabled={isSaving || isRemoving}
+                  className="h-11 px-4 rounded-lg font-bold text-sm text-white bg-error hover:brightness-110 transition-all active:scale-95 disabled:opacity-60"
+                >
+                  {isRemoving ? "Eliminando..." : "Confirmar"}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setConfirmingDelete(true)}
+                  disabled={isSaving || isRemoving}
+                  className="h-11 px-4 rounded-lg font-bold text-sm text-error border border-error/40 hover:bg-error-container/40 transition-all active:scale-95 disabled:opacity-60"
+                >
+                  Eliminar
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

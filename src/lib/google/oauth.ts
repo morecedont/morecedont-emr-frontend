@@ -4,8 +4,13 @@
 import { google } from "googleapis"
 import crypto from "crypto"
 
-// Lectura/escritura de eventos del calendario del doctor.
-const SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
+// Lectura/escritura de eventos del calendario del doctor + email de la cuenta
+// (openid/userinfo.email) para mostrar con qué correo quedó integrado.
+const SCOPES = [
+  "https://www.googleapis.com/auth/calendar.events",
+  "openid",
+  "https://www.googleapis.com/auth/userinfo.email",
+]
 
 export function createOAuthClient() {
   return new google.auth.OAuth2(
@@ -28,6 +33,24 @@ export function getAuthUrl(state: string): string {
 export async function exchangeCode(code: string) {
   const { tokens } = await createOAuthClient().getToken(code)
   return tokens
+}
+
+/**
+ * Email de la cuenta de Google que autorizó. Lo saca del id_token (firmado por
+ * Google, verificado contra sus certs). Devuelve null si no vino el scope email.
+ */
+export async function getGoogleEmail(idToken?: string | null): Promise<string | null> {
+  if (!idToken) return null
+  try {
+    const ticket = await createOAuthClient().verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    })
+    return ticket.getPayload()?.email ?? null
+  } catch (err) {
+    console.error("getGoogleEmail:", err)
+    return null
+  }
 }
 
 // ─── State anti-CSRF: HMAC(doctorId) con AUTH_SECRET ──────────────────────────

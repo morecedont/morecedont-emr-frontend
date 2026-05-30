@@ -3,7 +3,7 @@ import { startOfMonth, addMonths, isValid, parse, format } from "date-fns"
 import { getProfile } from "@/lib/session"
 import { prisma } from "@/lib/prisma"
 import type { Appointment } from "@/types/appointments"
-import { isGoogleConnected } from "@/lib/google/calendar"
+import { getGoogleConnection } from "@/lib/google/calendar"
 import AgendaClient from "./components/AgendaClient"
 
 export const dynamic = "force-dynamic"
@@ -28,7 +28,7 @@ export default async function AgendaPage({
   const monthStart = resolveMonth(month)
   const monthEnd = startOfMonth(addMonths(monthStart, 1))
 
-  const [rows, googleConnected] = await Promise.all([
+  const [rows, googleConnection] = await Promise.all([
     prisma.appointments.findMany({
       relationLoadStrategy: "join",
       where: {
@@ -36,12 +36,12 @@ export default async function AgendaPage({
         scheduled_at: { gte: monthStart, lt: monthEnd },
       },
       include: {
-        patient: { select: { full_name: true } },
+        patient: { select: { full_name: true, email: true } },
         clinic: { select: { name: true } },
       },
       orderBy: { scheduled_at: "asc" },
     }),
-    isGoogleConnected(profile.id),
+    getGoogleConnection(profile.id),
   ])
 
   // Objetos planos serializables para los Client Components.
@@ -57,7 +57,7 @@ export default async function AgendaPage({
     gcal_event_id: a.gcal_event_id,
     gcal_sync_status: a.gcal_sync_status,
     gcal_sync_enabled: a.gcal_sync_enabled,
-    patient: { full_name: a.patient.full_name },
+    patient: { full_name: a.patient.full_name, email: a.patient.email },
     clinic: { name: a.clinic.name },
   }))
 
@@ -66,7 +66,8 @@ export default async function AgendaPage({
       appointments={appointments}
       month={format(monthStart, "yyyy-MM")}
       doctorId={profile.id}
-      isGoogleConnected={googleConnected}
+      isGoogleConnected={googleConnection.connected}
+      googleEmail={googleConnection.email}
     />
   )
 }

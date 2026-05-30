@@ -1,10 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import type { Appointment } from "@/types/appointments"
+import { syncPendingAppointments } from "@/lib/actions/appointments"
+import { disconnectGoogle } from "@/lib/actions/google"
 import CalendarGrid from "./CalendarGrid"
 import AgendaView from "./AgendaView"
 import SyncStatusIndicator from "./SyncStatusIndicator"
@@ -35,6 +37,7 @@ interface AgendaClientProps {
   month: string
   doctorId: string
   isGoogleConnected: boolean
+  googleEmail: string | null
 }
 
 export default function AgendaClient({
@@ -42,6 +45,7 @@ export default function AgendaClient({
   month,
   doctorId,
   isGoogleConnected,
+  googleEmail,
 }: AgendaClientProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -57,24 +61,47 @@ export default function AgendaClient({
 
   const [slideOverOpen, setSlideOverOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+  const [editingAppointment, setEditingAppointment] =
+    useState<Appointment | null>(null)
+  const [isSyncing, startSync] = useTransition()
+  const [isDisconnecting, startDisconnect] = useTransition()
+  const [confirmDisconnect, setConfirmDisconnect] = useState(false)
 
   function navigateMonth(delta: number) {
     router.push(`/agenda?month=${shiftMonth(month, delta)}`)
   }
 
   function openForDay(date: Date) {
+    setEditingAppointment(null)
     setSelectedDate(date)
     setSlideOverOpen(true)
   }
 
   function openNew() {
+    setEditingAppointment(null)
     setSelectedDate(new Date())
     setSlideOverOpen(true)
   }
 
   function handleAppointmentClick(appointment: Appointment) {
-    // Fase 2: abrir modal de detalle de cita.
-    console.log("[agenda] detalle de cita —", appointment.id)
+    setEditingAppointment(appointment)
+    setSelectedDate(new Date(appointment.scheduled_at))
+    setSlideOverOpen(true)
+  }
+
+  function handleSyncNow() {
+    startSync(async () => {
+      await syncPendingAppointments()
+      router.refresh()
+    })
+  }
+
+  function handleDisconnect() {
+    startDisconnect(async () => {
+      await disconnectGoogle()
+      setConfirmDisconnect(false)
+      router.refresh()
+    })
   }
 
   return (
@@ -138,6 +165,73 @@ export default function AgendaClient({
           <SyncStatusIndicator
             status={isGoogleConnected ? "synced" : "not_connected"}
           />
+          {isGoogleConnected && googleEmail && (
+            <div
+              className="flex items-center gap-1.5 h-11 px-3 bg-surface-container-low rounded-lg max-w-[12rem]"
+              title={`Integrado con ${googleEmail}`}
+            >
+              <span className="material-symbols-outlined text-secondary text-lg shrink-0">
+                account_circle
+              </span>
+              <span className="text-xs font-medium text-on-surface truncate">
+                {googleEmail}
+              </span>
+            </div>
+          )}
+          {isGoogleConnected && (
+            <button
+              type="button"
+              onClick={handleSyncNow}
+              disabled={isSyncing}
+              className="flex items-center gap-1.5 h-11 px-3 rounded-lg text-sm font-semibold text-on-surface hover:bg-surface-container-low transition-colors disabled:opacity-60"
+            >
+              <span
+                className={`material-symbols-outlined text-lg ${
+                  isSyncing ? "animate-spin" : ""
+                }`}
+              >
+                sync
+              </span>
+              <span className="hidden sm:inline">
+                {isSyncing ? "Sincronizando…" : "Sincronizar ahora"}
+              </span>
+            </button>
+          )}
+          {isGoogleConnected &&
+            (confirmDisconnect ? (
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={handleDisconnect}
+                  disabled={isDisconnecting}
+                  className="flex items-center gap-1.5 h-11 px-3 rounded-lg text-sm font-semibold text-white bg-error hover:brightness-110 transition-all disabled:opacity-60"
+                >
+                  <span className="material-symbols-outlined text-lg">
+                    link_off
+                  </span>
+                  {isDisconnecting ? "Desconectando…" : "Confirmar"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmDisconnect(false)}
+                  disabled={isDisconnecting}
+                  className="h-11 px-3 rounded-lg text-sm font-semibold text-secondary hover:bg-surface-container-low transition-colors disabled:opacity-60"
+                >
+                  No
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setConfirmDisconnect(true)}
+                className="flex items-center gap-1.5 h-11 px-3 rounded-lg text-sm font-semibold text-error hover:bg-error-container/40 transition-colors"
+              >
+                <span className="material-symbols-outlined text-lg">
+                  link_off
+                </span>
+                <span className="hidden sm:inline">Desincronizar</span>
+              </button>
+            ))}
         </div>
 
         <button
@@ -182,12 +276,13 @@ export default function AgendaClient({
 
       {slideOverOpen && (
         <NewAppointmentSlideOver
-          key={selectedDate?.toISOString() ?? "new"}
+          key={editingAppointment?.id ?? selectedDate?.toISOString() ?? "new"}
           onClose={() => setSlideOverOpen(false)}
           doctorId={doctorId}
           defaultDate={selectedDate}
           isGoogleConnected={isGoogleConnected}
-          onCreated={() => router.refresh()}
+          appointment={editingAppointment}
+          onSaved={() => router.refresh()}
         />
       )}
     </div>

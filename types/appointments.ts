@@ -27,7 +27,7 @@ export interface Appointment {
   gcal_event_id: string | null
   gcal_sync_status: GcalSyncStatus
   gcal_sync_enabled: boolean
-  patient: { full_name: string }
+  patient: { full_name: string; email: string | null }
   clinic: { name: string }
 }
 
@@ -40,8 +40,13 @@ export interface NewAppointmentInput {
   durationMinutes: number
   treatmentType: string | null
   notes: string | null
-  /** Preferencia de sync (fase 2 — hoy no se persiste) */
+  /** Preferencia de sync con Google Calendar */
   gcalSyncEnabled: boolean
+}
+
+/** Payload para editar una cita existente (`updateAppointment`). */
+export interface UpdateAppointmentInput extends NewAppointmentInput {
+  id: string
 }
 
 export type SyncIndicatorStatus =
