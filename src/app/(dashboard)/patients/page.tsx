@@ -58,6 +58,7 @@ export default async function PatientsPage({
   const where: Prisma.patientsWhereInput = { ...baseWhere, ...searchWhere }
 
   const patientsRaw = await prisma.patients.findMany({
+    relationLoadStrategy: "join",
     where,
     include: {
       medical_histories: {

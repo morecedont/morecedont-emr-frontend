@@ -1,5 +1,9 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  // relationJoins: permite resolver los `include`/`select` anidados con un
+  // único JOIN (LATERAL) por query en vez de una query SQL separada por cada
+  // relación. Se activa por query con `relationLoadStrategy: "join"`.
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {

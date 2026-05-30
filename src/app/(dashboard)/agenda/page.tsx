@@ -30,6 +30,7 @@ export default async function AgendaPage({
 
   const [rows, googleConnected] = await Promise.all([
     prisma.appointments.findMany({
+      relationLoadStrategy: "join",
       where: {
         doctor_id: profile.id,
         scheduled_at: { gte: monthStart, lt: monthEnd },

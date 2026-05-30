@@ -40,6 +40,7 @@ export default async function DashboardPage() {
         },
       }),
       prisma.doctor_patients.findMany({
+        relationLoadStrategy: "join",
         where: { doctor_id: profile.id },
         include: {
           patients: {

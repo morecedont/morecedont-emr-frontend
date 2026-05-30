@@ -45,8 +45,9 @@ export default async function PatientPage({
   })
   if (!doctorPatient) notFound()
 
-  const [patient, totalHistoryCount] = await Promise.all([
+  const [patient, totalHistoryCount, attachmentsRaw] = await Promise.all([
     prisma.patients.findUnique({
+    relationLoadStrategy: "join",
     where: { id },
     include: {
       medical_histories: {
@@ -64,25 +65,25 @@ export default async function PatientPage({
     prisma.medical_histories.count({
       where: { patient_id: id, doctor_id: profile.id },
     }),
-  ])
-  if (!patient) notFound()
-
-  const attachmentsRaw = await prisma.attachments.findMany({
-    where: {
-      medical_histories: { patient_id: id, doctor_id: profile.id },
-    },
-    include: {
-      medical_histories: {
-        select: {
-          id: true,
-          created_at: true,
-          clinics: { select: { name: true } },
+    prisma.attachments.findMany({
+      relationLoadStrategy: "join",
+      where: {
+        medical_histories: { patient_id: id, doctor_id: profile.id },
+      },
+      include: {
+        medical_histories: {
+          select: {
+            id: true,
+            created_at: true,
+            clinics: { select: { name: true } },
+          },
         },
       },
-    },
-    orderBy: { uploaded_at: "desc" },
-    take: 3,
-  })
+      orderBy: { uploaded_at: "desc" },
+      take: 3,
+    }),
+  ])
+  if (!patient) notFound()
 
   // Derive header data
   const latestHistory = patient.medical_histories[0] ?? null

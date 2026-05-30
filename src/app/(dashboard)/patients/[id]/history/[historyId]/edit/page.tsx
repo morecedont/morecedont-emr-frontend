@@ -16,6 +16,7 @@ export default async function EditHistoryPage({
   if (!profile) redirect("/login")
 
   const history = await prisma.medical_histories.findUnique({
+    relationLoadStrategy: "join",
     where: { id: historyId },
     include: {
       medical_backgrounds: true,

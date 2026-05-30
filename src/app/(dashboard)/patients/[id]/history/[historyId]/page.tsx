@@ -26,6 +26,7 @@ export default async function HistoryDetailPage({
   if (!profile) redirect("/login")
 
   const history = await prisma.medical_histories.findUnique({
+    relationLoadStrategy: "join",
     where: { id: historyId },
     include: {
       patients: true,

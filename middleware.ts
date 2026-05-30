@@ -4,9 +4,14 @@ import { createMiddlewareClient } from "@/lib/supabase/middleware"
 export async function middleware(request: NextRequest) {
   const { supabase, supabaseResponse } = createMiddlewareClient(request)
 
+  // `getClaims()` valida el JWT localmente (con las JWT signing keys del
+  // proyecto) en vez de hacer un round-trip de red al servidor Auth como
+  // `getUser()`. Corre en CADA navegación, así que ahorrar esa llamada
+  // remota es la mayor ganancia de latencia del middleware.
   const {
-    data: { user },
-  } = await supabase.auth.getUser()
+    data: claimsData,
+  } = await supabase.auth.getClaims()
+  const userId = claimsData?.claims.sub ?? null
 
   const { pathname } = request.nextUrl
 
@@ -22,7 +27,7 @@ export async function middleware(request: NextRequest) {
     pathname === "/auth/confirm"
 
   // Unauthenticated: allow public pages
-  if (!user) {
+  if (!userId) {
     if (
       !isHomePage &&
       !isLoginPage &&
@@ -40,7 +45,7 @@ export async function middleware(request: NextRequest) {
   const { data: profile } = await supabase
     .from("profiles")
     .select("status")
-    .eq("id", user.id)
+    .eq("id", userId)
     .single()
 
   const status = profile?.status ?? "active"
