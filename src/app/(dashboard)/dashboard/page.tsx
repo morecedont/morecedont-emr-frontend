@@ -1,95 +1,76 @@
+import { Suspense } from "react"
 import { redirect } from "next/navigation"
 import { getProfile } from "@/lib/session"
-import { prisma } from "@/lib/prisma"
-import StatsCards from "./components/StatsCards"
-import RecentPatientsTable, { type RecentPatient } from "./components/RecentPatientsTable"
+import StatsCardsServer from "./components/StatsCardsServer"
+import RecentPatientsServer from "./components/RecentPatientsServer"
 import ClinicalTimeline from "./components/ClinicalTimeline"
 
-function formatDate(date: Date | null | undefined): string {
-  if (!date) return "—"
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-  }).format(date)
+function StatsCardsSkeleton() {
+  return (
+    <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      {[0, 1, 2].map((i) => (
+        <div key={i} className="bg-surface-container-low p-5 sm:p-6 rounded-lg animate-pulse">
+          <div className="flex justify-between items-start mb-4">
+            <div className="w-11 h-11 rounded-xl bg-surface-container" />
+            <div className="w-14 h-5 rounded-full bg-surface-container" />
+          </div>
+          <div className="w-32 h-4 bg-surface-container rounded mb-2" />
+          <div className="w-16 h-8 bg-surface-container rounded" />
+          <div className="w-24 h-3 bg-surface-container rounded mt-4" />
+        </div>
+      ))}
+    </section>
+  )
 }
 
-function isActivePatient(lastVisitDate: Date | null | undefined): boolean {
-  if (!lastVisitDate) return false
-  const sixMonthsAgo = new Date()
-  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
-  return lastVisitDate >= sixMonthsAgo
+function RecentPatientsSkeleton() {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between animate-pulse">
+        <div className="w-40 h-5 bg-surface-container rounded" />
+        <div className="w-16 h-4 bg-surface-container rounded" />
+      </div>
+      <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/10 overflow-hidden">
+        <div className="hidden sm:flex px-4 lg:px-6 py-4 bg-surface-container/30 gap-8 animate-pulse">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="h-3 w-20 bg-surface-container rounded" />
+          ))}
+        </div>
+        {[0, 1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="px-4 lg:px-6 py-4 border-t border-surface-container/50 flex items-center gap-4 animate-pulse"
+          >
+            <div className="w-8 h-8 rounded-full bg-surface-container shrink-0" />
+            <div className="flex-1 space-y-1.5">
+              <div className="w-32 h-3.5 bg-surface-container rounded" />
+              <div className="w-20 h-2.5 bg-surface-container rounded" />
+            </div>
+            <div className="hidden sm:block w-20 h-3 bg-surface-container rounded" />
+            <div className="hidden md:block w-28 h-3 bg-surface-container rounded" />
+            <div className="w-12 h-5 rounded-full bg-surface-container" />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 }
 
 export default async function DashboardPage() {
   const profile = await getProfile()
   if (!profile) redirect("/login")
 
-  const thirtyDaysAgo = new Date()
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-
-  const [totalPatients, recentConsultations, recentPatientsRaw] =
-    await Promise.all([
-      prisma.doctor_patients.count({
-        where: { doctor_id: profile.id },
-      }),
-      prisma.medical_histories.count({
-        where: {
-          doctor_id: profile.id,
-          created_at: { gte: thirtyDaysAgo },
-        },
-      }),
-      prisma.doctor_patients.findMany({
-        relationLoadStrategy: "join",
-        where: { doctor_id: profile.id },
-        include: {
-          patients: {
-            include: {
-              medical_histories: {
-                where: { doctor_id: profile.id },
-                orderBy: { created_at: "desc" },
-                take: 1,
-                include: {
-                  treatment_items: {
-                    orderBy: { item_number: "asc" },
-                    take: 1,
-                  },
-                },
-              },
-            },
-          },
-        },
-        orderBy: { shared_at: "desc" },
-        take: 4,
-      }),
-    ])
-
-  // Map to plain serializable objects before passing to Client Components
-  const recentPatients: RecentPatient[] = recentPatientsRaw.map((dp) => {
-    const lastHistory = dp.patients.medical_histories[0] ?? null
-    const lastVisitDate = lastHistory?.created_at ?? null
-    const procedure = lastHistory?.treatment_items[0]?.description ?? null
-
-    return {
-      id: dp.patient_id,
-      fullName: dp.patients.full_name,
-      idNumber: dp.patients.id_number ?? null,
-      lastVisit: formatDate(lastVisitDate),
-      procedure,
-      isActive: isActivePatient(lastVisitDate),
-    }
-  })
-
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 sm:space-y-8">
-      <StatsCards
-        totalPatients={totalPatients}
-        recentConsultations={recentConsultations}
-      />
+      <Suspense fallback={<StatsCardsSkeleton />}>
+        <StatsCardsServer doctorId={profile.id} />
+      </Suspense>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         <div className="lg:col-span-2">
-          <RecentPatientsTable patients={recentPatients} />
+          <Suspense fallback={<RecentPatientsSkeleton />}>
+            <RecentPatientsServer doctorId={profile.id} />
+          </Suspense>
         </div>
         <div>
           <ClinicalTimeline />

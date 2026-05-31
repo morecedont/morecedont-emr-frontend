@@ -2,6 +2,7 @@ import { redirect } from "next/navigation"
 import { Prisma } from "@prisma/client"
 import { getProfile } from "@/lib/session"
 import { prisma } from "@/lib/prisma"
+import { getDoctorClinics } from "@/lib/data/clinics"
 import PatientsTable, { type PatientRow } from "./components/PatientsTable"
 import PatientsFilters from "./components/PatientsFilters"
 import BottomStatsCards from "./components/BottomStatsCards"
@@ -57,36 +58,32 @@ export default async function PatientsPage({
 
   const where: Prisma.patientsWhereInput = { ...baseWhere, ...searchWhere }
 
-  const patientsRaw = await prisma.patients.findMany({
-    relationLoadStrategy: "join",
-    where,
-    include: {
-      medical_histories: {
-        orderBy: { created_at: "desc" },
-        take: 1,
-        include: {
-          clinics: true,
-          treatment_items: {
-            orderBy: { item_number: "asc" },
-            take: 1,
+  const [patientsRaw, totalCount, doctorClinics] = await Promise.all([
+    prisma.patients.findMany({
+      relationLoadStrategy: "join",
+      where,
+      include: {
+        medical_histories: {
+          orderBy: { created_at: "desc" },
+          take: 1,
+          include: {
+            clinics: true,
+            treatment_items: {
+              orderBy: { item_number: "asc" },
+              take: 1,
+            },
           },
         },
+        doctor_patients: {
+          where: { doctor_id: profile.id },
+        },
       },
-      doctor_patients: {
-        where: { doctor_id: profile.id },
-      },
-    },
-    orderBy: { created_at: "desc" },
-    skip: (currentPage - 1) * PAGE_SIZE,
-    take: PAGE_SIZE,
-  })
-
-  const [totalCount, doctorClinicsRaw] = await Promise.all([
-    prisma.patients.count({ where }),
-    prisma.doctor_clinics.findMany({
-      where: { doctor_id: profile.id },
-      include: { clinics: true },
+      orderBy: { created_at: "desc" },
+      skip: (currentPage - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
     }),
+    prisma.patients.count({ where }),
+    getDoctorClinics(profile.id),
   ])
 
   // Map to plain serializable objects
@@ -109,11 +106,9 @@ export default async function PatientsPage({
 
   // Apply clinic filter (post-fetch since clinic is on medical_history)
   if (clinicFilter) {
-    const clinicData = doctorClinicsRaw.find((dc) => dc.clinic_id === clinicFilter)
+    const clinicData = doctorClinics.find((dc) => dc.id === clinicFilter)
     if (clinicData) {
-      patients = patients.filter(
-        (p) => p.clinicName === clinicData.clinics.name
-      )
+      patients = patients.filter((p) => p.clinicName === clinicData.name)
     }
   }
 
@@ -123,11 +118,6 @@ export default async function PatientsPage({
   }
 
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE))
-
-  const doctorClinics = doctorClinicsRaw.map((dc) => ({
-    id: dc.clinic_id,
-    name: dc.clinics.name,
-  }))
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">

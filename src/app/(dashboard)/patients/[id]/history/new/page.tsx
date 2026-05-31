@@ -12,18 +12,17 @@ export default async function NewHistoryPage({
   const profile = await getProfile()
   if (!profile) redirect("/login")
 
-  // Verify doctor has access
-  const access = await prisma.doctor_patients.findUnique({
-    where: { doctor_id_patient_id: { doctor_id: profile.id, patient_id: id } },
-  })
+  const [access, latestHistory] = await Promise.all([
+    prisma.doctor_patients.findUnique({
+      where: { doctor_id_patient_id: { doctor_id: profile.id, patient_id: id } },
+    }),
+    prisma.medical_histories.findFirst({
+      where: { patient_id: id, doctor_id: profile.id },
+      orderBy: { created_at: "desc" },
+      select: { clinic_id: true, currency: true },
+    }),
+  ])
   if (!access) notFound()
-
-  // Get preferred clinic
-  const latestHistory = await prisma.medical_histories.findFirst({
-    where: { patient_id: id, doctor_id: profile.id },
-    orderBy: { created_at: "desc" },
-    select: { clinic_id: true, currency: true },
-  })
 
   const result = await createMedicalHistory(
     id,

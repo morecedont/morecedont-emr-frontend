@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidateTag } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { getProfile } from "@/lib/session"
 import { Prisma } from "@prisma/client"
@@ -57,6 +58,7 @@ export async function createClinic(data: {
       update: {},
       create: { doctor_id: profile.id, clinic_id: existing.id },
     })
+    revalidateTag("doctor-clinics", "max")
     return {
       clinic: { id: existing.id, name: existing.name, address: existing.address, phone: existing.phone },
       warning: "Esta clínica ya existe. Se ha asociado a tu cuenta.",
@@ -76,6 +78,7 @@ export async function createClinic(data: {
     data: { doctor_id: profile.id, clinic_id: clinic.id },
   })
 
+  revalidateTag("doctor-clinics", "max")
   return {
     clinic: { id: clinic.id, name: clinic.name, address: clinic.address, phone: clinic.phone },
   }
@@ -90,4 +93,6 @@ export async function associateClinic(clinicId: string) {
     update: {},
     create: { doctor_id: profile.id, clinic_id: clinicId },
   })
+
+  revalidateTag("doctor-clinics", "max")
 }

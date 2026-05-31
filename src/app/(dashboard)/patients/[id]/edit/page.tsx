@@ -13,12 +13,13 @@ export default async function EditPatientPage({
   const profile = await getProfile()
   if (!profile) redirect("/login")
 
-  const access = await prisma.doctor_patients.findUnique({
-    where: { doctor_id_patient_id: { doctor_id: profile.id, patient_id: id } },
-  })
+  const [access, patient] = await Promise.all([
+    prisma.doctor_patients.findUnique({
+      where: { doctor_id_patient_id: { doctor_id: profile.id, patient_id: id } },
+    }),
+    prisma.patients.findUnique({ where: { id } }),
+  ])
   if (!access) notFound()
-
-  const patient = await prisma.patients.findUnique({ where: { id } })
   if (!patient) notFound()
 
   return (
