@@ -46,29 +46,18 @@ export default function RecentPatientsTable({
 }: RecentPatientsTableProps) {
   if (patients.length === 0) {
     return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-base sm:text-lg font-bold text-brand-dark">
-            Pacientes recientes
-          </h3>
-          <Link
-            href="/patients"
-            className="text-sm font-semibold text-sidebar-active hover:underline"
-          >
+      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-sm overflow-hidden h-full flex flex-col">
+        <div className="px-4 lg:px-6 py-4 border-b border-outline-variant/10 flex items-center justify-between shrink-0">
+          <h3 className="text-base sm:text-lg font-bold text-brand-dark">Pacientes recientes</h3>
+          <Link href="/patients" className="text-sm font-semibold text-sidebar-active hover:underline">
             Ver todos
           </Link>
         </div>
-        <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/10 p-10 sm:p-16 flex flex-col items-center justify-center text-center gap-4">
-          <span className="material-symbols-outlined text-outline text-5xl">
-            person_search
-          </span>
+        <div className="flex-1 flex flex-col items-center justify-center p-10 sm:p-16 text-center gap-4">
+          <span className="material-symbols-outlined text-outline text-5xl">person_search</span>
           <div>
-            <p className="font-bold text-on-surface mb-1">
-              Aún no tienes pacientes registrados
-            </p>
-            <p className="text-sm text-secondary">
-              Agrega tu primer paciente para comenzar.
-            </p>
+            <p className="font-bold text-on-surface mb-1">Aún no tienes pacientes registrados</p>
+            <p className="text-sm text-secondary">Agrega tu primer paciente para comenzar.</p>
           </div>
           <Link
             href="/patients/new"
@@ -82,21 +71,17 @@ export default function RecentPatientsTable({
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-base sm:text-lg font-bold text-brand-dark">
-          Pacientes recientes
-        </h3>
-        <Link
-          href="/patients"
-          className="text-sm font-semibold text-sidebar-active hover:underline"
-        >
+    <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-sm overflow-hidden h-full flex flex-col">
+      {/* Header — dentro de la card, igual que la agenda */}
+      <div className="px-4 lg:px-6 py-4 border-b border-outline-variant/10 flex items-center justify-between shrink-0">
+        <h3 className="text-base sm:text-lg font-bold text-brand-dark">Pacientes recientes</h3>
+        <Link href="/patients" className="text-sm font-semibold text-sidebar-active hover:underline">
           Ver todos
         </Link>
       </div>
 
       {/* Desktop table */}
-      <div className="hidden sm:block bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm border border-outline-variant/10">
+      <div className="hidden sm:flex flex-col flex-1 overflow-auto">
         <table className="w-full text-left border-collapse">
           <thead className="bg-surface-container/30">
             <tr>
@@ -116,25 +101,16 @@ export default function RecentPatientsTable({
           </thead>
           <tbody className="divide-y divide-surface-container/50">
             {patients.map((patient) => (
-              <tr
-                key={patient.id}
-                className="hover:bg-surface-container-low transition-colors"
-              >
+              <tr key={patient.id} className="hover:bg-surface-container-low transition-colors">
                 <td className="px-4 lg:px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${getAvatarClass(patient.fullName)}`}
-                    >
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${getAvatarClass(patient.fullName)}`}>
                       {getInitials(patient.fullName)}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-bold text-on-surface truncate">
-                        {patient.fullName}
-                      </p>
+                      <p className="text-sm font-bold text-on-surface truncate">{patient.fullName}</p>
                       {patient.idNumber && (
-                        <p className="text-[10px] text-outline">
-                          ID: #{patient.idNumber}
-                        </p>
+                        <p className="text-[10px] text-outline">ID: #{patient.idNumber}</p>
                       )}
                     </div>
                   </div>
@@ -163,21 +139,17 @@ export default function RecentPatientsTable({
       </div>
 
       {/* Mobile cards */}
-      <div className="sm:hidden space-y-3">
+      <div className="sm:hidden flex-1 overflow-auto p-4 space-y-3">
         {patients.map((patient) => (
           <div
             key={patient.id}
-            className="bg-surface-container-lowest rounded-xl p-4 border border-outline-variant/10 flex items-center gap-4"
+            className="bg-white rounded-xl p-4 border border-outline-variant/10 flex items-center gap-4"
           >
-            <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 ${getAvatarClass(patient.fullName)}`}
-            >
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 ${getAvatarClass(patient.fullName)}`}>
               {getInitials(patient.fullName)}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-bold text-sm text-on-surface truncate">
-                {patient.fullName}
-              </p>
+              <p className="font-bold text-sm text-on-surface truncate">{patient.fullName}</p>
               <p className="text-xs text-secondary">{patient.lastVisit}</p>
               {patient.procedure && (
                 <p className="text-xs text-outline truncate">{patient.procedure}</p>

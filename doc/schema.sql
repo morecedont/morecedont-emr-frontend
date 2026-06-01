@@ -535,154 +535,154 @@ CREATE TRIGGER trg_endodontics_updated
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- ============================================================
--- SQL DE MIGRACIÓN (aplicar manualmente en Supabase SQL Editor)
+-- sql de migración (aplicar manualmente en supabase sql editor)
 -- ============================================================
 --
--- Si ya existe la base en producción, ejecutar este bloque para
+-- si ya existe la base en producción, ejecutar este bloque para
 -- migrar del modelo doctor_patients al modelo de propiedad única:
 --
--- BEGIN;
+-- begin;
 --
--- -- 1. Agregar current_doctor_id a patients
--- ALTER TABLE patients
---   ADD COLUMN current_doctor_id UUID REFERENCES profiles(id);
+-- -- 1. agregar current_doctor_id a patients
+-- alter table patients
+--   add column current_doctor_id uuid references profiles(id);
 --
--- -- 2. Backfill: asignar como propietario al doctor original
--- UPDATE patients SET current_doctor_id = created_by;
+-- -- 2. backfill: asignar como propietario al doctor original
+-- update patients set current_doctor_id = created_by;
 --
--- -- 3. Hacer la columna NOT NULL
--- ALTER TABLE patients
---   ALTER COLUMN current_doctor_id SET NOT NULL;
+-- -- 3. hacer la columna not null
+-- alter table patients
+--   alter column current_doctor_id set not null;
 --
--- -- 4. Crear tabla de auditoría de traspasos
--- CREATE TABLE patient_transfers (
---   id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
---   patient_id       UUID NOT NULL REFERENCES patients(id) ON DELETE CASCADE,
---   from_doctor_id   UUID NOT NULL REFERENCES profiles(id),
---   to_doctor_id     UUID NOT NULL REFERENCES profiles(id),
---   transferred_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
---   notes            TEXT
+-- -- 4. crear tabla de auditoría de traspasos
+-- create table patient_transfers (
+--   id               uuid primary key default gen_random_uuid(),
+--   patient_id       uuid not null references patients(id) on delete cascade,
+--   from_doctor_id   uuid not null references profiles(id),
+--   to_doctor_id     uuid not null references profiles(id),
+--   transferred_at   timestamptz not null default now(),
+--   notes            text
 -- );
 --
--- -- 5. Crear índices nuevos
--- CREATE INDEX idx_patients_current_doctor ON patients(current_doctor_id);
--- CREATE INDEX idx_patient_transfers_patient ON patient_transfers(patient_id);
--- CREATE INDEX idx_patient_transfers_from ON patient_transfers(from_doctor_id);
--- CREATE INDEX idx_patient_transfers_to ON patient_transfers(to_doctor_id);
+-- -- 5. crear índices nuevos
+-- create index idx_patients_current_doctor on patients(current_doctor_id);
+-- create index idx_patient_transfers_patient on patient_transfers(patient_id);
+-- create index idx_patient_transfers_from on patient_transfers(from_doctor_id);
+-- create index idx_patient_transfers_to on patient_transfers(to_doctor_id);
 --
--- -- 6. Actualizar RLS de patients
--- DROP POLICY IF EXISTS "doctor_sees_own_patients" ON patients;
--- DROP POLICY IF EXISTS "doctor_creates_patients" ON patients;
--- DROP POLICY IF EXISTS "doctor_updates_own_patients" ON patients;
--- CREATE POLICY "owner_sees_patients" ON patients
---   FOR SELECT USING (current_doctor_id = auth.uid());
--- CREATE POLICY "owner_creates_patients" ON patients
---   FOR INSERT WITH CHECK (created_by = auth.uid() AND current_doctor_id = auth.uid());
--- CREATE POLICY "owner_updates_patients" ON patients
---   FOR UPDATE USING (current_doctor_id = auth.uid());
+-- -- 6. actualizar rls de patients
+-- drop policy if exists "doctor_sees_own_patients" on patients;
+-- drop policy if exists "doctor_creates_patients" on patients;
+-- drop policy if exists "doctor_updates_own_patients" on patients;
+-- create policy "owner_sees_patients" on patients
+--   for select using (current_doctor_id = auth.uid());
+-- create policy "owner_creates_patients" on patients
+--   for insert with check (created_by = auth.uid() and current_doctor_id = auth.uid());
+-- create policy "owner_updates_patients" on patients
+--   for update using (current_doctor_id = auth.uid());
 --
--- -- 7. Habilitar RLS en patient_transfers
--- ALTER TABLE patient_transfers ENABLE ROW LEVEL SECURITY;
--- CREATE POLICY "doctor_sees_own_transfers" ON patient_transfers
---   FOR SELECT USING (from_doctor_id = auth.uid() OR to_doctor_id = auth.uid());
--- CREATE POLICY "doctor_creates_transfers" ON patient_transfers
---   FOR INSERT WITH CHECK (from_doctor_id = auth.uid());
+-- -- 7. habilitar rls en patient_transfers
+-- alter table patient_transfers enable row level security;
+-- create policy "doctor_sees_own_transfers" on patient_transfers
+--   for select using (from_doctor_id = auth.uid() or to_doctor_id = auth.uid());
+-- create policy "doctor_creates_transfers" on patient_transfers
+--   for insert with check (from_doctor_id = auth.uid());
 --
--- -- 8. Actualizar RLS de historias clínicas y tablas hijas
--- DROP POLICY IF EXISTS "doctor_own_histories" ON medical_histories;
--- CREATE POLICY "owner_sees_histories" ON medical_histories
---   FOR ALL USING (
---     EXISTS (
---       SELECT 1 FROM patients
---       WHERE patients.id = medical_histories.patient_id
---         AND patients.current_doctor_id = auth.uid()
+-- -- 8. actualizar rls de historias clínicas y tablas hijas
+-- drop policy if exists "doctor_own_histories" on medical_histories;
+-- create policy "owner_sees_histories" on medical_histories
+--   for all using (
+--     exists (
+--       select 1 from patients
+--       where patients.id = medical_histories.patient_id
+--         and patients.current_doctor_id = auth.uid()
 --     )
 --   );
 --
--- DROP POLICY IF EXISTS "doctor_medical_background" ON medical_backgrounds;
--- CREATE POLICY "owner_medical_background" ON medical_backgrounds
---   FOR ALL USING (
---     EXISTS (
---       SELECT 1 FROM medical_histories mh
---       JOIN patients p ON p.id = mh.patient_id
---       WHERE mh.id = medical_history_id AND p.current_doctor_id = auth.uid()
+-- drop policy if exists "doctor_medical_background" on medical_backgrounds;
+-- create policy "owner_medical_background" on medical_backgrounds
+--   for all using (
+--     exists (
+--       select 1 from medical_histories mh
+--       join patients p on p.id = mh.patient_id
+--       where mh.id = medical_history_id and p.current_doctor_id = auth.uid()
 --     )
 --   );
 --
--- DROP POLICY IF EXISTS "doctor_dental_exams" ON dental_exams;
--- CREATE POLICY "owner_dental_exams" ON dental_exams
---   FOR ALL USING (
---     EXISTS (
---       SELECT 1 FROM medical_histories mh
---       JOIN patients p ON p.id = mh.patient_id
---       WHERE mh.id = medical_history_id AND p.current_doctor_id = auth.uid()
+-- drop policy if exists "doctor_dental_exams" on dental_exams;
+-- create policy "owner_dental_exams" on dental_exams
+--   for all using (
+--     exists (
+--       select 1 from medical_histories mh
+--       join patients p on p.id = mh.patient_id
+--       where mh.id = medical_history_id and p.current_doctor_id = auth.uid()
 --     )
 --   );
 --
--- DROP POLICY IF EXISTS "doctor_tooth_records" ON tooth_records;
--- CREATE POLICY "owner_tooth_records" ON tooth_records
---   FOR ALL USING (
---     EXISTS (
---       SELECT 1 FROM dental_exams de
---       JOIN medical_histories mh ON mh.id = de.medical_history_id
---       JOIN patients p ON p.id = mh.patient_id
---       WHERE de.id = dental_exam_id AND p.current_doctor_id = auth.uid()
+-- drop policy if exists "doctor_tooth_records" on tooth_records;
+-- create policy "owner_tooth_records" on tooth_records
+--   for all using (
+--     exists (
+--       select 1 from dental_exams de
+--       join medical_histories mh on mh.id = de.medical_history_id
+--       join patients p on p.id = mh.patient_id
+--       where de.id = dental_exam_id and p.current_doctor_id = auth.uid()
 --     )
 --   );
 --
--- DROP POLICY IF EXISTS "doctor_endodontics" ON endodontics;
--- CREATE POLICY "owner_endodontics" ON endodontics
---   FOR ALL USING (
---     EXISTS (
---       SELECT 1 FROM medical_histories mh
---       JOIN patients p ON p.id = mh.patient_id
---       WHERE mh.id = medical_history_id AND p.current_doctor_id = auth.uid()
+-- drop policy if exists "doctor_endodontics" on endodontics;
+-- create policy "owner_endodontics" on endodontics
+--   for all using (
+--     exists (
+--       select 1 from medical_histories mh
+--       join patients p on p.id = mh.patient_id
+--       where mh.id = medical_history_id and p.current_doctor_id = auth.uid()
 --     )
 --   );
 --
--- DROP POLICY IF EXISTS "doctor_endodontic_sessions" ON endodontic_sessions;
--- CREATE POLICY "owner_endodontic_sessions" ON endodontic_sessions
---   FOR ALL USING (
---     EXISTS (
---       SELECT 1 FROM endodontics e
---       JOIN medical_histories mh ON mh.id = e.medical_history_id
---       JOIN patients p ON p.id = mh.patient_id
---       WHERE e.id = endodontic_id AND p.current_doctor_id = auth.uid()
+-- drop policy if exists "doctor_endodontic_sessions" on endodontic_sessions;
+-- create policy "owner_endodontic_sessions" on endodontic_sessions
+--   for all using (
+--     exists (
+--       select 1 from endodontics e
+--       join medical_histories mh on mh.id = e.medical_history_id
+--       join patients p on p.id = mh.patient_id
+--       where e.id = endodontic_id and p.current_doctor_id = auth.uid()
 --     )
 --   );
 --
--- DROP POLICY IF EXISTS "doctor_treatment_items" ON treatment_items;
--- CREATE POLICY "owner_treatment_items" ON treatment_items
---   FOR ALL USING (
---     EXISTS (
---       SELECT 1 FROM medical_histories mh
---       JOIN patients p ON p.id = mh.patient_id
---       WHERE mh.id = medical_history_id AND p.current_doctor_id = auth.uid()
+-- drop policy if exists "doctor_treatment_items" on treatment_items;
+-- create policy "owner_treatment_items" on treatment_items
+--   for all using (
+--     exists (
+--       select 1 from medical_histories mh
+--       join patients p on p.id = mh.patient_id
+--       where mh.id = medical_history_id and p.current_doctor_id = auth.uid()
 --     )
 --   );
 --
--- DROP POLICY IF EXISTS "doctor_treatment_payments" ON treatment_payments;
--- CREATE POLICY "owner_treatment_payments" ON treatment_payments
---   FOR ALL USING (
---     EXISTS (
---       SELECT 1 FROM medical_histories mh
---       JOIN patients p ON p.id = mh.patient_id
---       WHERE mh.id = medical_history_id AND p.current_doctor_id = auth.uid()
+-- drop policy if exists "doctor_treatment_payments" on treatment_payments;
+-- create policy "owner_treatment_payments" on treatment_payments
+--   for all using (
+--     exists (
+--       select 1 from medical_histories mh
+--       join patients p on p.id = mh.patient_id
+--       where mh.id = medical_history_id and p.current_doctor_id = auth.uid()
 --     )
 --   );
 --
--- DROP POLICY IF EXISTS "doctor_attachments" ON attachments;
--- CREATE POLICY "owner_attachments" ON attachments
---   FOR ALL USING (
---     EXISTS (
---       SELECT 1 FROM medical_histories mh
---       JOIN patients p ON p.id = mh.patient_id
---       WHERE mh.id = medical_history_id AND p.current_doctor_id = auth.uid()
+-- drop policy if exists "doctor_attachments" on attachments;
+-- create policy "owner_attachments" on attachments
+--   for all using (
+--     exists (
+--       select 1 from medical_histories mh
+--       join patients p on p.id = mh.patient_id
+--       where mh.id = medical_history_id and p.current_doctor_id = auth.uid()
 --     )
 --   );
 --
--- -- 9. Eliminar tabla y política doctor_patients
--- DROP POLICY IF EXISTS "doctor_patient_access" ON doctor_patients;
--- DROP TABLE IF EXISTS doctor_patients;
+-- -- 9. eliminar tabla y política doctor_patients
+-- drop policy if exists "doctor_patient_access" on doctor_patients;
+-- drop table if exists doctor_patients;
 --
--- COMMIT;
+-- commit;
