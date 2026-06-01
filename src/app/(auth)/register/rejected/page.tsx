@@ -64,10 +64,10 @@ export default async function RejectedPage() {
           <p className="text-sm text-on-surface-variant">
             Si crees que hubo un error, contáctanos en{" "}
             <a
-              href="mailto:soporte@morecedont.com"
+              href="mailto:soporte@morecedont.online"
               className="text-primary hover:underline transition-colors"
             >
-              soporte@morecedont.com
+              soporte@morecedont.online
             </a>
           </p>
 

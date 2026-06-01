@@ -73,7 +73,7 @@ const { data: { user } } = await supabase.auth.getUser()
 **10. `src/app/(home)/components/CTASection.tsx`** — with:
 - Gradient background from `#2E3A59` to `#3F5AA6`
 - "Solicitar acceso gratuito" links to `/register`
-- "Tengo dudas" links to `mailto:soporte@morecedont.com`
+- "Tengo dudas" links to `mailto:soporte@morecedont.online`
 
 **11. `src/app/(home)/components/Footer.tsx`** — with:
 - Dark background `#2E3A59`

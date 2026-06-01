@@ -113,10 +113,10 @@ export default async function PendingPage() {
           <p className="text-secondary text-sm font-medium opacity-80">
             ¿Tienes dudas? Escríbenos a{" "}
             <a
-              href="mailto:soporte@morecedont.com"
+              href="mailto:soporte@morecedont.online"
               className="text-primary hover:underline transition-colors"
             >
-              soporte@morecedont.com
+              soporte@morecedont.online
             </a>
           </p>
         </div>

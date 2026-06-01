@@ -26,7 +26,7 @@ export default function CTASection() {
             Solicitar acceso gratuito
           </Link>
           <a
-            href="mailto:soporte@morecedont.com"
+            href="mailto:soporte@morecedont.online"
             className="inline-flex items-center justify-center h-11 sm:h-auto px-8 sm:px-10 py-2.5 sm:py-5 border-2 border-white/40 text-white font-extrabold rounded-lg hover:bg-white/10 transition-all text-base sm:text-lg"
           >
             Tengo dudas

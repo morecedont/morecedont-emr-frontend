@@ -89,7 +89,7 @@ export default function Footer() {
                 <span className="material-symbols-outlined text-sm shrink-0">
                   mail
                 </span>
-                soporte@morecedont.com
+                soporte@morecedont.online
               </li>
             </ul>
           </div>
