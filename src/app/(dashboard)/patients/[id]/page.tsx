@@ -40,10 +40,11 @@ export default async function PatientPage({
   if (!profile) redirect("/login")
   const currentHistoryPage = Math.max(1, parseInt(resolvedSearchParams.historyPage ?? "1", 10))
 
-  const doctorPatient = await prisma.doctor_patients.findUnique({
-    where: { doctor_id_patient_id: { doctor_id: profile.id, patient_id: id } },
+  const ownership = await prisma.patients.findUnique({
+    where: { id },
+    select: { current_doctor_id: true },
   })
-  if (!doctorPatient) notFound()
+  if (!ownership || ownership.current_doctor_id !== profile.id) notFound()
 
   const [patient, totalHistoryCount, attachmentsRaw] = await Promise.all([
     prisma.patients.findUnique({
@@ -63,12 +64,12 @@ export default async function PatientPage({
     },
     }),
     prisma.medical_histories.count({
-      where: { patient_id: id, doctor_id: profile.id },
+      where: { patient_id: id },
     }),
     prisma.attachments.findMany({
       relationLoadStrategy: "join",
       where: {
-        medical_histories: { patient_id: id, doctor_id: profile.id },
+        medical_histories: { patient_id: id },
       },
       include: {
         medical_histories: {

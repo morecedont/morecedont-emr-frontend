@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { format } from "date-fns"
-import SharePatientModal from "./SharePatientModal"
+import TransferPatientModal from "./TransferPatientModal"
 import Pagination from "./Pagination"
 
 export type PatientRow = {
@@ -92,7 +92,7 @@ export default function PatientsTable({
   totalPages,
   currentPage,
 }: PatientsTableProps) {
-  const [sharePatient, setSharePatient] = useState<PatientRow | null>(null)
+  const [transferPatient, setTransferPatient] = useState<PatientRow | null>(null)
 
   if (patients.length === 0) {
     return (
@@ -220,12 +220,12 @@ export default function PatientsTable({
                         </span>
                       </Link>
                       <button
-                        onClick={() => setSharePatient(patient)}
+                        onClick={() => setTransferPatient(patient)}
                         className="p-1.5 hover:bg-surface-container rounded-md text-gray-400 hover:text-sidebar-active transition-all"
-                        aria-label="Compartir historial"
+                        aria-label="Traspasar paciente"
                       >
                         <span className="material-symbols-outlined text-lg">
-                          share
+                          swap_horiz
                         </span>
                       </button>
                     </div>
@@ -307,11 +307,11 @@ export default function PatientsTable({
                         </span>
                       </Link>
                       <button
-                        onClick={() => setSharePatient(patient)}
+                        onClick={() => setTransferPatient(patient)}
                         className="p-1.5 hover:bg-surface-container rounded-md text-gray-400 hover:text-sidebar-active transition-all"
                       >
                         <span className="material-symbols-outlined text-lg">
-                          share
+                          swap_horiz
                         </span>
                       </button>
                     </div>
@@ -359,13 +359,13 @@ export default function PatientsTable({
                     Ver
                   </Link>
                   <button
-                    onClick={() => setSharePatient(patient)}
+                    onClick={() => setTransferPatient(patient)}
                     className="h-8 px-3 inline-flex items-center gap-1.5 text-xs font-medium border border-outline-variant/30 rounded-lg text-secondary hover:bg-surface-container transition-colors"
                   >
                     <span className="material-symbols-outlined text-[14px]">
-                      share
+                      swap_horiz
                     </span>
-                    Compartir
+                    Traspasar
                   </button>
                 </div>
               </div>
@@ -382,12 +382,12 @@ export default function PatientsTable({
         />
       </div>
 
-      {/* Share modal */}
-      {sharePatient && (
-        <SharePatientModal
-          patientId={sharePatient.id}
-          patientName={sharePatient.fullName}
-          onClose={() => setSharePatient(null)}
+      {/* Transfer modal */}
+      {transferPatient && (
+        <TransferPatientModal
+          patientId={transferPatient.id}
+          patientName={transferPatient.fullName}
+          onClose={() => setTransferPatient(null)}
         />
       )}
     </>

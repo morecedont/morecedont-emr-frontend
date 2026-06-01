@@ -167,7 +167,6 @@ async function reconcileGoogleForUpdate(
 }
 
 // ─── Búsqueda de pacientes (autocomplete del slide-over) ──────────────────────
-// Scopeado por doctor_patients: el doctor solo ve pacientes a los que tiene acceso.
 
 export async function searchPatientsForAppointment(query: string) {
   const profile = await getProfile()
@@ -178,7 +177,7 @@ export async function searchPatientsForAppointment(query: string) {
 
   const patients = await prisma.patients.findMany({
     where: {
-      doctor_patients: { some: { doctor_id: profile.id } },
+      current_doctor_id: profile.id,
       OR: [
         { full_name: { contains: q, mode: Prisma.QueryMode.insensitive } },
         { id_number: { contains: q, mode: Prisma.QueryMode.insensitive } },
@@ -214,13 +213,14 @@ export async function createAppointment(
     return { error: "Paciente, clínica y fecha/hora son requeridos" }
   }
 
-  // Control de acceso: el paciente debe estar vinculado al doctor.
-  const link = await prisma.doctor_patients.findUnique({
-    where: {
-      doctor_id_patient_id: { doctor_id: profile.id, patient_id: patientId },
-    },
+  // Control de acceso: el paciente debe pertenecer al doctor.
+  const patientAccess = await prisma.patients.findUnique({
+    where: { id: patientId },
+    select: { current_doctor_id: true },
   })
-  if (!link) return { error: "No tenés acceso a este paciente" }
+  if (!patientAccess || patientAccess.current_doctor_id !== profile.id) {
+    return { error: "No tenés acceso a este paciente" }
+  }
 
   const when = new Date(scheduledAt)
   if (isNaN(when.getTime())) return { error: "Fecha u hora inválida" }
@@ -297,12 +297,13 @@ export async function updateAppointment(
   }
 
   // Acceso al paciente destino.
-  const link = await prisma.doctor_patients.findUnique({
-    where: {
-      doctor_id_patient_id: { doctor_id: profile.id, patient_id: patientId },
-    },
+  const patientAccess = await prisma.patients.findUnique({
+    where: { id: patientId },
+    select: { current_doctor_id: true },
   })
-  if (!link) return { error: "No tenés acceso a este paciente" }
+  if (!patientAccess || patientAccess.current_doctor_id !== profile.id) {
+    return { error: "No tenés acceso a este paciente" }
+  }
 
   const when = new Date(scheduledAt)
   if (isNaN(when.getTime())) return { error: "Fecha u hora inválida" }

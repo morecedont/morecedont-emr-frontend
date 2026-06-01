@@ -29,7 +29,7 @@ export default async function HistoryDetailPage({
     relationLoadStrategy: "join",
     where: { id: historyId },
     include: {
-      patients: true,
+      patients: { select: { id: true, full_name: true, date_of_birth: true, id_number: true, blood_type: true, current_doctor_id: true } },
       clinics: true,
       profiles: true,
       medical_backgrounds: true,
@@ -49,8 +49,8 @@ export default async function HistoryDetailPage({
   })
 
   if (!history) notFound()
-  if (history.doctor_id !== profile.id) notFound()
   if (history.patient_id !== id) notFound()
+  if (history.patients.current_doctor_id !== profile.id) notFound()
 
   const patient = history.patients
   const sixMonthsAgo = new Date()

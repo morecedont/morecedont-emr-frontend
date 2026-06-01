@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import PatientAvatar from "@/components/shared/PatientAvatar"
-import SharePatientModal from "../../components/SharePatientModal"
+import TransferPatientModal from "../../components/TransferPatientModal"
 
 export type PatientHeaderData = {
   id: string
@@ -19,7 +19,7 @@ interface PatientProfileHeaderProps {
 }
 
 export default function PatientProfileHeader({ patient }: PatientProfileHeaderProps) {
-  const [showShare, setShowShare] = useState(false)
+  const [showTransfer, setShowTransfer] = useState(false)
 
   return (
     <>
@@ -60,11 +60,11 @@ export default function PatientProfileHeader({ patient }: PatientProfileHeaderPr
 
         <div className="flex items-center gap-3 shrink-0">
           <button
-            onClick={() => setShowShare(true)}
+            onClick={() => setShowTransfer(true)}
             className="h-10 px-4 flex items-center gap-2 bg-white/80 border border-white/60 rounded-lg text-sm font-semibold text-on-surface hover:bg-white transition-colors"
           >
-            <span className="material-symbols-outlined text-[18px]">share</span>
-            <span className="hidden sm:inline">Compartir expediente</span>
+            <span className="material-symbols-outlined text-[18px]">swap_horiz</span>
+            <span className="hidden sm:inline">Traspasar paciente</span>
           </button>
           <Link
             href={`/patients/${patient.id}/history/new`}
@@ -76,11 +76,11 @@ export default function PatientProfileHeader({ patient }: PatientProfileHeaderPr
         </div>
       </section>
 
-      {showShare && (
-        <SharePatientModal
+      {showTransfer && (
+        <TransferPatientModal
           patientId={patient.id}
           patientName={patient.fullName}
-          onClose={() => setShowShare(false)}
+          onClose={() => setShowTransfer(false)}
         />
       )}
     </>

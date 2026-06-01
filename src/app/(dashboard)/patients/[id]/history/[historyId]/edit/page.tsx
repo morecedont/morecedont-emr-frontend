@@ -19,6 +19,7 @@ export default async function EditHistoryPage({
     relationLoadStrategy: "join",
     where: { id: historyId },
     include: {
+      patients: { select: { current_doctor_id: true } },
       medical_backgrounds: true,
       dental_exams: {
         include: { tooth_records: true },
@@ -36,13 +37,8 @@ export default async function EditHistoryPage({
   })
 
   if (!history) notFound()
-  if (history.doctor_id !== profile.id) notFound()
   if (history.patient_id !== id) notFound()
-
-  console.log('[EditHistory] medical_backgrounds:', JSON.stringify(history.medical_backgrounds))
-  console.log('[EditHistory] dental_exams:', JSON.stringify(history.dental_exams?.id ?? null))
-  console.log('[EditHistory] endodontics count:', history.endodontics.length)
-  console.log('[EditHistory] treatment_items count:', history.treatment_items.length)
+  if (history.patients.current_doctor_id !== profile.id) notFound()
 
   const bg = history.medical_backgrounds
   const medicalBackground: MedicalBackgroundData | null = bg

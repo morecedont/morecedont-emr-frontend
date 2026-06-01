@@ -18,37 +18,32 @@ function isActivePatient(lastVisitDate: Date | null | undefined): boolean {
 }
 
 export default async function RecentPatientsServer({ doctorId }: { doctorId: string }) {
-  const raw = await prisma.doctor_patients.findMany({
+  const raw = await prisma.patients.findMany({
     relationLoadStrategy: "join",
-    where: { doctor_id: doctorId },
+    where: { current_doctor_id: doctorId },
     include: {
-      patients: {
+      medical_histories: {
+        orderBy: { created_at: "desc" },
+        take: 1,
         include: {
-          medical_histories: {
-            where: { doctor_id: doctorId },
-            orderBy: { created_at: "desc" },
+          treatment_items: {
+            orderBy: { item_number: "asc" },
             take: 1,
-            include: {
-              treatment_items: {
-                orderBy: { item_number: "asc" },
-                take: 1,
-              },
-            },
           },
         },
       },
     },
-    orderBy: { shared_at: "desc" },
+    orderBy: { created_at: "desc" },
     take: 4,
   })
 
-  const patients: RecentPatient[] = raw.map((dp) => {
-    const lastHistory = dp.patients.medical_histories[0] ?? null
+  const patients: RecentPatient[] = raw.map((p) => {
+    const lastHistory = p.medical_histories[0] ?? null
     const lastVisitDate = lastHistory?.created_at ?? null
     return {
-      id: dp.patient_id,
-      fullName: dp.patients.full_name,
-      idNumber: dp.patients.id_number ?? null,
+      id: p.id,
+      fullName: p.full_name,
+      idNumber: p.id_number ?? null,
       lastVisit: formatDate(lastVisitDate),
       procedure: lastHistory?.treatment_items[0]?.description ?? null,
       isActive: isActivePatient(lastVisitDate),

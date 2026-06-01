@@ -31,8 +31,9 @@ export async function saveAttachment(data: {
 
   const history = await prisma.medical_histories.findUnique({
     where: { id: data.medicalHistoryId },
+    include: { patients: { select: { current_doctor_id: true } } },
   })
-  if (!history || history.doctor_id !== profile.id) {
+  if (!history || history.patients.current_doctor_id !== profile.id) {
     return { error: "No autorizado" }
   }
 
@@ -72,24 +73,11 @@ export async function getAttachmentsWithUrls(
 
   const history = await prisma.medical_histories.findUnique({
     where: { id: medicalHistoryId },
-    include: {
-      patients: {
-        include: {
-          doctor_patients: {
-            where: { doctor_id: profile.id },
-          },
-        },
-      },
-    },
+    include: { patients: { select: { current_doctor_id: true } } },
   })
 
   if (!history) return { error: "No encontrado" }
-
-  const hasAccess =
-    history.doctor_id === profile.id ||
-    history.patients.doctor_patients.length > 0
-
-  if (!hasAccess) return { error: "No autorizado" }
+  if (history.patients.current_doctor_id !== profile.id) return { error: "No autorizado" }
 
   const attachments = await prisma.attachments.findMany({
     where: { medical_history_id: medicalHistoryId },
@@ -131,22 +119,15 @@ export async function getPatientAttachmentsWithUrls(
   const profile = await getProfile()
   if (!profile) return { error: "No autorizado" }
 
-  const access = await prisma.doctor_patients.findUnique({
-    where: {
-      doctor_id_patient_id: {
-        doctor_id: profile.id,
-        patient_id: patientId,
-      },
-    },
+  const patient = await prisma.patients.findUnique({
+    where: { id: patientId },
+    select: { current_doctor_id: true },
   })
-  if (!access) return { error: "No autorizado" }
+  if (!patient || patient.current_doctor_id !== profile.id) return { error: "No autorizado" }
 
   const attachments = await prisma.attachments.findMany({
     where: {
-      medical_histories: {
-        patient_id: patientId,
-        doctor_id: profile.id,
-      },
+      medical_histories: { patient_id: patientId },
     },
     include: {
       medical_histories: {
@@ -195,8 +176,13 @@ export async function deleteAttachment(
   })
 
   if (!attachment) return { error: "No encontrado" }
-  if (attachment.medical_histories.doctor_id !== profile.id) {
-    return { error: "Solo el doctor que subió el archivo puede eliminarlo" }
+
+  const patient = await prisma.patients.findUnique({
+    where: { id: patientId },
+    select: { current_doctor_id: true },
+  })
+  if (!patient || patient.current_doctor_id !== profile.id) {
+    return { error: "No autorizado" }
   }
 
   await deleteStorageFile(attachment.file_url)

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { searchDoctors, sharePatient } from "@/lib/actions/patients"
+import { searchDoctors, transferPatient } from "@/lib/actions/patients"
 
 type Doctor = {
   id: string
@@ -19,25 +19,27 @@ function getInitials(name: string): string {
     .toUpperCase()
 }
 
-interface SharePatientModalProps {
+interface TransferPatientModalProps {
   patientId: string
   patientName: string
   onClose: () => void
 }
 
-export default function SharePatientModal({
+export default function TransferPatientModal({
   patientId,
   patientName,
   onClose,
-}: SharePatientModalProps) {
+}: TransferPatientModalProps) {
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<Doctor[]>([])
   const [searched, setSearched] = useState(false)
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null)
+  const [notes, setNotes] = useState("")
+  const [confirmed, setConfirmed] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isSearching, startSearch] = useTransition()
-  const [isSharing, startShare] = useTransition()
+  const [isTransferring, startTransfer] = useTransition()
 
   function handleSearch(value: string) {
     setQuery(value)
@@ -53,34 +55,36 @@ export default function SharePatientModal({
     })
   }
 
-  function handleShare() {
-    if (!selectedDoctor) return
+  function handleTransfer() {
+    if (!selectedDoctor || !confirmed) return
     setError(null)
-    startShare(async () => {
-      const result = await sharePatient(patientId, selectedDoctor.id)
+    startTransfer(async () => {
+      const result = await transferPatient(patientId, selectedDoctor.id, notes || undefined)
       if (result.success) {
         setSuccess(true)
       } else {
-        setError(result.error ?? "Error al compartir")
+        setError(result.error ?? "Error al transferir")
       }
     })
   }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Overlay */}
       <div
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      {/* Modal */}
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
-        {/* Header */}
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-base font-bold text-on-surface">
-            Compartir historial
-          </h2>
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-error text-[20px]">
+              swap_horiz
+            </span>
+            <h2 className="text-base font-bold text-on-surface">
+              Traspasar paciente
+            </h2>
+          </div>
           <button
             onClick={onClose}
             className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-surface-container transition-colors"
@@ -91,14 +95,7 @@ export default function SharePatientModal({
           </button>
         </div>
 
-        <p className="text-xs text-secondary mb-4">
-          Compartir historial de{" "}
-          <span className="font-semibold text-on-surface">{patientName}</span>{" "}
-          con otro doctor
-        </p>
-
         {success ? (
-          /* Success state */
           <div className="flex flex-col items-center py-6 gap-3 text-center">
             <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
               <span className="material-symbols-outlined text-green-600">
@@ -106,10 +103,12 @@ export default function SharePatientModal({
               </span>
             </div>
             <p className="font-bold text-on-surface">
-              Historial compartido exitosamente
+              Paciente traspasado exitosamente
             </p>
             <p className="text-xs text-secondary">
-              {selectedDoctor?.full_name} ahora tiene acceso al historial.
+              {selectedDoctor?.full_name} es ahora el responsable de{" "}
+              <span className="font-semibold">{patientName}</span>.
+              Usted ya no tiene acceso a este paciente.
             </p>
             <button
               onClick={onClose}
@@ -120,6 +119,19 @@ export default function SharePatientModal({
           </div>
         ) : (
           <>
+            {/* Warning banner */}
+            <div className="flex gap-2 p-3 bg-error/8 border border-error/20 rounded-xl mb-4">
+              <span className="material-symbols-outlined text-error text-[18px] shrink-0 mt-0.5">
+                warning
+              </span>
+              <p className="text-xs text-error leading-relaxed">
+                Esta acción es <strong>irreversible</strong>. El nuevo doctor
+                asume la gestión completa de{" "}
+                <span className="font-semibold">{patientName}</span> y usted
+                perderá el acceso permanentemente.
+              </p>
+            </div>
+
             {/* Search input */}
             <div className="relative mb-4">
               <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px] pointer-events-none">
@@ -129,7 +141,7 @@ export default function SharePatientModal({
                 type="text"
                 value={query}
                 onChange={(e) => handleSearch(e.target.value)}
-                placeholder="Buscar por nombre o email..."
+                placeholder="Buscar doctor por nombre o email..."
                 className="w-full text-base bg-surface-container-low rounded-lg py-2.5 pl-10 pr-4 border border-outline-variant/30 focus:ring-2 focus:ring-primary/20 focus:border-primary/40 outline-none transition-all"
               />
             </div>
@@ -141,14 +153,14 @@ export default function SharePatientModal({
               </div>
             ) : searched && results.length === 0 ? (
               <div className="py-6 text-center text-sm text-secondary">
-                No se encontraron doctores
+                No se encontraron doctores activos
               </div>
             ) : (
-              <div className="space-y-1 max-h-48 overflow-y-auto mb-4">
+              <div className="space-y-1 max-h-40 overflow-y-auto mb-4">
                 {results.map((doctor) => (
                   <button
                     key={doctor.id}
-                    onClick={() => setSelectedDoctor(doctor)}
+                    onClick={() => { setSelectedDoctor(doctor); setConfirmed(false) }}
                     className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-colors ${
                       selectedDoctor?.id === doctor.id
                         ? "bg-primary/10 border border-primary/30"
@@ -176,9 +188,42 @@ export default function SharePatientModal({
               </div>
             )}
 
+            {/* Notes field (optional) */}
+            {selectedDoctor && (
+              <div className="mb-4">
+                <label className="block text-xs font-medium text-secondary mb-1">
+                  Notas del traspaso (opcional)
+                </label>
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Motivo del traspaso u observaciones relevantes..."
+                  rows={2}
+                  className="w-full text-base bg-surface-container-low rounded-lg px-3 py-2 border border-outline-variant/30 focus:ring-2 focus:ring-primary/20 focus:border-primary/40 outline-none transition-all resize-none text-sm"
+                />
+              </div>
+            )}
+
+            {/* Confirmation checkbox */}
+            {selectedDoctor && (
+              <label className="flex items-start gap-2 cursor-pointer mb-4">
+                <input
+                  type="checkbox"
+                  checked={confirmed}
+                  onChange={(e) => setConfirmed(e.target.checked)}
+                  className="mt-0.5 accent-error w-4 h-4 shrink-0"
+                />
+                <span className="text-xs text-on-surface leading-relaxed">
+                  Entiendo que perderé el acceso permanente a{" "}
+                  <strong>{patientName}</strong> y que este traspaso no puede
+                  deshacerse.
+                </span>
+              </label>
+            )}
+
             {/* Error */}
             {error && (
-              <p className="text-xs text-red-600 bg-red-50 rounded-lg px-3 py-2 mb-3">
+              <p className="text-xs text-error bg-error/8 rounded-lg px-3 py-2 mb-3">
                 {error}
               </p>
             )}
@@ -192,11 +237,11 @@ export default function SharePatientModal({
                 Cancelar
               </button>
               <button
-                onClick={handleShare}
-                disabled={!selectedDoctor || isSharing}
-                className="flex-1 h-11 rounded-lg bg-sidebar-active text-white text-sm font-semibold hover:bg-sidebar-active/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleTransfer}
+                disabled={!selectedDoctor || !confirmed || isTransferring}
+                className="flex-1 h-11 rounded-lg bg-error text-white text-sm font-semibold hover:bg-error/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {isSharing ? "Compartiendo..." : "Compartir"}
+                {isTransferring ? "Traspasando..." : "Traspasar paciente"}
               </button>
             </div>
           </>

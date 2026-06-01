@@ -3,8 +3,9 @@
 import { getProfile } from "@/lib/session"
 import { prisma } from "@/lib/prisma"
 import { Prisma } from "@prisma/client"
+import { revalidatePath } from "next/cache"
 
-// ─── Patients list actions ────────────────────────────────────────────────────
+// ─── Doctor search (used by TransferPatientModal) ────────────────────────────
 
 export async function searchDoctors(query: string) {
   const profile = await getProfile()
@@ -27,23 +28,48 @@ export async function searchDoctors(query: string) {
   return doctors
 }
 
-export async function sharePatient(
+// ─── Transfer patient to another doctor ──────────────────────────────────────
+
+export async function transferPatient(
   patientId: string,
-  targetDoctorId: string
+  targetDoctorId: string,
+  notes?: string
 ): Promise<{ success: boolean; error?: string }> {
   const profile = await getProfile()
   if (!profile) return { success: false, error: "No autorizado" }
 
-  const existing = await prisma.doctor_patients.findUnique({
-    where: { doctor_id_patient_id: { doctor_id: targetDoctorId, patient_id: patientId } },
+  const patient = await prisma.patients.findUnique({
+    where: { id: patientId },
+    select: { current_doctor_id: true },
   })
-  if (existing) {
-    return { success: false, error: "Este doctor ya tiene acceso a este paciente" }
+  if (!patient || patient.current_doctor_id !== profile.id) {
+    return { success: false, error: "No autorizado" }
   }
 
-  await prisma.doctor_patients.create({
-    data: { doctor_id: targetDoctorId, patient_id: patientId, shared_by: profile.id, shared_at: new Date() },
+  const target = await prisma.profiles.findUnique({
+    where: { id: targetDoctorId },
+    select: { status: true, role: true },
   })
+  if (!target || target.status !== "active" || target.role !== "doctor") {
+    return { success: false, error: "Doctor no encontrado o no activo" }
+  }
+
+  await prisma.$transaction([
+    prisma.patients.update({
+      where: { id: patientId },
+      data: { current_doctor_id: targetDoctorId },
+    }),
+    prisma.patient_transfers.create({
+      data: {
+        patient_id: patientId,
+        from_doctor_id: profile.id,
+        to_doctor_id: targetDoctorId,
+        notes: notes ?? null,
+      },
+    }),
+  ])
+
+  revalidatePath("/patients")
   return { success: true }
 }
 
@@ -57,10 +83,13 @@ export async function createMedicalHistory(
   const profile = await getProfile()
   if (!profile) return { error: "No autorizado" }
 
-  const access = await prisma.doctor_patients.findUnique({
-    where: { doctor_id_patient_id: { doctor_id: profile.id, patient_id: patientId } },
+  const patient = await prisma.patients.findUnique({
+    where: { id: patientId },
+    select: { current_doctor_id: true },
   })
-  if (!access) return { error: "No autorizado" }
+  if (!patient || patient.current_doctor_id !== profile.id) {
+    return { error: "No autorizado" }
+  }
 
   try {
     const history = await prisma.medical_histories.create({
@@ -134,11 +163,8 @@ export async function createPatient(
         address: personalData.address || null,
         occupation: personalData.occupation || null,
         created_by: doctorId,
+        current_doctor_id: doctorId,
       },
-    })
-
-    await prisma.doctor_patients.create({
-      data: { doctor_id: doctorId, patient_id: patient.id },
     })
 
     const medicalHistory = await prisma.medical_histories.create({
@@ -161,11 +187,13 @@ export async function createPatient(
   }
 }
 
-async function verifyOwnership(medicalHistoryId: string, doctorId: string): Promise<boolean> {
+// Verifica que el doctor es el propietario actual del paciente de la historia
+async function verifyPatientAccess(medicalHistoryId: string, doctorId: string): Promise<boolean> {
   const history = await prisma.medical_histories.findFirst({
-    where: { id: medicalHistoryId, doctor_id: doctorId },
+    where: { id: medicalHistoryId },
+    include: { patients: { select: { current_doctor_id: true } } },
   })
-  return !!history
+  return !!history && history.patients.current_doctor_id === doctorId
 }
 
 export type MedicalBackgroundData = {
@@ -219,7 +247,7 @@ export async function saveMedicalBackground(
 ): Promise<{ error?: string }> {
   const profile = await getProfile()
   if (!profile) return { error: "No autorizado" }
-  if (!(await verifyOwnership(medicalHistoryId, profile.id))) return { error: "No autorizado" }
+  if (!(await verifyPatientAccess(medicalHistoryId, profile.id))) return { error: "No autorizado" }
 
   try {
     await prisma.medical_backgrounds.upsert({
@@ -262,7 +290,7 @@ export async function saveDentalExam(
 ): Promise<{ error?: string }> {
   const profile = await getProfile()
   if (!profile) return { error: "No autorizado" }
-  if (!(await verifyOwnership(medicalHistoryId, profile.id))) return { error: "No autorizado" }
+  if (!(await verifyPatientAccess(medicalHistoryId, profile.id))) return { error: "No autorizado" }
 
   try {
     const exam = await prisma.dental_exams.upsert({
@@ -373,7 +401,7 @@ export async function saveEndodontics(
 ): Promise<{ error?: string }> {
   const profile = await getProfile()
   if (!profile) return { error: "No autorizado" }
-  if (!(await verifyOwnership(medicalHistoryId, profile.id))) return { error: "No autorizado" }
+  if (!(await verifyPatientAccess(medicalHistoryId, profile.id))) return { error: "No autorizado" }
 
   try {
     // Find existing endo for this tooth in this history
@@ -492,10 +520,13 @@ export async function updatePatient(
   const profile = await getProfile()
   if (!profile) return { error: "No autorizado" }
 
-  const access = await prisma.doctor_patients.findUnique({
-    where: { doctor_id_patient_id: { doctor_id: profile.id, patient_id: patientId } },
+  const patient = await prisma.patients.findUnique({
+    where: { id: patientId },
+    select: { current_doctor_id: true },
   })
-  if (!access) return { error: "No autorizado" }
+  if (!patient || patient.current_doctor_id !== profile.id) {
+    return { error: "No autorizado" }
+  }
 
   try {
     await prisma.patients.update({
@@ -526,7 +557,7 @@ export async function saveTreatmentPlan(
 ): Promise<{ error?: string }> {
   const profile = await getProfile()
   if (!profile) return { error: "No autorizado" }
-  if (!(await verifyOwnership(medicalHistoryId, profile.id))) return { error: "No autorizado" }
+  if (!(await verifyPatientAccess(medicalHistoryId, profile.id))) return { error: "No autorizado" }
 
   try {
     // Replace items

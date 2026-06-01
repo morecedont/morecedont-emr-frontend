@@ -559,18 +559,20 @@ model doctor_clinics {
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model doctor_patients {
-  doctor_id                                    String    @db.Uuid
-  patient_id                                   String    @db.Uuid
-  shared_by                                    String?   @db.Uuid
-  shared_at                                    DateTime? @db.Timestamptz(6)
-  profiles_doctor_patients_doctor_idToprofiles profiles  @relation("doctor_patients_doctor_idToprofiles", fields: [doctor_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  patients                                     patients  @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  profiles_doctor_patients_shared_byToprofiles profiles? @relation("doctor_patients_shared_byToprofiles", fields: [shared_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model patient_transfers {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  patient_id     String   @db.Uuid
+  from_doctor_id String   @db.Uuid
+  to_doctor_id   String   @db.Uuid
+  transferred_at DateTime @default(now()) @db.Timestamptz(6)
+  notes          String?
+  from_doctor    profiles @relation("patient_transfers_from_doctor", fields: [from_doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  to_doctor      profiles @relation("patient_transfers_to_doctor", fields: [to_doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients       patients @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@id([doctor_id, patient_id])
-  @@index([doctor_id], map: "idx_doctor_patients_doctor")
-  @@index([patient_id], map: "idx_doctor_patients_patient")
+  @@index([patient_id], map: "idx_patient_transfers_patient")
+  @@index([from_doctor_id], map: "idx_patient_transfers_from")
+  @@index([to_doctor_id], map: "idx_patient_transfers_to")
   @@schema("public")
 }
 
@@ -713,48 +715,52 @@ model medical_histories {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model patients {
-  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  full_name         String
-  id_number         String?
-  email             String?
-  phone             String?
-  date_of_birth     DateTime?           @db.Date
-  gender            String?
-  blood_type        String?
-  address           String?
-  created_by        String              @db.Uuid
-  created_at        DateTime            @default(now()) @db.Timestamptz(6)
-  occupation        String?
-  doctor_patients   doctor_patients[]
-  medical_histories medical_histories[]
-  appointments      appointments[]
-  profiles          profiles            @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                  String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  full_name           String
+  id_number           String?
+  email               String?
+  phone               String?
+  date_of_birth       DateTime?           @db.Date
+  gender              String?
+  blood_type          String?
+  address             String?
+  created_by          String              @db.Uuid
+  current_doctor_id   String              @db.Uuid
+  created_at          DateTime            @default(now()) @db.Timestamptz(6)
+  occupation          String?
+  patient_transfers   patient_transfers[]
+  medical_histories   medical_histories[]
+  appointments        appointments[]
+  creator             profiles            @relation("patients_creator", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  current_doctor      profiles            @relation("patients_current_doctor", fields: [current_doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
+  @@index([current_doctor_id], map: "idx_patients_current_doctor")
   @@schema("public")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model profiles {
-  id                                                  String              @id @db.Uuid
-  full_name                                           String
-  email                                               String              @unique
-  phone                                               String?
-  role                                                user_role           @default(doctor)
-  created_at                                          DateTime            @default(now()) @db.Timestamptz(6)
-  status                                              String              @default("pending")
-  license_number                                      String?
-  specialty                                           String?
-  rejection_reason                                    String?
-  clinics                                             clinics[]
-  doctor_clinics                                      doctor_clinics[]
-  doctor_patients_doctor_patients_doctor_idToprofiles doctor_patients[]   @relation("doctor_patients_doctor_idToprofiles")
-  doctor_patients_doctor_patients_shared_byToprofiles doctor_patients[]   @relation("doctor_patients_shared_byToprofiles")
-  medical_histories                                   medical_histories[]
-  patients                                            patients[]
-  appointments                                        appointments[]
-  doctor_google_tokens                                doctor_google_tokens?
-  users                                               users                 @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id                            String                @id @db.Uuid
+  full_name                     String
+  email                         String                @unique
+  phone                         String?
+  role                          user_role             @default(doctor)
+  created_at                    DateTime              @default(now()) @db.Timestamptz(6)
+  status                        String                @default("pending")
+  license_number                String?
+  specialty                     String?
+  rejection_reason              String?
+  clinics                       clinics[]
+  doctor_clinics                doctor_clinics[]
+  medical_histories             medical_histories[]
+  created_patients              patients[]            @relation("patients_creator")
+  owned_patients                patients[]            @relation("patients_current_doctor")
+  transfers_sent                patient_transfers[]   @relation("patient_transfers_from_doctor")
+  transfers_received            patient_transfers[]   @relation("patient_transfers_to_doctor")
+  appointments                  appointments[]
+  doctor_google_tokens          doctor_google_tokens?
+  users                         users                 @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@schema("public")
 }

@@ -41,9 +41,7 @@ export default async function PatientsPage({
 
   // Build where clause
   const baseWhere = {
-    doctor_patients: {
-      some: { doctor_id: profile.id },
-    },
+    current_doctor_id: profile.id,
   } satisfies Prisma.patientsWhereInput
 
   const searchWhere: Prisma.patientsWhereInput = searchQuery
@@ -73,9 +71,6 @@ export default async function PatientsPage({
               take: 1,
             },
           },
-        },
-        doctor_patients: {
-          where: { doctor_id: profile.id },
         },
       },
       orderBy: { created_at: "desc" },
