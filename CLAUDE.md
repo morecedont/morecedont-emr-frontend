@@ -392,3 +392,5 @@ No hay scripts de seed, test ni typecheck dedicado. `tsc --noEmit` puede ejecuta
 - No hay admin panel.
 - No hay tests ni typecheck en CI.
 - Notificaciones por email del cambio de status (mencionadas en el copy de `/register/pending`) no están implementadas.
+
+See DESIGN.md for the full visual design system and component rules.
