@@ -1,10 +1,18 @@
-import Link from "next/link"
+import { redirect } from "next/navigation"
+import { getProfile } from "@/lib/session"
+
+export const dynamic = "force-dynamic"
 
 export const metadata = {
   title: "Solicitud en revisión — Morecedont",
 }
 
-export default function PendingPage() {
+export default async function PendingPage() {
+  const profile = await getProfile()
+
+  if (profile?.status === "active") redirect("/dashboard")
+  if (profile?.status === "rejected") redirect("/register/rejected")
+
   return (
     <div className="bg-background min-h-screen flex flex-col items-center">
       <main className="flex-grow flex items-center justify-center p-6 w-full">
