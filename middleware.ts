@@ -26,16 +26,15 @@ export async function middleware(request: NextRequest) {
     pathname === "/reset-password" ||
     pathname === "/auth/confirm"
 
-  // Unauthenticated: allow public pages
+  // Unauthenticated: allow only truly public pages
   if (!userId) {
     if (
       !isHomePage &&
       !isLoginPage &&
       !isRegisterPage &&
-      !isPendingPage &&
-      !isRejectedPage &&
       !isPasswordRecovery
     ) {
+      // /register/pending and /register/rejected require an active session
       return NextResponse.redirect(new URL("/login", request.nextUrl))
     }
     return supabaseResponse
@@ -64,8 +63,8 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse
   }
 
-  // Active user: redirect away from auth pages
-  if (isLoginPage || isRegisterPage) {
+  // Active user: redirect away from all auth/status pages
+  if (isLoginPage || isRegisterPage || isPendingPage || isRejectedPage) {
     return NextResponse.redirect(new URL("/dashboard", request.nextUrl))
   }
 
