@@ -17,6 +17,7 @@ export default async function DashboardLayout({
     <DashboardShell
       doctorName={profile.full_name}
       doctorRole={profile.specialty ?? profile.role}
+      isAdmin={profile.role === "admin"}
     >
       {children}
     </DashboardShell>

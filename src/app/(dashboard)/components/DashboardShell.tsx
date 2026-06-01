@@ -8,12 +8,14 @@ interface DashboardShellProps {
   children: React.ReactNode
   doctorName: string
   doctorRole: string | null
+  isAdmin: boolean
 }
 
 export default function DashboardShell({
   children,
   doctorName,
   doctorRole,
+  isAdmin,
 }: DashboardShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -34,7 +36,7 @@ export default function DashboardShell({
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0`}
       >
-        <Sidebar onClose={() => setSidebarOpen(false)} />
+        <Sidebar onClose={() => setSidebarOpen(false)} isAdmin={isAdmin} />
       </div>
 
       {/* Content shifted right on desktop */}

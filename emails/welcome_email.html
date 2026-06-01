@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bienvenido a Morecedont</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: #eaeef9;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding: 40px 16px;
+  }
+
+  .email-wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Header brand bar */
+  .brand-bar {
+    background: #224bdd;
+    border-radius: 16px 16px 0 0;
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand-name {
+    font-family: 'Manrope', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+  }
+  .brand-badge {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: #b8c3ff;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* Hero section */
+  .hero {
+    background: linear-gradient(145deg, #224bdd 0%, #4367f7 60%, #5A7DFF 100%);
+    padding: 52px 40px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -30px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    color: #dde1ff;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    margin-bottom: 20px;
+  }
+  .hero-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .hero-title span {
+    color: #b8c3ff;
+  }
+  .hero-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.6;
+    max-width: 440px;
+  }
+
+  /* Doctor pill */
+  .doctor-pill {
+    background: #ffffff;
+    border-radius: 16px 16px 0 0;
+    padding: 28px 40px 0;
+  }
+  .doctor-card {
+    background: #f0f3ff;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .doctor-avatar {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4367f7, #224bdd);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Manrope', sans-serif;
+    font-size: 18px; font-weight: 700;
+    color: #ffffff;
+    flex-shrink: 0;
+  }
+  .doctor-info {}
+  .doctor-label {
+    font-size: 11px; font-weight: 600;
+    color: #747687;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 3px;
+  }
+  .doctor-name {
+    font-family: 'Manrope', sans-serif;
+    font-size: 17px; font-weight: 700;
+    color: #171c23;
+    letter-spacing: -0.01em;
+  }
+  .doctor-specialty {
+    font-size: 13px; color: #525e7f; margin-top: 2px;
+  }
+
+  /* Main body */
+  .body-section {
+    background: #ffffff;
+    padding: 32px 40px;
+  }
+
+  .greeting {
+    font-family: 'Manrope', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #171c23;
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+  }
+  .body-text {
+    font-size: 15px;
+    color: #525e7f;
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+
+  /* Features list */
+  .features-block {
+    background: #f8f9ff;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 28px 0;
+  }
+  .features-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #224bdd;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+  .feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 10px 0;
+  }
+  .feature-item + .feature-item {
+    border-top: 1px solid #eaeef9;
+  }
+  .feature-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: #eaeef9;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+  .feature-text {}
+  .feature-name {
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #171c23;
+    margin-bottom: 2px;
+  }
+  .feature-desc {
+    font-size: 13px;
+    color: #747687;
+    line-height: 1.5;
+  }
+
+  /* CTA */
+  .cta-block {
+    text-align: center;
+    padding: 8px 0 32px;
+  }
+  .cta-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #224bdd 0%, #4367f7 100%);
+    color: #ffffff;
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    padding: 16px 40px;
+    border-radius: 10px;
+    text-decoration: none;
+  }
+  .cta-hint {
+    font-size: 12px;
+    color: #c4c5d8;
+    margin-top: 12px;
+  }
+
+  /* Divider */
+  .divider {
+    background: #ffffff;
+    padding: 0 40px;
+  }
+  .divider-line {
+    height: 1px;
+    background: #eaeef9;
+  }
+
+  /* Help block */
+  .help-section {
+    background: #ffffff;
+    padding: 28px 40px;
+  }
+  .help-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #171c23;
+    margin-bottom: 6px;
+  }
+  .help-text {
+    font-size: 13px;
+    color: #747687;
+    line-height: 1.6;
+  }
+  .help-link {
+    color: #224bdd;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  /* Footer */
+  .footer {
+    background: #2E3A59;
+    border-radius: 0 0 16px 16px;
+    padding: 32px 40px;
+  }
+  .footer-brand {
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 6px;
+  }
+  .footer-tagline {
+    font-size: 12px;
+    color: #8a9bbf;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  .footer-links {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .footer-link {
+    font-size: 12px;
+    color: #8a9bbf;
+    text-decoration: none;
+  }
+  .footer-copy {
+    font-size: 11px;
+    color: #4a5a7a;
+    line-height: 1.6;
+  }
+  .footer-unsubscribe {
+    color: #5a6f96;
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+<div class="email-wrapper">
+
+  <!-- Brand bar -->
+  <div class="brand-bar">
+    <span class="brand-name">Morecedont</span>
+    <span class="brand-badge">Clinical EMR Platform</span>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-tag">✦ Nuevo miembro del equipo</div>
+    <h1 class="hero-title">Bienvenido a<br/><span>Morecedont.</span></h1>
+    <p class="hero-subtitle">Su plataforma clínica está lista. Desde hoy, gestionar historias clínicas, tratamientos e imágenes de sus pacientes es más preciso y eficiente.</p>
+  </div>
+
+  <!-- Doctor card -->
+  <div class="doctor-pill">
+    <div class="doctor-card">
+      <div class="doctor-avatar">DR</div>
+      <div class="doctor-info">
+        <div class="doctor-label">Cuenta verificada</div>
+        <div class="doctor-name">Dr. {{doctor_name}}</div>
+        <div class="doctor-specialty">{{specialty}}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="body-section">
+    <h2 class="greeting">Todo listo para comenzar.</h2>
+    <p class="body-text">Su cuenta ha sido creada y verificada exitosamente. A partir de ahora tiene acceso completo a todas las funcionalidades de Morecedont para gestionar su práctica clínica.</p>
+
+    <div class="features-block">
+      <div class="features-title">Lo que puede hacer hoy</div>
+
+      <div class="feature-item">
+        <div class="feature-icon">🦷</div>
+        <div class="feature-text">
+          <div class="feature-name">Historias clínicas digitales</div>
+          <div class="feature-desc">Cree y gestione expedientes clínicos completos con odontograma, secciones endodónticas y más.</div>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon">📋</div>
+        <div class="feature-text">
+          <div class="feature-name">Registro de tratamientos</div>
+          <div class="feature-desc">Documente procedimientos, medicación, instrumentación y protocolos por paciente.</div>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon">🖼️</div>
+        <div class="feature-text">
+          <div class="feature-name">Galería de imágenes clínicas</div>
+          <div class="feature-desc">Almacene radiografías y fotografías clínicas directamente en el expediente del paciente.</div>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon">👥</div>
+        <div class="feature-text">
+          <div class="feature-name">Gestión de pacientes</div>
+          <div class="feature-desc">Organice su cartera de pacientes con búsqueda rápida e historial completo.</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="body-text">Si tiene alguna duda durante la configuración inicial, nuestro equipo de soporte está disponible para acompañarle en cada paso.</p>
+  </div>
+
+  <!-- CTA -->
+  <div class="body-section" style="padding-top: 0;">
+    <div class="cta-block">
+      <a href="{{login_url}}" class="cta-btn">Acceder a mi cuenta →</a>
+      <p class="cta-hint">O ingrese a app.morecedont.com con sus credenciales</p>
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <div class="divider"><div class="divider-line"></div></div>
+
+  <!-- Help -->
+  <div class="help-section">
+    <div class="help-title">¿Necesita ayuda?</div>
+    <p class="help-text">
+      Escribanos a <a href="mailto:soporte@morecedont.com" class="help-link">soporte@morecedont.com</a> o acceda a nuestra <a href="#" class="help-link">documentación</a>. Respondemos en menos de 24 horas hábiles.
+    </p>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-brand">Morecedont</div>
+    <p class="footer-tagline">Advanced dental clinical systems.<br/>Diseñado para el futuro de la atención odontológica.</p>
+    <div class="footer-links">
+      <a href="#" class="footer-link">Soporte</a>
+      <a href="#" class="footer-link">Privacidad</a>
+      <a href="#" class="footer-link">Términos</a>
+      <a href="#" class="footer-link">Contacto</a>
+    </div>
+    <p class="footer-copy">
+      © 2025 Morecedont Dental Systems. Todos los derechos reservados.<br/>
+      Recibió este email porque se registró en Morecedont. <a href="{{unsubscribe_url}}" class="footer-unsubscribe">Cancelar suscripción</a>.
+    </p>
+  </div>
+
+</div>
+</body>
+</html>

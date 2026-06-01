@@ -7,21 +7,23 @@ const NAV_ITEMS: {
   href: string
   icon: string
   label: string
-  /** Temporal: quitar `hidden` para volver a mostrar */
   hidden?: boolean
+  adminOnly?: boolean
 }[] = [
   { href: "/dashboard", icon: "dashboard", label: "Inicio" },
   { href: "/agenda", icon: "calendar_month", label: "Agenda" },
   { href: "/patients", icon: "person", label: "Pacientes" },
+  { href: "/solicitudes", icon: "person_check", label: "Solicitudes", adminOnly: true },
   { href: "/clinics", icon: "medical_services", label: "Clínicas", hidden: true },
   { href: "/settings", icon: "settings", label: "Configuración", hidden: true },
 ]
 
 interface SidebarProps {
   onClose?: () => void
+  isAdmin: boolean
 }
 
-export default function Sidebar({ onClose }: SidebarProps) {
+export default function Sidebar({ onClose, isAdmin }: SidebarProps) {
   const pathname = usePathname()
 
   return (
@@ -49,17 +51,19 @@ export default function Sidebar({ onClose }: SidebarProps) {
       {/* Nav */}
       <nav className="flex-1 space-y-1 px-2">
         {NAV_ITEMS.map((item) => {
+          if (item.hidden) return null
+          if (item.adminOnly && !isAdmin) return null
+
           const isActive =
             pathname === item.href ||
             (item.href !== "/dashboard" && pathname.startsWith(item.href + "/"))
+
           return (
             <Link
               key={item.href}
               href={item.href}
               onClick={onClose}
               className={`flex items-center gap-3 px-4 h-11 rounded-lg text-sm font-medium tracking-tight transition-all duration-200 active:scale-95 ${
-                item.hidden ? "hidden" : ""
-              } ${
                 isActive
                   ? "bg-sidebar-active text-white"
                   : "text-slate-300 hover:text-white hover:bg-white/10"
