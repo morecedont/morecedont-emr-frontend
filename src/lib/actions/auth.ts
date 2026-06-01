@@ -16,11 +16,19 @@ async function getOrigin(): Promise<string> {
 export async function signIn(email: string, password: string) {
   const supabase = await createClient()
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password })
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
   if (error) {
     return { error: error.message }
   }
+
+  const profile = await prisma.profiles.findUnique({
+    where: { id: data.user.id },
+    select: { status: true },
+  })
+
+  if (profile?.status === "pending") redirect("/register/pending")
+  if (profile?.status === "rejected") redirect("/register/rejected")
 
   redirect("/dashboard")
 }

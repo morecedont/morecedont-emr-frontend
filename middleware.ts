@@ -48,7 +48,7 @@ export async function middleware(request: NextRequest) {
     .eq("id", userId)
     .single()
 
-  const status = profile?.status ?? "active"
+  const status = profile?.status ?? "pending"
 
   if (status === "pending") {
     if (!isPendingPage) {
