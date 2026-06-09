@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Morecedont | Clinical Curator Design System</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#0035be",
+                        "inverse-on-surface": "#edf1fc",
+                        "inverse-surface": "#2c3139",
+                        "tertiary-fixed-dim": "#c1c5e3",
+                        "primary-fixed": "#dde1ff",
+                        "primary-container": "#4367f7",
+                        "on-primary-container": "#fffbff",
+                        "on-primary": "#ffffff",
+                        "secondary": "#525e7f",
+                        "tertiary": "#565b74",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#cad6fd",
+                        "secondary-fixed-dim": "#bac6ec",
+                        "surface-container-highest": "#dee2ed",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#e4e8f3",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#0d1a38",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#c4c5d8",
+                        "tertiary-container": "#6f738e",
+                        "secondary-fixed": "#dae2ff",
+                        "on-tertiary-container": "#fffbff",
+                        "surface-container-low": "#f0f3ff",
+                        "outline": "#747687",
+                        "on-background": "#171c23",
+                        "primary": "#224bdd",
+                        "background": "#f8f9ff",
+                        "surface-dim": "#d6dae5",
+                        "inverse-primary": "#b8c3ff",
+                        "on-secondary-fixed-variant": "#3a4666",
+                        "primary-fixed-dim": "#b8c3ff",
+                        "surface-variant": "#dee2ed",
+                        "on-tertiary-fixed": "#151a30",
+                        "on-primary-fixed": "#001356",
+                        "on-surface-variant": "#444655",
+                        "on-surface": "#171c23",
+                        "on-tertiary-fixed-variant": "#41455e",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-container": "#515d7e",
+                        "surface-tint": "#264ee0",
+                        "tertiary-fixed": "#dde1ff",
+                        "surface": "#f8f9ff",
+                        "surface-container": "#eaeef9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "display": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .font-headline {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .glass-header {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+
+        .signature-gradient {
+            background: linear-gradient(135deg, #224bdd 0%, #4367f7 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-background text-on-surface">
+    <!-- TopNavBar -->
+    <header class="fixed top-0 w-full z-50 glass-header shadow-sm border-none">
+        <div class="flex justify-between items-center px-8 h-20 max-w-7xl mx-auto">
+            <div class="text-2xl font-bold tracking-tight text-on-surface font-headline">Morecedont</div>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a class="text-primary font-semibold border-b-2 border-primary pb-1 font-body" href="#">Platform</a>
+                <a class="text-secondary hover:text-primary transition-colors font-body" href="#">Solutions</a>
+                <a class="text-secondary hover:text-primary transition-colors font-body" href="#">Resources</a>
+                <a class="text-secondary hover:text-primary transition-colors font-body" href="#">Pricing</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <button class="text-secondary font-medium px-4 py-2 hover:opacity-80 transition-opacity">Login</button>
+                <button
+                    class="signature-gradient text-white px-6 py-2.5 rounded-DEFAULT font-medium shadow-md hover:scale-[0.98] transition-transform">Get
+                    Started</button>
+            </div>
+        </div>
+        <div class="bg-surface-container-low h-[1px] w-full"></div>
+    </header>
+    <main class="max-w-7xl mx-auto px-8 pt-32 pb-24">
+        <!-- Intro Section -->
+        <div class="mb-20">
+            <p class="text-primary font-bold tracking-widest text-xs uppercase mb-4">Internal Reference</p>
+            <h1 class="text-5xl font-extrabold font-headline tracking-tight text-on-surface mb-6">Clinical Curator
+                <br /><span class="text-secondary">Design System</span></h1>
+            <p class="max-w-2xl text-lg text-secondary leading-relaxed">A soft minimalist ecosystem prioritizing
+                clinical cognitive load reduction through editorial typography, tonal depth, and atmospheric surface
+                architecture.</p>
+        </div>
+        <!-- 1. Color Palette: Bento Grid -->
+        <section class="mb-24">
+            <div class="flex items-center space-x-3 mb-10">
+                <span class="w-8 h-[2px] bg-primary"></span>
+                <h2 class="text-2xl font-bold font-headline">01. Color Palette</h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="group relative bg-white p-4 rounded-xl shadow-sm border border-outline-variant/10">
+                    <div class="h-24 w-full rounded-lg mb-4 bg-[#4C6FFF]"></div>
+                    <p class="text-xs font-bold font-headline mb-1">Primary Blue</p>
+                    <p class="text-[10px] text-secondary font-mono">#4C6FFF</p>
+                </div>
+                <div class="group relative bg-white p-4 rounded-xl shadow-sm border border-outline-variant/10">
+                    <div class="h-24 w-full rounded-lg mb-4 bg-[#5A7DFF]"></div>
+                    <p class="text-xs font-bold font-headline mb-1">Medium Blue</p>
+                    <p class="text-[10px] text-secondary font-mono">#5A7DFF</p>
+                </div>
+                <div class="group relative bg-white p-4 rounded-xl shadow-sm border border-outline-variant/10">
+                    <div class="h-24 w-full rounded-lg mb-4 bg-[#3B82F6]"></div>
+                    <p class="text-xs font-bold font-headline mb-1">CTA Blue</p>
+                    <p class="text-[10px] text-secondary font-mono">#3B82F6</p>
+                </div>
+                <div class="group relative bg-white p-4 rounded-xl shadow-sm border border-outline-variant/10">
+                    <div class="h-24 w-full rounded-lg mb-4 bg-[#3F5AA6]"></div>
+                    <p class="text-xs font-bold font-headline mb-1">Deep Blue</p>
+                    <p class="text-[10px] text-secondary font-mono">#3F5AA6</p>
+                </div>
+                <div class="group relative bg-white p-4 rounded-xl shadow-sm border border-outline-variant/10">
+                    <div class="h-24 w-full rounded-lg mb-4 bg-[#2E3A59]"></div>
+                    <p class="text-xs font-bold font-headline mb-1">Dark Blue</p>
+                    <p class="text-[10px] text-secondary font-mono">#2E3A59</p>
+                </div>
+                <div class="group relative bg-white p-4 rounded-xl shadow-sm border border-outline-variant/10">
+                    <div class="h-24 w-full rounded-lg mb-4 bg-[#1E1E2F]"></div>
+                    <p class="text-xs font-bold font-headline mb-1">Soft Black</p>
+                    <p class="text-[10px] text-secondary font-mono">#1E1E2F</p>
+                </div>
+                <div class="group relative bg-white p-4 rounded-xl shadow-sm border border-outline-variant/10">
+                    <div class="h-24 w-full rounded-lg mb-4 bg-[#6B7280]"></div>
+                    <p class="text-xs font-bold font-headline mb-1">Body Gray</p>
+                    <p class="text-[10px] text-secondary font-mono">#6B7280</p>
+                </div>
+                <div class="group relative bg-white p-4 rounded-xl shadow-sm border border-outline-variant/10">
+                    <div class="h-24 w-full rounded-lg mb-4 bg-[#C9CDEB]"></div>
+                    <p class="text-xs font-bold font-headline mb-1">Light Lilac</p>
+                    <p class="text-[10px] text-secondary font-mono">#C9CDEB</p>
+                </div>
+                <div class="group relative bg-white p-4 rounded-xl shadow-sm border border-outline-variant/10">
+                    <div class="h-24 w-full rounded-lg mb-4 bg-[#E6EAF5]"></div>
+                    <p class="text-xs font-bold font-headline mb-1">Blue-Gray</p>
+                    <p class="text-[10px] text-secondary font-mono">#E6EAF5</p>
+                </div>
+                <div class="group relative bg-white p-4 rounded-xl shadow-sm border border-outline-variant/10">
+                    <div class="h-24 w-full rounded-lg mb-4 bg-[#F9FAFC]"></div>
+                    <p class="text-xs font-bold font-headline mb-1">Soft White</p>
+                    <p class="text-[10px] text-secondary font-mono">#F9FAFC</p>
+                </div>
+            </div>
+        </section>
+        <!-- 2. Typography: Vertical Stack -->
+        <section class="mb-24">
+            <div class="flex items-center space-x-3 mb-10">
+                <span class="w-8 h-[2px] bg-primary"></span>
+                <h2 class="text-2xl font-bold font-headline">02. Typography</h2>
+            </div>
+            <div class="bg-surface-container rounded-xl p-12 space-y-12">
+                <div>
+                    <span class="text-[10px] text-primary font-bold uppercase tracking-widest mb-4 block">Display XL /
+                        Manrope 800</span>
+                    <h3 class="text-[48px] font-extrabold font-headline leading-tight">Empowering Clinical Precision.
+                    </h3>
+                </div>
+                <div>
+                    <span class="text-[10px] text-primary font-bold uppercase tracking-widest mb-4 block">Display L /
+                        Manrope 700</span>
+                    <h3 class="text-[36px] font-bold font-headline leading-tight">Care Coordination Redefined.</h3>
+                </div>
+                <div>
+                    <span class="text-[10px] text-primary font-bold uppercase tracking-widest mb-4 block">Headline M /
+                        Manrope 600</span>
+                    <h3 class="text-[24px] font-semibold font-headline">Patient Record Management</h3>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12 pt-8 border-t border-outline-variant/20">
+                    <div>
+                        <span class="text-[10px] text-secondary font-bold uppercase tracking-widest mb-4 block">Body L /
+                            Inter 400</span>
+                        <p class="text-[16px] leading-relaxed text-on-surface">Morecedont provides a unified platform
+                            for dental professionals to manage clinical notes, imaging, and patient relationships with
+                            unparalleled clarity.</p>
+                    </div>
+                    <div>
+                        <span class="text-[10px] text-secondary font-bold uppercase tracking-widest mb-4 block">Body M /
+                            Inter 500</span>
+                        <p class="text-[14px] leading-relaxed text-secondary">The system utilizes soft minimalism to
+                            ensure that critical patient data is prioritized while reducing overall visual noise in the
+                            clinical environment.</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-8 pt-8">
+                    <div>
+                        <span
+                            class="text-[10px] text-secondary font-bold uppercase tracking-widest mb-2 block">Label</span>
+                        <p class="text-[12px] uppercase font-bold tracking-wider">Appointment Status</p>
+                    </div>
+                    <div>
+                        <span
+                            class="text-[10px] text-secondary font-bold uppercase tracking-widest mb-2 block">Caption</span>
+                        <p class="text-[11px] text-secondary italic">Last synced: 2 minutes ago</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- 3. Components: Buttons & Badges -->
+        <section class="mb-24">
+            <div class="grid md:grid-cols-2 gap-16">
+                <!-- Buttons -->
+                <div>
+                    <div class="flex items-center space-x-3 mb-10">
+                        <span class="w-8 h-[2px] bg-primary"></span>
+                        <h2 class="text-2xl font-bold font-headline">03. Buttons</h2>
+                    </div>
+                    <div class="space-y-8">
+                        <div class="flex flex-wrap items-center gap-4">
+                            <button
+                                class="signature-gradient text-white px-8 py-3 rounded-DEFAULT font-medium text-sm">Primary
+                                LG</button>
+                            <button
+                                class="signature-gradient text-white px-6 py-2 rounded-DEFAULT font-medium text-sm">Primary
+                                MD</button>
+                            <button
+                                class="signature-gradient text-white px-4 py-1.5 rounded-DEFAULT font-medium text-xs">Primary
+                                SM</button>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-4">
+                            <button
+                                class="border border-primary text-primary px-8 py-3 rounded-DEFAULT font-medium text-sm hover:bg-primary/5 transition-colors">Secondary
+                                LG</button>
+                            <button
+                                class="text-secondary px-6 py-2 rounded-DEFAULT font-medium text-sm hover:bg-surface-container transition-colors">Ghost
+                                Action</button>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-4">
+                            <button
+                                class="bg-error text-on-error px-6 py-2 rounded-DEFAULT font-medium text-sm">Destructive</button>
+                            <button
+                                class="bg-surface-dim text-on-surface-variant cursor-not-allowed px-6 py-2 rounded-DEFAULT font-medium text-sm">Disabled</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Badges -->
+                <div>
+                    <div class="flex items-center space-x-3 mb-10">
+                        <span class="w-8 h-[2px] bg-primary"></span>
+                        <h2 class="text-2xl font-bold font-headline">04. Badges</h2>
+                    </div>
+                    <div class="flex flex-wrap gap-4 items-center h-full">
+                        <span
+                            class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Active</span>
+                        <span
+                            class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Pending</span>
+                        <span
+                            class="bg-primary-fixed text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Completed</span>
+                        <span
+                            class="bg-error-container text-error px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Cancelled</span>
+                        <span
+                            class="bg-surface-container-highest text-secondary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Archived</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- 5. Forms: Grid Layout -->
+        <section class="mb-24">
+            <div class="flex items-center space-x-3 mb-10">
+                <span class="w-8 h-[2px] bg-primary"></span>
+                <h2 class="text-2xl font-bold font-headline">05. Forms &amp; Inputs</h2>
+            </div>
+            <div class="bg-surface-container-low rounded-xl p-10 grid md:grid-cols-3 gap-10">
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">Patient
+                            Name</label>
+                        <input
+                            class="w-full bg-surface-container-lowest border-outline-variant/40 rounded-DEFAULT text-sm py-2.5 focus:ring-primary focus:border-primary"
+                            placeholder="e.g. John Doe" type="text" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">Patient
+                            Email</label>
+                        <input
+                            class="w-full bg-surface-container-lowest border-error/50 rounded-DEFAULT text-sm py-2.5 text-error"
+                            type="email" value="invalid-email" />
+                        <span class="text-[10px] text-error mt-1 block">Please enter a valid email address</span>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">Department</label>
+                        <select
+                            class="w-full bg-surface-container-lowest border-outline-variant/40 rounded-DEFAULT text-sm py-2.5">
+                            <option>Orthodontics</option>
+                            <option>General Dentistry</option>
+                            <option>Periodontics</option>
+                        </select>
+                    </div>
+                    <div
+                        class="flex items-center justify-between p-3 bg-surface-container-lowest rounded-DEFAULT border border-outline-variant/20">
+                        <span class="text-sm font-medium text-on-surface">Receive Notifications</span>
+                        <button class="w-10 h-5 bg-surface-dim rounded-full p-0.5 transition-colors duration-200"
+                            id="toggle"
+                            onclick="this.classList.toggle('bg-primary'); this.querySelector('div').classList.toggle('translate-x-5')">
+                            <div
+                                class="w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform duration-200">
+                            </div>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">Clinical
+                        Notes</label>
+                    <textarea
+                        class="w-full bg-surface-container-lowest border-outline-variant/40 rounded-DEFAULT text-sm py-2.5 focus:ring-primary focus:border-primary"
+                        placeholder="Enter findings..." rows="4"></textarea>
+                </div>
+            </div>
+        </section>
+        <!-- 6. Cards: High-End UI Samples -->
+        <section class="mb-24">
+            <div class="flex items-center space-x-3 mb-10">
+                <span class="w-8 h-[2px] bg-primary"></span>
+                <h2 class="text-2xl font-bold font-headline">06. Functional Cards</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Patient Summary Card -->
+                <div
+                    class="bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-outline-variant/10 relative overflow-hidden group">
+                    <div class="flex items-center space-x-4 mb-6">
+                        <div
+                            class="w-12 h-12 rounded-full overflow-hidden bg-surface-container flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary">person</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold font-headline text-on-surface">Sarah Mitchell</h4>
+                            <p class="text-xs text-secondary font-medium">ID: #MZ-9022</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-secondary">Next Appointment</span>
+                            <span class="font-bold">Oct 24, 2024</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-secondary">Assigned Clinician</span>
+                            <span class="font-bold">Dr. Aris Thorne</span>
+                        </div>
+                    </div>
+                    <button
+                        class="w-full bg-surface-container-low text-primary py-2 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all">View
+                        Full Chart</button>
+                </div>
+                <!-- KPI Card -->
+                <div class="signature-gradient rounded-xl p-6 shadow-lg text-white">
+                    <div class="flex justify-between items-start mb-8">
+                        <span class="material-symbols-outlined p-2 bg-white/20 rounded-lg">dentistry</span>
+                        <span
+                            class="text-[10px] font-bold uppercase tracking-widest bg-white/20 px-2 py-1 rounded">Real-time</span>
+                    </div>
+                    <p class="text-sm font-medium opacity-80 mb-1">Monthly Case Volume</p>
+                    <h3 class="text-4xl font-bold font-headline mb-4">1,284</h3>
+                    <div class="flex items-center space-x-2 text-xs font-bold">
+                        <span class="material-symbols-outlined text-sm">trending_up</span>
+                        <span>+12.5% vs last month</span>
+                    </div>
+                </div>
+                <!-- Clinical Record Card -->
+                <div class="bg-surface-container-high rounded-xl p-6 border-none">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-sm font-bold font-headline uppercase tracking-tight">Recent Imaging</h4>
+                        <span class="material-symbols-outlined text-secondary cursor-pointer">more_vert</span>
+                    </div>
+                    <div
+                        class="rounded-lg h-32 bg-surface-dim mb-4 relative flex items-center justify-center group overflow-hidden">
+                        <img class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-500"
+                            data-alt="A high-contrast dental panoramic x-ray scan displayed on a sleek digital medical monitor. The lighting is clinical and bright, creating a crisp and professional diagnostic environment. The visual style is modern, with soft blue and cool gray tones, emphasizing a high-tech medical laboratory aesthetic."
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBenDP8wXZFq91UXYr9jq8q5Qx0Y4wl91X_4Wl6IUeAf5GeLcCSCnmPa9WSqR2r82lV3bQXNGQzLD7fekY0Q3TVDQpLaVJuEuMphIjTEzbOo_tQgucKWhh4FHblOc3smpTOIPpMgghnVzYpgp0uLY8qfkdD4t4zhzRWiGcXHcjYCSrXahV7PtthWSrvDZEgQ92D1AQCdHaE-2L2a3gbJlyvij2tlv2ABoWM0aUbTZYBCRnEDnzTMfUdj0U0yJdEzzrMBWgCMW_Pujzg" />
+                        <div
+                            class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="material-symbols-outlined text-white">zoom_in</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="text-secondary">Pano-2401.jpg</span>
+                        <span class="text-primary font-bold cursor-pointer">Download</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- 7. Icons & Spacing -->
+        <section class="mb-24">
+            <div class="grid md:grid-cols-2 gap-16">
+                <!-- Icons -->
+                <div>
+                    <div class="flex items-center space-x-3 mb-10">
+                        <span class="w-8 h-[2px] bg-primary"></span>
+                        <h2 class="text-2xl font-bold font-headline">07. Icon Library</h2>
+                    </div>
+                    <div
+                        class="grid grid-cols-4 sm:grid-cols-6 gap-6 bg-white p-8 rounded-xl border border-outline-variant/10">
+                        <div class="flex flex-col items-center space-y-2">
+                            <span class="material-symbols-outlined text-primary">dentistry</span>
+                            <span class="text-[9px] text-secondary font-mono">dentistry</span>
+                        </div>
+                        <div class="flex flex-col items-center space-y-2">
+                            <span class="material-symbols-outlined text-primary">person</span>
+                            <span class="text-[9px] text-secondary font-mono">person</span>
+                        </div>
+                        <div class="flex flex-col items-center space-y-2">
+                            <span class="material-symbols-outlined text-primary">calendar_month</span>
+                            <span class="text-[9px] text-secondary font-mono">calendar</span>
+                        </div>
+                        <div class="flex flex-col items-center space-y-2">
+                            <span class="material-symbols-outlined text-primary">medical_services</span>
+                            <span class="text-[9px] text-secondary font-mono">services</span>
+                        </div>
+                        <div class="flex flex-col items-center space-y-2">
+                            <span class="material-symbols-outlined text-primary">history</span>
+                            <span class="text-[9px] text-secondary font-mono">history</span>
+                        </div>
+                        <div class="flex flex-col items-center space-y-2">
+                            <span class="material-symbols-outlined text-primary">note_add</span>
+                            <span class="text-[9px] text-secondary font-mono">note_add</span>
+                        </div>
+                        <div class="flex flex-col items-center space-y-2">
+                            <span class="material-symbols-outlined text-primary">analytics</span>
+                            <span class="text-[9px] text-secondary font-mono">analytics</span>
+                        </div>
+                        <div class="flex flex-col items-center space-y-2">
+                            <span class="material-symbols-outlined text-primary">shield_with_heart</span>
+                            <span class="text-[9px] text-secondary font-mono">compliance</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Spacing -->
+                <div>
+                    <div class="flex items-center space-x-3 mb-10">
+                        <span class="w-8 h-[2px] bg-primary"></span>
+                        <h2 class="text-2xl font-bold font-headline">08. Spacing Scale</h2>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <div class="h-4 bg-primary rounded-full w-1"></div>
+                            <span class="ml-4 text-[10px] font-mono text-secondary">4px</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="h-4 bg-primary rounded-full w-2"></div>
+                            <span class="ml-4 text-[10px] font-mono text-secondary">8px</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="h-4 bg-primary rounded-full w-4"></div>
+                            <span class="ml-4 text-[10px] font-mono text-secondary">16px</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="h-4 bg-primary rounded-full w-8"></div>
+                            <span class="ml-4 text-[10px] font-mono text-secondary">32px</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="h-4 bg-primary rounded-full w-16"></div>
+                            <span class="ml-4 text-[10px] font-mono text-secondary">64px</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-[#2E3A59] w-full py-16 px-8 border-t border-slate-700/50">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto text-left">
+            <div class="space-y-4">
+                <div class="text-xl font-bold text-white font-headline">Morecedont</div>
+                <p class="text-slate-300 text-sm leading-relaxed">The clinical curator for the modern dental enterprise.
+                    Architected for precision and care.</p>
+            </div>
+            <div>
+                <h5 class="text-white font-bold mb-6">Product</h5>
+                <ul class="space-y-4 text-slate-300 text-sm">
+                    <li><a class="hover:text-white transition-colors" href="#">Support</a></li>
+                    <li><a class="hover:text-white transition-colors" href="#">Pricing</a></li>
+                    <li><a class="hover:text-white transition-colors" href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-white font-bold mb-6">Legal</h5>
+                <ul class="space-y-4 text-slate-300 text-sm">
+                    <li><a class="hover:text-white transition-colors" href="#">Privacy Policy</a></li>
+                    <li><a class="hover:text-white transition-colors" href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="space-y-4">
+                <h5 class="text-white font-bold mb-6">System Status</h5>
+                <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                    <span class="text-slate-300 text-xs font-bold uppercase tracking-widest">All Systems
+                        Operational</span>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-16 pt-8 border-t border-slate-700/30 text-center">
+            <p class="text-slate-400 text-[10px] uppercase tracking-widest">© 2024 Morecedont Dental Systems. All rights
+                reserved.</p>
+        </div>
+    </footer>
+    <script>
+        // Simple micro-interaction for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.96)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = '';
+            });
+        });
+    </script>
+</body>
+
+</html>

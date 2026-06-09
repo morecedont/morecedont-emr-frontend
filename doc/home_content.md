@@ -140,7 +140,7 @@ A: Puedes crear y gestionar múltiples clínicas desde una sola cuenta. Cada con
 
 - Logo Morecedont
 - Links: Inicio · Solicitar acceso · Iniciar sesión
-- Texto legal: © 2025 Morecedont. Todos los derechos reservados.
+- Texto legal: © 2026 Morecedont. Todos los derechos reservados.
 - Email de soporte: soporte@morecedont.online
 
 ---

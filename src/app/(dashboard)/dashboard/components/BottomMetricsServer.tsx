@@ -1,8 +1,5 @@
 import Link from "next/link"
-import { prisma } from "@/lib/prisma"
-
-type ClinicStat = { name: string; patient_count: number }
-type PatientStat = { patient_id: string; full_name: string; visit_count: number }
+import { getDashboardMetrics } from "@/lib/data/dashboard"
 
 function getInitials(name: string): string {
   return name
@@ -27,31 +24,7 @@ function avatarColor(name: string): string {
 }
 
 export default async function BottomMetricsServer({ doctorId }: { doctorId: string }) {
-  const [totalPatients, topClinics, topPatients] = await Promise.all([
-    prisma.patients.count({ where: { current_doctor_id: doctorId } }),
-
-    prisma.$queryRaw<ClinicStat[]>`
-      SELECT c.name, COUNT(DISTINCT p.id)::int AS patient_count
-      FROM patients p
-      JOIN medical_histories mh ON mh.patient_id = p.id
-      JOIN clinics c ON c.id = mh.clinic_id
-      WHERE p.current_doctor_id = ${doctorId}::uuid
-        AND mh.clinic_id IS NOT NULL
-      GROUP BY c.id, c.name
-      ORDER BY patient_count DESC
-      LIMIT 3
-    `,
-
-    prisma.$queryRaw<PatientStat[]>`
-      SELECT p.id AS patient_id, p.full_name, COUNT(mh.id)::int AS visit_count
-      FROM patients p
-      JOIN medical_histories mh ON mh.patient_id = p.id
-      WHERE p.current_doctor_id = ${doctorId}::uuid
-      GROUP BY p.id, p.full_name
-      ORDER BY visit_count DESC
-      LIMIT 3
-    `,
-  ])
+  const { totalPatients, topClinics, topPatients } = await getDashboardMetrics(doctorId)
 
   const maxClinicCount = topClinics[0]?.patient_count ?? 1
 

@@ -149,6 +149,7 @@ export default async function PatientPage({
   const clinicalInfo: ClinicalInfo = {
     lastVisit: latestHistory?.last_dental_visit?.toISOString() ?? latestHistory?.created_at.toISOString() ?? null,
     preferredClinic: latestHistory?.clinics?.name ?? null,
+    preferredClinicId: latestHistory?.clinics?.id ?? null,
     currency: latestHistory?.currency ?? "USD",
   }
 
@@ -186,7 +187,12 @@ export default async function PatientPage({
           <div className="space-y-4">
             <PersonalInfoCard patient={personalInfo} />
             <EmergencyContactCard patient={emergencyInfo} />
-            <ClinicalInfoCard info={clinicalInfo} />
+            <ClinicalInfoCard
+              info={clinicalInfo}
+              patientId={id}
+              doctorId={profile.id}
+              hasHistory={!!latestHistory}
+            />
           </div>
         </div>
       </div>

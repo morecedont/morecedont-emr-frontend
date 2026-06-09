@@ -98,7 +98,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-10 sm:mt-14 lg:mt-20 pt-6 sm:pt-8 border-t border-slate-700/50 flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6">
           <p className="text-slate-400 text-xs sm:text-sm">
-            © 2025 Morecedont. Todos los derechos reservados.
+            © 2026 Morecedont. Todos los derechos reservados.
           </p>
           <div className="flex gap-4 sm:gap-6">
             <a

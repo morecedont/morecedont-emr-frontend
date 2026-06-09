@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { headers } from "next/headers"
 import { prisma } from "@/lib/prisma"
 import { getProfile } from "@/lib/session"
@@ -43,6 +43,7 @@ export async function approveDoctor(
   }
 
   revalidatePath("/solicitudes")
+  revalidateTag(`profile-${doctorId}`, "max")
   return {}
 }
 
@@ -65,5 +66,6 @@ export async function rejectDoctor(
   })
 
   revalidatePath("/solicitudes")
+  revalidateTag(`profile-${doctorId}`, "max")
   return {}
 }

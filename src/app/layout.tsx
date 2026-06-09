@@ -19,9 +19,9 @@ export const metadata: Metadata = {
   title: "Morecedont — Clinical Curator",
   description: "Plataforma de historias clínicas odontológicas",
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: "/morecedont-logo.svg",
+    shortcut: "/morecedont-logo.svg",
+    apple: "/morecedont-logo.svg",
   },
 }
 

@@ -3,7 +3,7 @@
 import { getProfile } from "@/lib/session"
 import { prisma } from "@/lib/prisma"
 import { Prisma } from "@prisma/client"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 
 // ─── Doctor search (used by TransferPatientModal) ────────────────────────────
 
@@ -107,6 +107,41 @@ export async function createMedicalHistory(
   }
 }
 
+// ─── Update clinic on latest medical history ─────────────────────────────────
+
+export async function updateLatestHistoryClinic(
+  patientId: string,
+  clinicId: string | null
+): Promise<{ success: boolean; error?: string }> {
+  const profile = await getProfile()
+  if (!profile) return { success: false, error: "No autorizado" }
+
+  const patient = await prisma.patients.findUnique({
+    where: { id: patientId },
+    select: { current_doctor_id: true },
+  })
+  if (!patient || patient.current_doctor_id !== profile.id) {
+    return { success: false, error: "No autorizado" }
+  }
+
+  const latestHistory = await prisma.medical_histories.findFirst({
+    where: { patient_id: patientId },
+    orderBy: { created_at: "desc" },
+    select: { id: true },
+  })
+  if (!latestHistory) {
+    return { success: false, error: "No hay historia clínica para actualizar" }
+  }
+
+  await prisma.medical_histories.update({
+    where: { id: latestHistory.id },
+    data: { clinic_id: clinicId },
+  })
+
+  revalidatePath(`/patients/${patientId}`)
+  return { success: true }
+}
+
 // ─── New patient wizard actions ───────────────────────────────────────────────
 
 export async function checkDuplicatePatient(
@@ -180,6 +215,8 @@ export async function createPatient(
       },
     })
 
+    revalidatePath("/patients")
+    revalidateTag(`dashboard-metrics-${doctorId}`, "max")
     return { patientId: patient.id, medicalHistoryId: medicalHistory.id }
   } catch (err) {
     console.error("createPatient error:", err)
@@ -326,21 +363,21 @@ export async function saveDentalExam(
       },
     })
 
-    // Batch upsert tooth records
-    for (const tr of toothRecords) {
-      await prisma.tooth_records.upsert({
-        where: { dental_exam_id_tooth_number: { dental_exam_id: exam.id, tooth_number: tr.toothNumber } },
-        update: {
-          vestibular_status: tr.vestibularStatus as never,
-          lingual_status: tr.lingualStatus as never,
-        },
-        create: {
-          dental_exam_id: exam.id,
-          tooth_number: tr.toothNumber,
-          vestibular_status: tr.vestibularStatus as never,
-          lingual_status: tr.lingualStatus as never,
-        },
-      })
+    // Replace tooth records atomically: deleteMany + createMany vs N individual upserts
+    if (toothRecords.length > 0) {
+      await prisma.$transaction([
+        prisma.tooth_records.deleteMany({ where: { dental_exam_id: exam.id } }),
+        prisma.tooth_records.createMany({
+          data: toothRecords.map((tr) => ({
+            dental_exam_id: exam.id,
+            tooth_number: tr.toothNumber,
+            vestibular_status: tr.vestibularStatus as never,
+            lingual_status: tr.lingualStatus as never,
+          })),
+        }),
+      ])
+    } else {
+      await prisma.tooth_records.deleteMany({ where: { dental_exam_id: exam.id } })
     }
 
     return {}
@@ -466,18 +503,17 @@ export async function saveEndodontics(
       })
     }
 
-    // Insert sessions
-    for (const s of sessions) {
-      if (s.date && s.activities.length > 0) {
-        await prisma.endodontic_sessions.create({
-          data: {
-            endodontic_id: endoId,
-            session_date: new Date(s.date),
-            activities: s.activities as never,
-            notes: s.notes || null,
-          },
-        })
-      }
+    // Insert sessions with a single createMany instead of N individual creates
+    const validSessions = sessions.filter((s) => s.date && s.activities.length > 0)
+    if (validSessions.length > 0) {
+      await prisma.endodontic_sessions.createMany({
+        data: validSessions.map((s) => ({
+          endodontic_id: endoId,
+          session_date: new Date(s.date),
+          activities: s.activities as never,
+          notes: s.notes || null,
+        })),
+      })
     }
 
     return {}
@@ -560,36 +596,34 @@ export async function saveTreatmentPlan(
   if (!(await verifyPatientAccess(medicalHistoryId, profile.id))) return { error: "No autorizado" }
 
   try {
-    // Replace items
+    // Replace items — deleteMany + createMany vs N individual creates
     await prisma.treatment_items.deleteMany({ where: { medical_history_id: medicalHistoryId } })
-    for (const item of items) {
-      if (item.description) {
-        await prisma.treatment_items.create({
-          data: {
-            medical_history_id: medicalHistoryId,
-            item_number: item.itemNumber,
-            description: item.description,
-            cost: new Prisma.Decimal(item.cost || 0),
-          },
-        })
-      }
+    const validItems = items.filter((item) => item.description)
+    if (validItems.length > 0) {
+      await prisma.treatment_items.createMany({
+        data: validItems.map((item) => ({
+          medical_history_id: medicalHistoryId,
+          item_number: item.itemNumber,
+          description: item.description,
+          cost: new Prisma.Decimal(item.cost || 0),
+        })),
+      })
     }
 
-    // Replace payments
+    // Replace payments — deleteMany + createMany vs N individual creates
     await prisma.treatment_payments.deleteMany({ where: { medical_history_id: medicalHistoryId } })
-    for (const p of payments) {
-      if (p.clinicalActivity && p.date) {
-        await prisma.treatment_payments.create({
-          data: {
-            medical_history_id: medicalHistoryId,
-            payment_date: new Date(p.date),
-            tooth_unit: p.toothUnit || null,
-            clinical_activity: p.clinicalActivity,
-            cost: new Prisma.Decimal(p.cost || 0),
-            payment: new Prisma.Decimal(p.payment || 0),
-          },
-        })
-      }
+    const validPayments = payments.filter((p) => p.clinicalActivity && p.date)
+    if (validPayments.length > 0) {
+      await prisma.treatment_payments.createMany({
+        data: validPayments.map((p) => ({
+          medical_history_id: medicalHistoryId,
+          payment_date: new Date(p.date),
+          tooth_unit: p.toothUnit || null,
+          clinical_activity: p.clinicalActivity,
+          cost: new Prisma.Decimal(p.cost || 0),
+          payment: new Prisma.Decimal(p.payment || 0),
+        })),
+      })
     }
 
     return {}

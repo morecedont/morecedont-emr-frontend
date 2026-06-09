@@ -1,11 +1,7 @@
 import { cache } from "react"
+import { unstable_cache } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
 import { prisma } from "@/lib/prisma"
-
-// `cache` deduplica estas llamadas dentro de un mismo render pass:
-// si el layout y la page (y cualquier componente server) llaman al mismo
-// helper, se ejecuta UNA sola vez por request en vez de repetir el
-// round-trip a Supabase Auth + la query a `profiles`.
 
 export const getSession = cache(async () => {
   const supabase = await createClient()
@@ -15,17 +11,27 @@ export const getSession = cache(async () => {
   return session
 })
 
-export const getProfile = cache(async () => {
+// JWT validation — per-request. React cache() deduplicates within a render pass.
+const getUser = cache(async () => {
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
+  return user
+})
 
+// Prisma fetch cached 5 min per user ID across requests.
+// Invalidate with revalidateTag(`profile-<id>`) when admin approves/rejects.
+function fetchProfileFromDB(userId: string) {
+  return unstable_cache(
+    () => prisma.profiles.findUnique({ where: { id: userId } }),
+    [`profile-${userId}`],
+    { revalidate: 300, tags: [`profile-${userId}`] }
+  )()
+}
+
+export const getProfile = cache(async () => {
+  const user = await getUser()
   if (!user) return null
-
-  const profile = await prisma.profiles.findUnique({
-    where: { id: user.id },
-  })
-
-  return profile
+  return fetchProfileFromDB(user.id)
 })
