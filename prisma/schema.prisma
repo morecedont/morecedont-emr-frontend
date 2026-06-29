@@ -698,6 +698,7 @@ model medical_histories {
   signature_date      DateTime?            @db.Date
   created_at          DateTime             @default(now()) @db.Timestamptz(6)
   updated_at          DateTime             @default(now()) @db.Timestamptz(6)
+  status              String               @default("draft")
   attachments         attachments[]
   dental_exams        dental_exams?
   endodontics         endodontics[]

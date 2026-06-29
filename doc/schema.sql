@@ -124,8 +124,13 @@ CREATE TABLE medical_histories (
   emergency_contact   TEXT,
   signature_date      DATE,
   created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  status              TEXT NOT NULL DEFAULT 'draft'
 );
+
+-- Indexes for status filtering
+CREATE INDEX idx_medical_histories_status ON public.medical_histories(status);
+CREATE INDEX idx_medical_histories_patient_status_created ON public.medical_histories(patient_id, status, created_at);
 
 -- ============================================================
 -- ANTECEDENTES MÉDICOS (página 1)

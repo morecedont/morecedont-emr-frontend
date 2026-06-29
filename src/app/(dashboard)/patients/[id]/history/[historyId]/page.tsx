@@ -4,6 +4,7 @@ import { getProfile } from "@/lib/session"
 import { prisma } from "@/lib/prisma"
 import HistoryHeader, { type HistoryHeaderData } from "./components/HistoryHeader"
 import HistoryTabs, { type HistoryTabsData } from "./components/HistoryTabs"
+import DraftBanner from "./components/DraftBanner"
 import type { ToothRecord } from "@/components/shared/Odontogram"
 import type { EndoRecord } from "./components/tabs/EndodonticsTab"
 
@@ -53,9 +54,12 @@ export default async function HistoryDetailPage({
   if (history.patients.current_doctor_id !== profile.id) notFound()
 
   const patient = history.patients
-  const sixMonthsAgo = new Date()
-  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
-  const isActive = history.created_at >= sixMonthsAgo
+  const derivedStatus: "draft" | "active" | "completed" = (() => {
+    if (history.status === "draft") return "draft"
+    const sixMonthsAgo = new Date()
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
+    return history.created_at >= sixMonthsAgo ? "active" : "completed"
+  })()
 
   // Header data
   const headerData: HistoryHeaderData = {
@@ -69,7 +73,7 @@ export default async function HistoryDetailPage({
     createdAt: history.created_at.toISOString(),
     updatedAt: history.updated_at.toISOString(),
     doctorName: history.profiles.full_name,
-    status: isActive ? "active" : "completed",
+    status: derivedStatus,
   }
 
   // Medical background
@@ -234,6 +238,9 @@ export default async function HistoryDetailPage({
       </div>
 
       <HistoryHeader data={headerData} />
+      {derivedStatus === "draft" && (
+        <DraftBanner historyId={historyId} patientId={id} />
+      )}
       <HistoryTabs data={tabsData} />
     </div>
   )

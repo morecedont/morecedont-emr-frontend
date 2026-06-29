@@ -3,6 +3,7 @@ import Link from "next/link"
 import { getProfile } from "@/lib/session"
 import { prisma } from "@/lib/prisma"
 import { getSignedUrls } from "@/lib/storage"
+import { cleanupOrphanedDrafts } from "@/lib/actions/patients"
 import PatientProfileHeader, { type PatientHeaderData } from "./components/PatientProfileHeader"
 import TreatmentHistoryList, { type HistoryRow } from "./components/TreatmentHistoryList"
 import PatientAlertsDocuments, { type AlertData, type AttachmentData } from "./components/PatientAlertsDocuments"
@@ -21,7 +22,8 @@ function calcAge(dob: Date | null | undefined): number | null {
   return age
 }
 
-function deriveStatus(createdAt: Date): "active" | "completed" | "paused" {
+function deriveStatus(createdAt: Date, dbStatus: string): "active" | "completed" | "paused" | "draft" {
+  if (dbStatus === "draft") return "draft"
   const sixMonthsAgo = new Date()
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
   return createdAt >= sixMonthsAgo ? "active" : "completed"
@@ -46,25 +48,36 @@ export default async function PatientPage({
   })
   if (!ownership || ownership.current_doctor_id !== profile.id) notFound()
 
-  const [patient, totalHistoryCount, attachmentsRaw] = await Promise.all([
+  await cleanupOrphanedDrafts(id)
+
+  const [patient, totalActiveCount, draftHistories, attachmentsRaw] = await Promise.all([
     prisma.patients.findUnique({
-    relationLoadStrategy: "join",
-    where: { id },
-    include: {
-      medical_histories: {
-        orderBy: { created_at: "desc" },
-        skip: (currentHistoryPage - 1) * HISTORY_PAGE_SIZE,
-        take: HISTORY_PAGE_SIZE,
-        include: {
-          clinics: true,
-          treatment_items: { orderBy: { item_number: "asc" }, take: 1 },
-          medical_backgrounds: { select: { immun_drug_allergy: true, blood_easy_bleeding: true } },
+      relationLoadStrategy: "join",
+      where: { id },
+      include: {
+        medical_histories: {
+          where: { status: "active" },
+          orderBy: { created_at: "desc" },
+          skip: (currentHistoryPage - 1) * HISTORY_PAGE_SIZE,
+          take: HISTORY_PAGE_SIZE,
+          include: {
+            clinics: true,
+            treatment_items: { orderBy: { item_number: "asc" }, take: 1 },
+            medical_backgrounds: { select: { immun_drug_allergy: true, blood_easy_bleeding: true } },
+          },
         },
       },
-    },
     }),
     prisma.medical_histories.count({
-      where: { patient_id: id },
+      where: { patient_id: id, status: "active" },
+    }),
+    prisma.medical_histories.findMany({
+      where: { patient_id: id, doctor_id: profile.id, status: "draft" },
+      orderBy: { created_at: "desc" },
+      include: {
+        clinics: true,
+        treatment_items: { orderBy: { item_number: "asc" }, take: 1 },
+      },
     }),
     prisma.attachments.findMany({
       relationLoadStrategy: "join",
@@ -101,16 +114,27 @@ export default async function PatientPage({
     isActive,
   }
 
-  // History rows
+  // History rows — active (paginated)
   const histories: HistoryRow[] = patient.medical_histories.map((h) => ({
     id: h.id,
     patientId: patient.id,
     clinicName: h.clinics?.name ?? null,
     firstProcedure: h.treatment_items[0]?.description ?? null,
     createdAt: h.created_at.toISOString(),
-    status: deriveStatus(h.created_at),
+    status: deriveStatus(h.created_at, h.status),
   }))
-  const totalHistoryPages = Math.max(1, Math.ceil(totalHistoryCount / HISTORY_PAGE_SIZE))
+
+  // Draft rows — shown separately above the active list
+  const draftRows: HistoryRow[] = draftHistories.map((h) => ({
+    id: h.id,
+    patientId: patient.id,
+    clinicName: h.clinics?.name ?? null,
+    firstProcedure: h.treatment_items[0]?.description ?? null,
+    createdAt: h.created_at.toISOString(),
+    status: "draft" as const,
+  }))
+
+  const totalHistoryPages = Math.max(1, Math.ceil(totalActiveCount / HISTORY_PAGE_SIZE))
 
   // Alerts
   const bg = latestHistory?.medical_backgrounds
@@ -174,10 +198,11 @@ export default async function PatientPage({
           <div className="lg:col-span-2 space-y-6">
             <TreatmentHistoryList
               histories={histories}
+              draftHistories={draftRows}
               patientId={id}
               currentPage={currentHistoryPage}
               totalPages={totalHistoryPages}
-              totalCount={totalHistoryCount}
+              totalCount={totalActiveCount}
               pageSize={HISTORY_PAGE_SIZE}
             />
             <PatientAlertsDocuments alerts={alertData} attachments={attachments} patientId={id} />

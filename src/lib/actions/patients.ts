@@ -4,6 +4,7 @@ import { getProfile } from "@/lib/session"
 import { prisma } from "@/lib/prisma"
 import { Prisma } from "@prisma/client"
 import { revalidatePath, revalidateTag } from "next/cache"
+import { deleteStorageFile } from "@/lib/storage"
 
 // ─── Doctor search (used by TransferPatientModal) ────────────────────────────
 
@@ -98,6 +99,7 @@ export async function createMedicalHistory(
         doctor_id: profile.id,
         clinic_id: clinicId || null,
         currency,
+        status: "draft",
       },
     })
     return { medicalHistoryId: history.id }
@@ -212,6 +214,7 @@ export async function createPatient(
         emergency_contact: emergencyData.emergencyContact
           ? `${emergencyData.emergencyContact} | ${emergencyData.emergencyPhone}`
           : null,
+        status: "active",
       },
     })
 
@@ -630,5 +633,109 @@ export async function saveTreatmentPlan(
   } catch (err) {
     console.error("saveTreatmentPlan error:", err)
     return { error: "Error al guardar plan de tratamiento" }
+  }
+}
+
+// ─── Draft history management ─────────────────────────────────────────────────
+
+export async function confirmMedicalHistory(
+  historyId: string,
+  patientId: string
+): Promise<{ error?: string }> {
+  const profile = await getProfile()
+  if (!profile) return { error: "No autorizado" }
+
+  const history = await prisma.medical_histories.findUnique({
+    where: { id: historyId },
+    select: { doctor_id: true, status: true, patient_id: true },
+  })
+  if (!history) return { error: "Historia no encontrada" }
+  if (history.doctor_id !== profile.id) return { error: "No autorizado" }
+  if (history.patient_id !== patientId) return { error: "No autorizado" }
+  if (history.status !== "draft") return { error: "Esta historia ya fue confirmada" }
+
+  try {
+    await prisma.medical_histories.update({
+      where: { id: historyId },
+      data: { status: "active" },
+    })
+    revalidatePath(`/patients/${patientId}`)
+    revalidatePath(`/patients/${patientId}/history/${historyId}`)
+    return {}
+  } catch (err) {
+    console.error("confirmMedicalHistory error:", err)
+    return { error: "Error al confirmar la historia. Intenta de nuevo." }
+  }
+}
+
+export async function discardDraftHistory(
+  historyId: string,
+  patientId: string
+): Promise<{ error?: string }> {
+  const profile = await getProfile()
+  if (!profile) return { error: "No autorizado" }
+
+  const history = await prisma.medical_histories.findUnique({
+    where: { id: historyId },
+    select: {
+      doctor_id: true,
+      status: true,
+      patient_id: true,
+      attachments: { select: { file_url: true } },
+    },
+  })
+  if (!history) return { error: "Historia no encontrada" }
+  if (history.doctor_id !== profile.id) return { error: "No autorizado" }
+  if (history.patient_id !== patientId) return { error: "No autorizado" }
+  if (history.status !== "draft") {
+    return { error: "Solo se pueden descartar historias en borrador" }
+  }
+
+  try {
+    await Promise.all(history.attachments.map((a) => deleteStorageFile(a.file_url)))
+    await prisma.medical_histories.delete({ where: { id: historyId } })
+    revalidatePath(`/patients/${patientId}`)
+    return {}
+  } catch (err) {
+    console.error("discardDraftHistory error:", err)
+    return { error: "Error al descartar el borrador. Intenta de nuevo." }
+  }
+}
+
+export async function cleanupOrphanedDrafts(patientId: string): Promise<void> {
+  const profile = await getProfile()
+  if (!profile) return
+
+  const cutoff = new Date(Date.now() - 30 * 60 * 1000)
+
+  try {
+    const staleDrafts = await prisma.medical_histories.findMany({
+      where: {
+        patient_id: patientId,
+        doctor_id: profile.id,
+        status: "draft",
+        created_at: { lt: cutoff },
+        medical_backgrounds: null,
+        treatment_items: { none: {} },
+      },
+      select: {
+        id: true,
+        attachments: { select: { file_url: true } },
+      },
+    })
+
+    if (staleDrafts.length === 0) return
+
+    await Promise.all(
+      staleDrafts.flatMap((d) => d.attachments.map((a) => deleteStorageFile(a.file_url)))
+    )
+
+    await prisma.medical_histories.deleteMany({
+      where: { id: { in: staleDrafts.map((d) => d.id) } },
+    })
+
+    revalidatePath(`/patients/${patientId}`)
+  } catch (err) {
+    console.error("cleanupOrphanedDrafts error:", err)
   }
 }

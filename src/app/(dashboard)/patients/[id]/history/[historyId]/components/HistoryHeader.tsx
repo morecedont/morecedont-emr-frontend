@@ -13,7 +13,7 @@ export type HistoryHeaderData = {
   createdAt: string
   updatedAt: string
   doctorName: string
-  status: "active" | "completed"
+  status: "draft" | "active" | "completed"
 }
 
 interface HistoryHeaderProps {
@@ -29,15 +29,18 @@ function formatDate(iso: string) {
 }
 
 export default function HistoryHeader({ data }: HistoryHeaderProps) {
-  const isActive = data.status === "active"
-
   return (
     <>
       <div className="bg-surface border-b border-outline/10 px-4 sm:px-6 lg:px-8 py-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center gap-4">
           {/* Left: patient info */}
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            <PatientAvatar fullName={data.patientName} size="md" showStatusDot isActive={isActive} />
+            <PatientAvatar
+              fullName={data.patientName}
+              size="md"
+              showStatusDot={data.status !== "draft"}
+              isActive={data.status === "active"}
+            />
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="font-extrabold text-on-surface text-lg truncate">{data.patientName}</h1>
@@ -56,20 +59,28 @@ export default function HistoryHeader({ data }: HistoryHeaderProps) {
               </div>
               <div className="flex flex-wrap items-center gap-2 mt-1">
                 {data.clinicName && (
-                  <span className="px-2 py-0.5 bg-[#E6EAF5] rounded-full text-xs font-semibold text-sidebar">
+                  <span className="px-2 py-0.5 bg-surface-container-high rounded-full text-xs font-semibold text-sidebar">
                     {data.clinicName}
                   </span>
                 )}
                 <span className="text-xs text-secondary">
                   Creado {formatDate(data.createdAt)}
                 </span>
-                <span
-                  className={`px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide ${
-                    isActive ? "bg-green-50 text-green-700" : "bg-blue-50 text-blue-700"
-                  }`}
-                >
-                  {isActive ? "Activo" : "Completado"}
-                </span>
+                {data.status === "draft" && (
+                  <span className="px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide bg-amber-100 text-amber-700">
+                    Borrador
+                  </span>
+                )}
+                {data.status === "active" && (
+                  <span className="px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide bg-green-50 text-green-700">
+                    Activo
+                  </span>
+                )}
+                {data.status === "completed" && (
+                  <span className="px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide bg-blue-50 text-blue-700">
+                    Completado
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -95,7 +106,7 @@ export default function HistoryHeader({ data }: HistoryHeaderProps) {
       </div>
 
       {/* Footer sync bar */}
-      <div className="hidden md:block fixed bottom-0 left-0 right-0 z-40 border-t border-[#E6EAF5] bg-surface/95 backdrop-blur-sm">
+      <div className="hidden md:block fixed bottom-0 left-0 right-0 z-40 border-t border-outline-variant/20 bg-surface/95 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between text-xs text-secondary">
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
