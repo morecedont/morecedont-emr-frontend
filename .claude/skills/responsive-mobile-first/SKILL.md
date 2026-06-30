@@ -7,6 +7,8 @@ description: Mobile-first responsive rules for the Morecedont EMR frontend. Use 
 
 These rules apply to every `.tsx` / `.jsx` file under `src/`. The hook at `.claude/hooks/responsive-check.sh` runs after every Write/Edit and **blocks the write** if a hard rule is violated. Read the rules before generating code; do not rely on the hook to catch mistakes after the fact.
 
+**Read alongside this skill:** `.claude/skills/design-system/SKILL.md` — defines color tokens, typography, button variants, badge styles, form patterns, card patterns, and icon names. Both skills must be satisfied before any component is written.
+
 ## Hard errors (the hook blocks the write)
 
 | Rule | Bad | Good |
