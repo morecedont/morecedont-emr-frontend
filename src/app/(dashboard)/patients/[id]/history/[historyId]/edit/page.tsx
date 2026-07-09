@@ -86,6 +86,8 @@ export default async function EditHistoryPage({
         family_renal: bg.family_renal ?? false,
         family_mental_health: bg.family_mental_health ?? false,
         family_other: bg.family_other ?? "",
+        clinical_observations: bg.clinical_observations ?? "",
+        allergy_notes: bg.allergy_notes ?? "",
       }
     : null
 

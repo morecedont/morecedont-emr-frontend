@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, useCallback } from "react"
 import { saveMedicalBackground, type MedicalBackgroundData } from "@/lib/actions/patients"
 
 type BooleanKeys = {
@@ -129,6 +129,8 @@ const EMPTY_BG: MedicalBackgroundData = {
   family_hypertension: false, family_diabetes: false, family_cardiovascular: false,
   family_cancer: false, family_renal: false, family_mental_health: false,
   family_other: "",
+  clinical_observations: "",
+  allergy_notes: "",
 }
 
 const FAMILY_FIELDS: { key: BooleanKeys; label: string }[] = [
@@ -157,11 +159,15 @@ export default function Step3MedicalBackground({
   initialData,
 }: Step3Props) {
   const [bgData, setBgData] = useState<MedicalBackgroundData>(() => initialData ?? EMPTY_BG)
-  const [observations, setObservations] = useState("")
   const [allergyInput, setAllergyInput] = useState("")
-  const [allergyTags, setAllergyTags] = useState<string[]>([])
   const [serverError, setServerError] = useState<string | null>(null)
   const [isSaving, startSaving] = useTransition()
+  const [isSavingObs, startSavingObs] = useTransition()
+  const [obsSaved, setObsSaved] = useState(false)
+
+  const allergyTags = bgData.allergy_notes
+    ? bgData.allergy_notes.split(",").filter(Boolean)
+    : []
 
   function toggleField(key: BooleanKeys) {
     setBgData((prev) => ({ ...prev, [key]: !prev[key] }))
@@ -170,18 +176,29 @@ export default function Step3MedicalBackground({
   function addAllergyTag(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter" && allergyInput.trim()) {
       e.preventDefault()
-      setAllergyTags((prev) => [...prev, allergyInput.trim()])
+      const newTags = [...allergyTags, allergyInput.trim()]
+      setBgData((prev) => ({ ...prev, allergy_notes: newTags.join(",") }))
       setAllergyInput("")
     }
   }
 
   function removeTag(index: number) {
-    setAllergyTags((prev) => prev.filter((_, i) => i !== index))
+    const newTags = allergyTags.filter((_, i) => i !== index)
+    setBgData((prev) => ({ ...prev, allergy_notes: newTags.join(",") }))
   }
 
-  async function doSave() {
-    const result = await saveMedicalBackground(medicalHistoryId, bgData)
-    return result
+  const doSave = useCallback(async () => {
+    return saveMedicalBackground(medicalHistoryId, bgData)
+  }, [medicalHistoryId, bgData])
+
+  function handleSaveObservations() {
+    setServerError(null)
+    startSavingObs(async () => {
+      const result = await doSave()
+      if (result.error) { setServerError(result.error); return }
+      setObsSaved(true)
+      setTimeout(() => setObsSaved(false), 2500)
+    })
   }
 
   function handleNext() {
@@ -318,43 +335,70 @@ export default function Step3MedicalBackground({
           </div>
 
           {/* Observations & allergies */}
-          <div>
-            <h3 className="font-extrabold text-lg text-on-surface mb-3">
-              Observaciones clínicas y alergias
-            </h3>
-            <div className="bg-white rounded-xl border border-outline-variant/30 focus-within:ring-2 focus-within:ring-primary/20 transition-all overflow-hidden">
-              <textarea
-                value={observations}
-                onChange={(e) => setObservations(e.target.value)}
-                placeholder="Mencione alergias a medicamentos, cirugías recientes o síntomas persistentes..."
-                rows={4}
-                className="w-full text-base border-none rounded-lg text-sm text-on-surface p-4 focus:ring-0 outline-none resize-none"
-              />
+          <div className="bg-surface-container-low rounded-xl p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-on-surface text-sm">Observaciones clínicas y alergias</h3>
+              <button
+                type="button"
+                onClick={handleSaveObservations}
+                disabled={isSavingObs || isSaving}
+                className="h-8 px-3 flex items-center gap-1.5 text-xs font-semibold rounded-lg transition-all disabled:opacity-60
+                  bg-sidebar-active/10 text-sidebar-active border border-sidebar-active/20
+                  hover:bg-sidebar-active/20 disabled:cursor-not-allowed"
+              >
+                {isSavingObs ? (
+                  <>
+                    <span className="material-symbols-outlined text-[14px]">sync</span>
+                    Guardando...
+                  </>
+                ) : obsSaved ? (
+                  <>
+                    <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                    Guardado
+                  </>
+                ) : (
+                  <>
+                    <span className="material-symbols-outlined text-[14px]">save</span>
+                    Guardar
+                  </>
+                )}
+              </button>
             </div>
 
-            {/* Allergy tag input */}
+            <textarea
+              value={bgData.clinical_observations}
+              onChange={(e) => setBgData((prev) => ({ ...prev, clinical_observations: e.target.value }))}
+              placeholder="Mencione alergias a medicamentos, cirugías recientes o síntomas persistentes..."
+              rows={4}
+              className="w-full text-base bg-white border border-outline-variant/30 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
+            />
+
             <div className="mt-3">
+              <label className="block text-xs font-semibold text-secondary mb-1.5">
+                Alergias específicas — escribir y presionar Enter
+              </label>
               <input
                 type="text"
                 value={allergyInput}
                 onChange={(e) => setAllergyInput(e.target.value)}
                 onKeyDown={addAllergyTag}
-                placeholder="Escribir alergia y presionar Enter..."
-                className="w-full text-base bg-surface-container-low border border-outline-variant/20 rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                placeholder="Ej: Penicilina, Ibuprofeno..."
+                className="w-full text-base bg-white border border-outline-variant/30 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary/20 transition-all"
               />
             </div>
+
             {allergyTags.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-3">
                 {allergyTags.map((tag, i) => (
                   <span
                     key={i}
-                    className="inline-flex items-center gap-1 px-3 py-1 bg-error-container text-error text-[10px] font-bold rounded-full uppercase tracking-wider"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-error-container text-error text-[10px] font-bold rounded-full uppercase tracking-wider"
                   >
                     {tag}
                     <button
-                      onClick={() => removeTag(i)}
-                      className="ml-1 hover:opacity-70"
                       type="button"
+                      onClick={() => removeTag(i)}
+                      className="hover:opacity-70 leading-none"
                     >
                       ×
                     </button>

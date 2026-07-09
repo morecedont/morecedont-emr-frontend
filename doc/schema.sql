@@ -198,6 +198,19 @@ CREATE TABLE medical_backgrounds (
   female_pregnant                 BOOLEAN DEFAULT FALSE,
   female_breastfeeding            BOOLEAN DEFAULT FALSE,
 
+  -- Antecedentes familiares (añadidos post-inicial)
+  family_hypertension             BOOLEAN DEFAULT FALSE,
+  family_diabetes                 BOOLEAN DEFAULT FALSE,
+  family_cardiovascular           BOOLEAN DEFAULT FALSE,
+  family_cancer                   BOOLEAN DEFAULT FALSE,
+  family_renal                    BOOLEAN DEFAULT FALSE,
+  family_mental_health            BOOLEAN DEFAULT FALSE,
+  family_other                    TEXT,
+
+  -- Observaciones clínicas y alergias
+  clinical_observations           TEXT,
+  allergy_notes                   TEXT,
+
   created_at                      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at                      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

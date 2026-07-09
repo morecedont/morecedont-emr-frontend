@@ -279,6 +279,8 @@ export type MedicalBackgroundData = {
   family_renal: boolean
   family_mental_health: boolean
   family_other: string
+  clinical_observations: string
+  allergy_notes: string
 }
 
 export async function saveMedicalBackground(

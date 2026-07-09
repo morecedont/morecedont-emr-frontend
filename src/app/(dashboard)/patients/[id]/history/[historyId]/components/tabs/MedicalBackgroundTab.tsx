@@ -15,6 +15,8 @@ type BgData = {
   family_hypertension?: boolean | null; family_diabetes?: boolean | null; family_cardiovascular?: boolean | null
   family_cancer?: boolean | null; family_renal?: boolean | null; family_mental_health?: boolean | null
   family_other?: string | null
+  clinical_observations?: string | null
+  allergy_notes?: string | null
 } | null
 
 const FAMILY_CONDITIONS = [
@@ -240,23 +242,39 @@ export default function MedicalBackgroundTab({ bg, patientId, historyId }: Medic
             )
           })()}
 
-          {/* Observations */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-extrabold text-on-surface">Observaciones clínicas y alergias</h3>
-              <a
-                href={`/patients/${patientId}/history/${historyId}/edit`}
-                className="text-xs font-semibold text-sidebar-active hover:underline"
-              >
-                Editar antecedentes
-              </a>
+          {/* Observations & allergy tags */}
+          {(bg?.clinical_observations || bg?.allergy_notes) && (
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-extrabold text-on-surface">Observaciones clínicas y alergias</h3>
+                <a
+                  href={`/patients/${patientId}/history/${historyId}/edit`}
+                  className="text-xs font-semibold text-sidebar-active hover:underline"
+                >
+                  Editar
+                </a>
+              </div>
+              <div className="bg-surface-container-low rounded-xl p-5 space-y-4">
+                {bg?.clinical_observations && (
+                  <p className="text-sm text-secondary leading-relaxed whitespace-pre-wrap">
+                    {bg.clinical_observations}
+                  </p>
+                )}
+                {bg?.allergy_notes && (
+                  <div className="flex flex-wrap gap-2">
+                    {bg.allergy_notes.split(",").filter(Boolean).map((tag, i) => (
+                      <span
+                        key={i}
+                        className="inline-flex items-center px-3 py-1 bg-error-container text-error text-[10px] font-bold rounded-full uppercase tracking-wider"
+                      >
+                        {tag.trim()}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="bg-surface-container-low rounded-xl p-5 border-l-4 border-sidebar-active/30">
-              <p className="text-sm text-secondary italic leading-relaxed">
-                "Sin observaciones registradas"
-              </p>
-            </div>
-          </div>
+          )}
         </>
       )}
     </div>
