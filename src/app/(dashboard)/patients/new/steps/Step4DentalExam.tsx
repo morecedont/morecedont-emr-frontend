@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { saveDentalExam, type DentalExamData, type ToothRecord } from "@/lib/actions/patients"
 
@@ -98,6 +98,8 @@ export default function Step4DentalExam({ medicalHistoryId, patientId, initialDa
   const [openTooth, setOpenTooth] = useState<number | null>(null)
   const [serverError, setServerError] = useState<string | null>(null)
   const [isSaving, startSaving] = useTransition()
+  const [isSavingNotes, startSavingNotes] = useTransition()
+  const [notesSaved, setNotesSaved] = useState(false)
 
   function toggleProblem(key: keyof ExamFormData) {
     setExamData((prev) => ({ ...prev, [key]: !prev[key as keyof typeof prev] }))
@@ -118,12 +120,22 @@ export default function Step4DentalExam({ medicalHistoryId, patientId, initialDa
       }))
   }
 
-  async function doSave() {
+  const doSave = useCallback(() => {
     return saveDentalExam(
       medicalHistoryId,
       { ...examData, eruption_status: examData.eruption_status || null },
       buildToothRecords()
     )
+  }, [medicalHistoryId, examData, toothMap]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  function handleSaveNotes() {
+    setServerError(null)
+    startSavingNotes(async () => {
+      const result = await doSave()
+      if (result.error) { setServerError(result.error); return }
+      setNotesSaved(true)
+      setTimeout(() => setNotesSaved(false), 2500)
+    })
   }
 
   function handleNext() {
@@ -291,42 +303,61 @@ export default function Step4DentalExam({ medicalHistoryId, patientId, initialDa
         </div>
 
         {/* Text fields */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div>
-            <label className={labelCls}>Especificaciones</label>
-            <textarea
-              value={examData.specifications}
-              onChange={(e) => setExamData((p) => ({ ...p, specifications: e.target.value }))}
-              rows={3}
-              className={`${inputCls} resize-none`}
-            />
+        <div className="bg-surface-container-low rounded-xl p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold text-on-surface text-sm">Notas clínicas</h3>
+            <button
+              type="button"
+              onClick={handleSaveNotes}
+              disabled={isSavingNotes || isSaving}
+              className="h-8 px-3 flex items-center gap-1.5 text-xs font-semibold rounded-lg transition-all disabled:opacity-60 disabled:cursor-not-allowed bg-sidebar-active/10 text-sidebar-active border border-sidebar-active/20 hover:bg-sidebar-active/20"
+            >
+              {isSavingNotes ? (
+                <><span className="material-symbols-outlined text-[14px]">sync</span>Guardando...</>
+              ) : notesSaved ? (
+                <><span className="material-symbols-outlined text-[14px]">check_circle</span>Guardado</>
+              ) : (
+                <><span className="material-symbols-outlined text-[14px]">save</span>Guardar</>
+              )}
+            </button>
           </div>
-          <div>
-            <label className={labelCls}>Observaciones</label>
-            <textarea
-              value={examData.observations}
-              onChange={(e) => setExamData((p) => ({ ...p, observations: e.target.value }))}
-              rows={3}
-              className={`${inputCls} resize-none`}
-            />
-          </div>
-          <div>
-            <label className={labelCls}>Diagnóstico definitivo</label>
-            <textarea
-              value={examData.definitive_diagnosis}
-              onChange={(e) => setExamData((p) => ({ ...p, definitive_diagnosis: e.target.value }))}
-              rows={3}
-              className={`${inputCls} resize-none`}
-            />
-          </div>
-          <div>
-            <label className={labelCls}>Plan de tratamiento (notas)</label>
-            <textarea
-              value={examData.treatment_plan_notes}
-              onChange={(e) => setExamData((p) => ({ ...p, treatment_plan_notes: e.target.value }))}
-              rows={3}
-              className={`${inputCls} resize-none`}
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className={labelCls}>Especificaciones</label>
+              <textarea
+                value={examData.specifications}
+                onChange={(e) => setExamData((p) => ({ ...p, specifications: e.target.value }))}
+                rows={3}
+                className={`${inputCls} resize-none`}
+              />
+            </div>
+            <div>
+              <label className={labelCls}>Observaciones</label>
+              <textarea
+                value={examData.observations}
+                onChange={(e) => setExamData((p) => ({ ...p, observations: e.target.value }))}
+                rows={3}
+                className={`${inputCls} resize-none`}
+              />
+            </div>
+            <div>
+              <label className={labelCls}>Diagnóstico definitivo</label>
+              <textarea
+                value={examData.definitive_diagnosis}
+                onChange={(e) => setExamData((p) => ({ ...p, definitive_diagnosis: e.target.value }))}
+                rows={3}
+                className={`${inputCls} resize-none`}
+              />
+            </div>
+            <div>
+              <label className={labelCls}>Plan de tratamiento (notas)</label>
+              <textarea
+                value={examData.treatment_plan_notes}
+                onChange={(e) => setExamData((p) => ({ ...p, treatment_plan_notes: e.target.value }))}
+                rows={3}
+                className={`${inputCls} resize-none`}
+              />
+            </div>
           </div>
         </div>
 

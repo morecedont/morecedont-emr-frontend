@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { saveEndodontics, type EndodonticData, type EndoSession } from "@/lib/actions/patients"
 import CanalRow from "@/components/shared/CanalRow"
@@ -161,6 +161,8 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
   )
   const [serverError, setServerError] = useState<string | null>(null)
   const [isSaving, startSaving] = useTransition()
+  const [isSavingFields, startSavingFields] = useTransition()
+  const [fieldsSaved, setFieldsSaved] = useState(false)
 
   function addCanalEntry() {
     setCanalEntries((prev) => [...prev, { canal_code: "", canal_label: "", reference: "", length_mm: null, notes: "" }])
@@ -217,6 +219,20 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
     }
   }
 
+  const doSave = useCallback(() => {
+    return saveEndodontics(medicalHistoryId, buildData(), sessions, canalEntries)
+  }, [medicalHistoryId, sessions, canalEntries, toothNumber, painType, painIntensity, painQuality, painRelief, percV, percH, palA, palG, mobility, thermalTests, pulpChamber, canals, periapical, pulpDx, periapicalDx, irrigationProtocols, instrumentationTypes, fileInitial, fileFinal, fileLength, fileNotes, obturation]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  function handleSaveFields() {
+    setServerError(null)
+    startSavingFields(async () => {
+      const result = await doSave()
+      if (result.error) { setServerError(result.error); return }
+      setFieldsSaved(true)
+      setTimeout(() => setFieldsSaved(false), 2500)
+    })
+  }
+
   function handleNext() {
     if (!toothNumber) return
     setServerError(null)
@@ -265,6 +281,23 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
   ]
 
   const sectionCard = "bg-surface-container-low rounded-xl p-5 space-y-4"
+
+  const SaveFieldsBtn = (
+    <button
+      type="button"
+      onClick={handleSaveFields}
+      disabled={isSavingFields || isSaving}
+      className="h-8 px-3 flex items-center gap-1.5 text-xs font-semibold rounded-lg transition-all disabled:opacity-60 disabled:cursor-not-allowed bg-sidebar-active/10 text-sidebar-active border border-sidebar-active/20 hover:bg-sidebar-active/20"
+    >
+      {isSavingFields ? (
+        <><span className="material-symbols-outlined text-[14px]">sync</span>Guardando...</>
+      ) : fieldsSaved ? (
+        <><span className="material-symbols-outlined text-[14px]">check_circle</span>Guardado</>
+      ) : (
+        <><span className="material-symbols-outlined text-[14px]">save</span>Guardar</>
+      )}
+    </button>
+  )
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-outline-variant/10 overflow-hidden">
@@ -337,7 +370,10 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
 
           {/* Clinical exam */}
           <div className={sectionCard}>
-            <h3 className="font-bold text-on-surface">Examen clínico</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-on-surface">Examen clínico</h3>
+              {SaveFieldsBtn}
+            </div>
             <FieldGroup label="Percusión vertical">
               <div className="flex gap-4">
                 <Radio name="percV" value="positive" current={percV} label="+" onChange={setPercV} />
@@ -408,7 +444,10 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
 
           {/* Diagnosis */}
           <div className={sectionCard}>
-            <h3 className="font-bold text-on-surface">Diagnóstico</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-on-surface">Diagnóstico</h3>
+              {SaveFieldsBtn}
+            </div>
             <div>
               <label className={labelCls}>Pulpar</label>
               <input type="text" value={pulpDx} onChange={(e) => setPulpDx(e.target.value)} className={inputCls} />
