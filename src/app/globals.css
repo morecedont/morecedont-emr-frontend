@@ -120,6 +120,29 @@
   animation: pulse-ring 2s infinite;
 }
 
+/* ── Interactive element cursors ────────────────────────── */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+a[href],
+label,
+select,
+input[type="checkbox"],
+input[type="radio"],
+input[type="file"],
+input[type="submit"],
+input[type="button"],
+input[type="reset"] {
+  cursor: pointer;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"],
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+}
+
 /* ── Material Symbols defaults ───────────────────────────── */
 .material-symbols-outlined {
   font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
