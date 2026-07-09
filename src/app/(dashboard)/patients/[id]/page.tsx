@@ -42,11 +42,17 @@ export default async function PatientPage({
   if (!profile) redirect("/login")
   const currentHistoryPage = Math.max(1, parseInt(resolvedSearchParams.historyPage ?? "1", 10))
 
-  const ownership = await prisma.patients.findUnique({
-    where: { id },
+  const ownership = await prisma.patients.findFirst({
+    where: {
+      id,
+      OR: [
+        { current_doctor_id: profile.id },
+        { medical_histories: { some: { doctor_id: profile.id } } },
+      ],
+    },
     select: { current_doctor_id: true },
   })
-  if (!ownership || ownership.current_doctor_id !== profile.id) notFound()
+  if (!ownership) notFound()
 
   await cleanupOrphanedDrafts(id)
 
