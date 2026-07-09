@@ -81,7 +81,7 @@ export default function EditHistoryWizard({
         </button>
       </div>
 
-      <EditProgressBar currentStep={step} />
+      <EditProgressBar currentStep={step} onStepClick={setStep} />
 
       {step === 1 && (
         <Step3MedicalBackground

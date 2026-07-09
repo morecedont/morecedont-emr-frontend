@@ -38,7 +38,9 @@ export default async function EditHistoryPage({
 
   if (!history) notFound()
   if (history.patient_id !== id) notFound()
-  if (history.patients.current_doctor_id !== profile.id) notFound()
+  const isCreator = history.doctor_id === profile.id
+  const isCurrentDoctor = history.patients.current_doctor_id === profile.id
+  if (!isCreator && !isCurrentDoctor) notFound()
 
   const bg = history.medical_backgrounds
   const medicalBackground: MedicalBackgroundData | null = bg
