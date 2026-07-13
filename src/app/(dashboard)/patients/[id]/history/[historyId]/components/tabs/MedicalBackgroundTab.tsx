@@ -223,7 +223,7 @@ export default function MedicalBackgroundTab({ bg, patientId, historyId }: Medic
                             <span
                               className={`w-2 h-2 rounded-full shrink-0 ${active ? "bg-sidebar-active" : "bg-gray-300"}`}
                             />
-                            <span className={`text-sm ${active ? "font-bold text-on-surface" : "text-[#9CA3AF]"}`}>
+                            <span className={`text-sm ${active ? "font-bold text-on-surface" : "text-outline"}`}>
                               {c.label}
                             </span>
                           </div>

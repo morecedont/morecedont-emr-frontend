@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition, useCallback } from "react"
+import { useState, useTransition, useCallback, useRef } from "react"
 import { saveMedicalBackground, type MedicalBackgroundData } from "@/lib/actions/patients"
 
 type BooleanKeys = {
@@ -159,11 +159,21 @@ export default function Step3MedicalBackground({
   initialData,
 }: Step3Props) {
   const [bgData, setBgData] = useState<MedicalBackgroundData>(() => initialData ?? EMPTY_BG)
+  // Ref that always points to the latest bgData — prevents stale-closure bugs
+  // in doSave and allergy handlers when multiple saves race.
+  const bgDataRef = useRef(bgData)
+  bgDataRef.current = bgData
   const [allergyInput, setAllergyInput] = useState("")
+  const allergyInputRef = useRef("")
+  allergyInputRef.current = allergyInput
   const [serverError, setServerError] = useState<string | null>(null)
   const [isSaving, startSaving] = useTransition()
   const [isSavingObs, startSavingObs] = useTransition()
   const [obsSaved, setObsSaved] = useState(false)
+  const [isSavingFamily, startSavingFamily] = useTransition()
+  const [familySaved, setFamilySaved] = useState(false)
+  const [isSavingAllergy, startSavingAllergy] = useTransition()
+  const [allergySaved, setAllergySaved] = useState(false)
 
   const allergyTags = bgData.allergy_notes
     ? bgData.allergy_notes.split(",").filter(Boolean)
@@ -176,20 +186,45 @@ export default function Step3MedicalBackground({
   function addAllergyTag(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter" && allergyInput.trim()) {
       e.preventDefault()
-      const newTags = [...allergyTags, allergyInput.trim()]
-      setBgData((prev) => ({ ...prev, allergy_notes: newTags.join(",") }))
+      const newNotes = [...allergyTags, allergyInput.trim()].join(",")
+      setBgData((prev) => ({ ...prev, allergy_notes: newNotes }))
+      bgDataRef.current = { ...bgDataRef.current, allergy_notes: newNotes }
       setAllergyInput("")
+      setServerError(null)
+      startSavingAllergy(async () => {
+        const result = await saveMedicalBackground(medicalHistoryId, { ...bgDataRef.current, allergy_notes: newNotes })
+        if (result.error) { setServerError(result.error); return }
+        setAllergySaved(true)
+        setTimeout(() => setAllergySaved(false), 2500)
+      })
     }
   }
 
   function removeTag(index: number) {
-    const newTags = allergyTags.filter((_, i) => i !== index)
-    setBgData((prev) => ({ ...prev, allergy_notes: newTags.join(",") }))
+    const newNotes = allergyTags.filter((_, i) => i !== index).join(",")
+    setBgData((prev) => ({ ...prev, allergy_notes: newNotes }))
+    bgDataRef.current = { ...bgDataRef.current, allergy_notes: newNotes }
+    setServerError(null)
+    startSavingAllergy(async () => {
+      const result = await saveMedicalBackground(medicalHistoryId, { ...bgDataRef.current, allergy_notes: newNotes })
+      if (result.error) { setServerError(result.error); return }
+      setAllergySaved(true)
+      setTimeout(() => setAllergySaved(false), 2500)
+    })
   }
 
+  // doSave uses bgDataRef.current so it always reads the latest state
+  // regardless of when the useCallback closure was last created.
   const doSave = useCallback(async () => {
-    return saveMedicalBackground(medicalHistoryId, bgData)
-  }, [medicalHistoryId, bgData])
+    const current = bgDataRef.current
+    const pending = allergyInputRef.current.trim()
+    if (pending) {
+      const existing = current.allergy_notes ? current.allergy_notes.split(",").filter(Boolean) : []
+      const merged = [...existing, pending].join(",")
+      return saveMedicalBackground(medicalHistoryId, { ...current, allergy_notes: merged })
+    }
+    return saveMedicalBackground(medicalHistoryId, current)
+  }, [medicalHistoryId])
 
   function handleSaveObservations() {
     setServerError(null)
@@ -198,6 +233,36 @@ export default function Step3MedicalBackground({
       if (result.error) { setServerError(result.error); return }
       setObsSaved(true)
       setTimeout(() => setObsSaved(false), 2500)
+    })
+  }
+
+  function handleSaveFamily() {
+    setServerError(null)
+    startSavingFamily(async () => {
+      const result = await doSave()
+      if (result.error) { setServerError(result.error); return }
+      setFamilySaved(true)
+      setTimeout(() => setFamilySaved(false), 2500)
+    })
+  }
+
+  function handleSaveAllergy() {
+    setServerError(null)
+    // Flush any text that's still in the input (user didn't press Enter)
+    let finalNotes = bgDataRef.current.allergy_notes ?? ""
+    const pending = allergyInput.trim()
+    if (pending) {
+      const existing = finalNotes ? finalNotes.split(",").filter(Boolean) : []
+      finalNotes = [...existing, pending].join(",")
+      setBgData((prev) => ({ ...prev, allergy_notes: finalNotes }))
+      bgDataRef.current = { ...bgDataRef.current, allergy_notes: finalNotes }
+      setAllergyInput("")
+    }
+    startSavingAllergy(async () => {
+      const result = await saveMedicalBackground(medicalHistoryId, { ...bgDataRef.current, allergy_notes: finalNotes })
+      if (result.error) { setServerError(result.error); return }
+      setAllergySaved(true)
+      setTimeout(() => setAllergySaved(false), 2500)
     })
   }
 
@@ -293,16 +358,34 @@ export default function Step3MedicalBackground({
           {/* Antecedentes Familiares */}
           <div>
             <div className="bg-surface-container-low rounded-xl p-5 border-2 border-primary/10">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-9 h-9 bg-primary-fixed text-sidebar-active rounded-lg flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[18px]">group</span>
+              <div className="flex items-start justify-between gap-3 mb-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 bg-primary-fixed text-sidebar-active rounded-lg flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-[18px]">group</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-on-surface text-sm">Antecedentes Familiares</h3>
+                    <p className="text-xs text-secondary mt-0.5">
+                      Indique si algún familiar directo (padres, hermanos, abuelos) ha padecido las siguientes condiciones
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-on-surface text-sm">Antecedentes Familiares</h3>
-                  <p className="text-xs text-secondary mt-0.5">
-                    Indique si algún familiar directo (padres, hermanos, abuelos) ha padecido las siguientes condiciones
-                  </p>
-                </div>
+                <button
+                  type="button"
+                  onClick={handleSaveFamily}
+                  disabled={isSavingFamily || isSaving}
+                  className="shrink-0 h-8 px-3 flex items-center gap-1.5 text-xs font-semibold rounded-lg transition-all disabled:opacity-60
+                    bg-sidebar-active/10 text-sidebar-active border border-sidebar-active/20
+                    hover:bg-sidebar-active/20 disabled:cursor-not-allowed"
+                >
+                  {isSavingFamily ? (
+                    <><span className="material-symbols-outlined text-[14px]">sync</span>Guardando...</>
+                  ) : familySaved ? (
+                    <><span className="material-symbols-outlined text-[14px]">check_circle</span>Guardado</>
+                  ) : (
+                    <><span className="material-symbols-outlined text-[14px]">save</span>Guardar</>
+                  )}
+                </button>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                 {FAMILY_FIELDS.map((field) => (
@@ -406,6 +489,25 @@ export default function Step3MedicalBackground({
                 ))}
               </div>
             )}
+
+            <div className="flex justify-end mt-3">
+              <button
+                type="button"
+                onClick={handleSaveAllergy}
+                disabled={isSavingAllergy || isSaving}
+                className="h-8 px-3 flex items-center gap-1.5 text-xs font-semibold rounded-lg transition-all disabled:opacity-60
+                  bg-sidebar-active/10 text-sidebar-active border border-sidebar-active/20
+                  hover:bg-sidebar-active/20 disabled:cursor-not-allowed"
+              >
+                {isSavingAllergy ? (
+                  <><span className="material-symbols-outlined text-[14px]">sync</span>Guardando...</>
+                ) : allergySaved ? (
+                  <><span className="material-symbols-outlined text-[14px]">check_circle</span>Guardado</>
+                ) : (
+                  <><span className="material-symbols-outlined text-[14px]">save</span>Guardar alergias</>
+                )}
+              </button>
+            </div>
           </div>
 
           {serverError && (

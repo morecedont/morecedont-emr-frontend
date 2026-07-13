@@ -122,6 +122,8 @@ export default async function HistoryDetailPage({
         family_renal: history.medical_backgrounds.family_renal ?? false,
         family_mental_health: history.medical_backgrounds.family_mental_health ?? false,
         family_other: history.medical_backgrounds.family_other ?? null,
+        clinical_observations: history.medical_backgrounds.clinical_observations ?? null,
+        allergy_notes: history.medical_backgrounds.allergy_notes ?? null,
       }
     : null
 
