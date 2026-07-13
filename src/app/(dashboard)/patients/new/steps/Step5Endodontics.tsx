@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { saveEndodontics, type EndodonticData, type EndoSession } from "@/lib/actions/patients"
 import CanalRow from "@/components/shared/CanalRow"
 import FileInstrumentation from "@/components/shared/FileInstrumentation"
-import { type CanalEntry, IRRIGATION_PROTOCOLS } from "@/lib/constants/endodontics"
+import { type CanalEntry, IRRIGATION_PROTOCOLS, SEALER_CEMENT_GROUPS, SEALER_CEMENT_OPTIONS } from "@/lib/constants/endodontics"
 
 const inputCls =
   "w-full text-base bg-white border border-outline-variant/40 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-outline/50"
@@ -77,6 +77,7 @@ export type InitialEndoData = {
   irrigationProtocols?: string[] | null
   instrumentation?: string[]
   obturation?: string | null
+  sealerCement?: string | null
   sessions?: Array<{ date: string; activities: string[]; notes: string }>
   endodontic_canals?: CanalEntry[]
   file_initial?: string | null
@@ -154,6 +155,9 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
   )
   const [fileNotes, setFileNotes] = useState<string>(initialData?.file_notes ?? "")
   const [obturation, setObturation] = useState(initialData?.obturation ?? "")
+  const [sealerCement, setSealerCement] = useState(initialData?.sealerCement ?? "")
+  const [sealerOpen, setSealerOpen] = useState(false)
+  const [sealerSearch, setSealerSearch] = useState("")
   const [sessions, setSessions] = useState<EndoSession[]>(
     initialData?.sessions?.length
       ? initialData.sessions
@@ -212,6 +216,7 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
       irrigationProtocols,
       instrumentation: instrumentationTypes,
       obturation: obturation || null,
+      sealerCement: sealerCement || null,
       file_initial: fileInitial,
       file_final: fileFinal,
       file_length: fileLength,
@@ -221,7 +226,7 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
 
   const doSave = useCallback(() => {
     return saveEndodontics(medicalHistoryId, buildData(), sessions, canalEntries)
-  }, [medicalHistoryId, sessions, canalEntries, toothNumber, painType, painIntensity, painQuality, painRelief, percV, percH, palA, palG, mobility, thermalTests, pulpChamber, canals, periapical, pulpDx, periapicalDx, irrigationProtocols, instrumentationTypes, fileInitial, fileFinal, fileLength, fileNotes, obturation]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [medicalHistoryId, sessions, canalEntries, toothNumber, painType, painIntensity, painQuality, painRelief, percV, percH, palA, palG, mobility, thermalTests, pulpChamber, canals, periapical, pulpDx, periapicalDx, irrigationProtocols, instrumentationTypes, fileInitial, fileFinal, fileLength, fileNotes, obturation, sealerCement]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleSaveFields() {
     setServerError(null)
@@ -580,6 +585,102 @@ export default function Step5Endodontics({ medicalHistoryId, patientId, initialD
                 <option value="lateral_condensation">Condensación Lateral</option>
                 <option value="thermoplastic">Termoplástica</option>
               </select>
+            </div>
+
+            {/* Cemento sellador (material) — distinto de la técnica de obturación */}
+            <div>
+              <label className={labelCls}>Cemento sellador</label>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => { setSealerOpen((o) => !o); setSealerSearch("") }}
+                  className="w-full text-base bg-white border border-outline-variant/40 rounded-lg px-4 py-3 flex items-center justify-between gap-2 outline-none transition-all focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                >
+                  <span className={`flex items-center gap-2 min-w-0 ${sealerCement ? "text-on-surface" : "text-outline/50"}`}>
+                    {sealerCement ? (
+                      <>
+                        <span className={`shrink-0 px-2 py-0.5 rounded-full text-[10px] font-semibold ${SEALER_CEMENT_OPTIONS.find((o) => o.value === sealerCement)?.badgeColor ?? "bg-teal-50 text-teal-700"}`}>
+                          {SEALER_CEMENT_OPTIONS.find((o) => o.value === sealerCement)?.family ?? "Sellador"}
+                        </span>
+                        <span className="truncate">
+                          {SEALER_CEMENT_OPTIONS.find((o) => o.value === sealerCement)?.brand ?? sealerCement}
+                        </span>
+                      </>
+                    ) : (
+                      "Seleccionar cemento sellador"
+                    )}
+                  </span>
+                  <span className="material-symbols-outlined text-[18px] text-secondary shrink-0">
+                    {sealerOpen ? "expand_less" : "expand_more"}
+                  </span>
+                </button>
+
+                {sealerOpen && (
+                  <div className="absolute z-20 top-full left-0 right-0 mt-1 bg-white border border-outline-variant/40 rounded-lg shadow-lg overflow-hidden">
+                    <div className="p-2 border-b border-outline-variant/20">
+                      <input
+                        type="text"
+                        value={sealerSearch}
+                        onChange={(e) => setSealerSearch(e.target.value)}
+                        placeholder="Buscar marca o familia..."
+                        autoFocus
+                        className="w-full text-base bg-surface-container-low border border-outline-variant/40 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                      />
+                    </div>
+                    <div className="max-h-64 overflow-y-auto py-1">
+                      {sealerCement && (
+                        <button
+                          type="button"
+                          onClick={() => { setSealerCement(""); setSealerOpen(false) }}
+                          className="w-full text-left px-4 py-2 text-sm text-secondary hover:bg-surface-container-low transition-colors"
+                        >
+                          Ninguno (limpiar selección)
+                        </button>
+                      )}
+                      {(() => {
+                        const q = sealerSearch.trim().toLowerCase()
+                        const groups = SEALER_CEMENT_GROUPS
+                          .map((g) => ({
+                            g,
+                            brands: g.brands.filter(
+                              (b) => !q || b.toLowerCase().includes(q) || g.family.toLowerCase().includes(q)
+                            ),
+                          }))
+                          .filter((x) => x.brands.length > 0)
+                        if (groups.length === 0) {
+                          return <p className="px-4 py-3 text-sm text-secondary">Sin resultados</p>
+                        }
+                        return groups.map(({ g, brands }) => (
+                          <div key={g.key} className="py-1">
+                            <p className="px-4 pt-1 pb-1.5">
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide ${g.badgeColor}`}>
+                                {g.family}
+                              </span>
+                            </p>
+                            {brands.map((brand) => {
+                              const value = `${g.family} (${brand})`
+                              const selected = sealerCement === value
+                              return (
+                                <button
+                                  key={value}
+                                  type="button"
+                                  onClick={() => { setSealerCement(value); setSealerOpen(false) }}
+                                  className={`w-full flex items-center justify-between gap-2 px-4 py-2.5 text-left text-sm transition-colors ${
+                                    selected ? "bg-sidebar-active/10 text-sidebar-active font-semibold" : "hover:bg-surface-container-low text-on-surface"
+                                  }`}
+                                >
+                                  <span className="truncate">{brand}</span>
+                                  {selected && <span className="material-symbols-outlined text-[18px] shrink-0">check</span>}
+                                </button>
+                              )
+                            })}
+                          </div>
+                        ))
+                      })()}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

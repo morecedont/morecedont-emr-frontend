@@ -309,6 +309,7 @@ CREATE TABLE endodontics (
   irrigation_edta           BOOLEAN DEFAULT FALSE,
   instrumentation           instrumentation_type,
   obturation                obturation_type,
+  sealer_cement             TEXT,
 
   created_at                TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at                TIMESTAMPTZ NOT NULL DEFAULT NOW()

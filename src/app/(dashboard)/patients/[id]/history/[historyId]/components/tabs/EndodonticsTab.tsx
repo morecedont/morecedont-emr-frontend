@@ -1,6 +1,7 @@
 "use client"
 
 import FileInstrumentation from "@/components/shared/FileInstrumentation"
+import { getSealerBadgeColor, SEALER_CEMENT_OPTIONS } from "@/lib/constants/endodontics"
 
 export type EndoSession = {
   id: string
@@ -42,6 +43,7 @@ export type EndoRecord = {
   irrigation_protocols: string[]
   instrumentation: string[]
   obturation: string | null
+  sealer_cement: string | null
   file_initial: string | null
   file_final: string | null
   file_length: string | null
@@ -317,7 +319,7 @@ export default function EndodonticsTab({ records, patientId, historyId }: Endodo
             />
 
             {/* Protocolo */}
-            {(rec.obturation || rec.irrigation_protocols.length > 0) && (
+            {(rec.obturation || rec.sealer_cement || rec.irrigation_protocols.length > 0) && (
               <div className="bg-surface-container-low rounded-xl p-4 space-y-3">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">Protocolo</p>
                 <div className="flex flex-wrap gap-1.5">
@@ -326,6 +328,15 @@ export default function EndodonticsTab({ records, patientId, historyId }: Endodo
                     <Badge key={p} label={p} color={getIrrigationBadgeColor(p)} />
                   ))}
                 </div>
+                {rec.sealer_cement && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">Cemento sellador</span>
+                    <Badge
+                      label={SEALER_CEMENT_OPTIONS.find((o) => o.value === rec.sealer_cement)?.brand ?? rec.sealer_cement}
+                      color={getSealerBadgeColor(rec.sealer_cement)}
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>

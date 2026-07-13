@@ -43,6 +43,102 @@ export const IRRIGATION_PROTOCOLS: string[] = [
   "Láser (diodo)",
 ]
 
+// Cemento sellador (material) — distinto de la técnica de obturación.
+// Selección única. El valor guardado en endodontics.sealer_cement es la
+// etiqueta exacta "Familia (Marca)" (mismo criterio que irrigation_protocols).
+export type SealerFamilyKey =
+  | "zinc_eugenol"
+  | "hidroxido_calcio"
+  | "resina_epoxica"
+  | "resina_metacrilato"
+  | "ionomero_vidrio"
+  | "silicona"
+  | "bioceramico"
+
+export type SealerCementGroup = {
+  key: SealerFamilyKey
+  family: string
+  badgeColor: string
+  brands: string[]
+}
+
+export const SEALER_CEMENT_GROUPS: SealerCementGroup[] = [
+  {
+    key: "zinc_eugenol",
+    family: "Óxido de Zinc y Eugenol",
+    badgeColor: "bg-amber-50 text-amber-700",
+    brands: ["Tubli-Seal", "Pulp Canal Sealer EWT", "Endomethasone N"],
+  },
+  {
+    key: "hidroxido_calcio",
+    family: "Hidróxido de Calcio",
+    badgeColor: "bg-sky-50 text-sky-700",
+    brands: ["Sealapex", "Apexit Plus", "CRCS"],
+  },
+  {
+    key: "resina_epoxica",
+    family: "Resina Epóxica",
+    badgeColor: "bg-indigo-50 text-indigo-700",
+    brands: ["AH Plus", "AH26", "Sealer 26", "ThermaSeal"],
+  },
+  {
+    key: "resina_metacrilato",
+    family: "Resina de Metacrilato",
+    badgeColor: "bg-fuchsia-50 text-fuchsia-700",
+    brands: ["EndoREZ", "Epiphany"],
+  },
+  {
+    key: "ionomero_vidrio",
+    family: "Ionómero de Vidrio",
+    badgeColor: "bg-lime-50 text-lime-700",
+    brands: ["Ketac-Endo", "Activ GP"],
+  },
+  {
+    key: "silicona",
+    family: "Silicona",
+    badgeColor: "bg-rose-50 text-rose-700",
+    brands: ["RoekoSeal", "GuttaFlow"],
+  },
+  {
+    key: "bioceramico",
+    family: "Biocerámico",
+    badgeColor: "bg-teal-50 text-teal-700",
+    brands: [
+      "Bio-C Sealer",
+      "Bio-C Sealer ION+",
+      "EndoSequence BC Sealer",
+      "TotalFill BC Sealer",
+      "MTA Fillapex",
+      "AH Plus Bioceramic Sealer",
+      "Well-Root ST",
+    ],
+  },
+]
+
+export type SealerCementOption = {
+  value: string        // "Familia (Marca)" — lo que se persiste
+  brand: string
+  family: string
+  familyKey: SealerFamilyKey
+  badgeColor: string
+}
+
+export const SEALER_CEMENT_OPTIONS: SealerCementOption[] = SEALER_CEMENT_GROUPS.flatMap((g) =>
+  g.brands.map((brand) => ({
+    value: `${g.family} (${brand})`,
+    brand,
+    family: g.family,
+    familyKey: g.key,
+    badgeColor: g.badgeColor,
+  }))
+)
+
+// Color del badge por familia, a partir del valor persistido.
+export function getSealerBadgeColor(value: string | null | undefined): string {
+  if (!value) return "bg-surface-container text-secondary"
+  return SEALER_CEMENT_OPTIONS.find((o) => o.value === value)?.badgeColor ?? "bg-teal-50 text-teal-700"
+}
+
 export const CANAL_CODES = [
   { code: "P",      label: "P — Palatino" },
   { code: "B",      label: "B — Vestibular" },

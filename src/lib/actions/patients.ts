@@ -418,6 +418,7 @@ export type EndodonticData = {
   irrigationProtocols: string[]
   instrumentation: string[]
   obturation: string | null
+  sealerCement: string | null
   file_initial: string | null
   file_final: string | null
   file_length: number | null
@@ -478,6 +479,7 @@ export async function saveEndodontics(
       irrigation_protocols: data.irrigationProtocols,
       instrumentation: data.instrumentation as never,
       obturation: data.obturation as never,
+      sealer_cement: data.sealerCement || null,
       file_initial: data.file_initial ?? null,
       file_final: data.file_final ?? null,
       file_length: data.file_length ?? null,

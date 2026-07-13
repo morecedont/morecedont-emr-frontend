@@ -177,6 +177,7 @@ export default async function HistoryDetailPage({
     irrigation_protocols: e.irrigation_protocols,
     instrumentation: e.instrumentation as string[],
     obturation: e.obturation ?? null,
+    sealer_cement: e.sealer_cement ?? null,
     file_initial: e.file_initial ?? null,
     file_final: e.file_final ?? null,
     file_length: e.file_length ? e.file_length.toString() : null,

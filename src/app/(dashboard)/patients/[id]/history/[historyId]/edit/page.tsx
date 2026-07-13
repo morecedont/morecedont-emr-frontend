@@ -141,6 +141,7 @@ export default async function EditHistoryPage({
         irrigationProtocols: firstEndo.irrigation_protocols,
         instrumentation: firstEndo.instrumentation as string[],
         obturation: firstEndo.obturation,
+        sealerCement: firstEndo.sealer_cement ?? null,
         file_initial: firstEndo.file_initial ?? null,
         file_final: firstEndo.file_final ?? null,
         file_length: firstEndo.file_length ? parseFloat(firstEndo.file_length.toString()) : null,
