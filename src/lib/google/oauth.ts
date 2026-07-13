@@ -4,13 +4,25 @@
 import { google } from "googleapis"
 import crypto from "crypto"
 
+// Scope de calendario imprescindible: sin él no podemos crear/editar eventos.
+// Google puede NO concederlo (usuario no aprueba el permiso, app en Testing sin
+// el scope registrado, etc.), así que el callback lo valida explícitamente.
+export const CALENDAR_EVENTS_SCOPE =
+  "https://www.googleapis.com/auth/calendar.events"
+
 // Lectura/escritura de eventos del calendario del doctor + email de la cuenta
 // (openid/userinfo.email) para mostrar con qué correo quedó integrado.
 const SCOPES = [
-  "https://www.googleapis.com/auth/calendar.events",
+  CALENDAR_EVENTS_SCOPE,
   "openid",
   "https://www.googleapis.com/auth/userinfo.email",
 ]
+
+/** True si la lista de scopes concedidos incluye el de eventos de calendario. */
+export function grantedCalendarScope(scope?: string | null): boolean {
+  if (!scope) return false
+  return scope.split(" ").includes(CALENDAR_EVENTS_SCOPE)
+}
 
 export function createOAuthClient() {
   return new google.auth.OAuth2(

@@ -4,7 +4,12 @@
 
 import { NextResponse } from "next/server"
 import { getProfile } from "@/lib/session"
-import { exchangeCode, verifyState, getGoogleEmail } from "@/lib/google/oauth"
+import {
+  exchangeCode,
+  verifyState,
+  getGoogleEmail,
+  grantedCalendarScope,
+} from "@/lib/google/oauth"
 import { encryptToken } from "@/lib/google/crypto"
 import { prisma } from "@/lib/prisma"
 import { syncPendingAppointments } from "@/lib/actions/appointments"
@@ -30,6 +35,15 @@ export async function GET(request: Request) {
     if (!tokens.access_token || !tokens.refresh_token) {
       // Sin refresh_token no podemos renovar acceso a futuro.
       return NextResponse.redirect(new URL("/agenda?google=error", origin))
+    }
+
+    // Google puede devolver tokens SIN el scope de calendario si el usuario no
+    // aprobó ese permiso. Guardar igual dejaría la integración "conectada" pero
+    // cada sync fallaría con "insufficient scopes". Lo cortamos acá.
+    if (!grantedCalendarScope(tokens.scope)) {
+      return NextResponse.redirect(
+        new URL("/agenda?google=scope_missing", origin)
+      )
     }
 
     const expiry = tokens.expiry_date

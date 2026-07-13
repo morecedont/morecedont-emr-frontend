@@ -119,13 +119,17 @@ export default function AgendaClient({
           className={`flex items-center justify-between gap-3 px-4 sm:px-6 py-3 text-sm font-medium ${
             googleFeedback === "connected"
               ? "bg-green-50 text-green-700"
-              : "bg-error-container text-error"
+              : googleFeedback === "scope_missing"
+                ? "bg-amber-50 text-amber-700"
+                : "bg-error-container text-error"
           }`}
         >
           <span>
             {googleFeedback === "connected"
               ? "Google Calendar conectado. Tus próximas citas se sincronizarán."
-              : "No se pudo conectar Google Calendar. Intentá de nuevo."}
+              : googleFeedback === "scope_missing"
+                ? "Faltó el permiso de calendario. Volvé a conectar y aceptá el acceso a “Ver y editar eventos” para que las citas se sincronicen."
+                : "No se pudo conectar Google Calendar. Intentá de nuevo."}
           </span>
           <button
             type="button"

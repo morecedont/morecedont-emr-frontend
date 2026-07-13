@@ -106,6 +106,9 @@ export async function createCalendarEvent(
     if (!eventId) return { error: "Google no devolvió un event id" }
     return { eventId }
   } catch (err) {
+    if (await handleInvalidGrant(doctorId, err)) {
+      return { error: "reconnect_required" }
+    }
     console.error("createCalendarEvent:", err)
     return {
       error: err instanceof Error ? err.message : "Error creando evento",
@@ -147,6 +150,9 @@ export async function updateCalendarEvent(
     // Si el evento ya no existe en Google (borrado manual), lo tratamos como
     // "hay que recrearlo": lo señalamos para que el caller decida.
     if (isGoogleNotFound(err)) return { error: "not_found" }
+    if (await handleInvalidGrant(doctorId, err)) {
+      return { error: "reconnect_required" }
+    }
     console.error("updateCalendarEvent:", err)
     return {
       error: err instanceof Error ? err.message : "Error actualizando evento",
@@ -172,6 +178,9 @@ export async function deleteCalendarEvent(
   } catch (err) {
     // Ya borrado en Google (404) o cancelado (410): el objetivo igual se cumplió.
     if (isGoogleNotFound(err)) return { ok: true }
+    if (await handleInvalidGrant(doctorId, err)) {
+      return { error: "reconnect_required" }
+    }
     console.error("deleteCalendarEvent:", err)
     return {
       error: err instanceof Error ? err.message : "Error eliminando evento",
@@ -184,4 +193,36 @@ function isGoogleNotFound(err: unknown): boolean {
   const status = (err as { status?: number; code?: number } | null)?.status ??
     (err as { code?: number } | null)?.code
   return status === 404 || status === 410
+}
+
+/**
+ * `invalid_grant` = el refresh token murió (revocado o expirado — típico en apps
+ * OAuth en modo Testing, cuyos refresh tokens caducan a los 7 días). El token
+ * guardado ya no sirve para nada.
+ */
+function isInvalidGrant(err: unknown): boolean {
+  const e = err as
+    | { message?: string; response?: { data?: { error?: string } } }
+    | null
+  if (e?.response?.data?.error === "invalid_grant") return true
+  return typeof e?.message === "string" && e.message.includes("invalid_grant")
+}
+
+/**
+ * Ante un `invalid_grant`, borramos la fila de tokens para que la integración
+ * deje de reportarse como "conectada": la UI muestra "Conectar Google" y el
+ * doctor reconecta, en vez de ver todas las citas fallar en silencio.
+ * Devuelve true si el error era invalid_grant (y se limpió el token).
+ */
+async function handleInvalidGrant(
+  doctorId: string,
+  err: unknown
+): Promise<boolean> {
+  if (!isInvalidGrant(err)) return false
+  try {
+    await prisma.doctor_google_tokens.delete({ where: { doctor_id: doctorId } })
+  } catch {
+    /* ya no existía; el objetivo (dejar de estar conectado) igual se cumple */
+  }
+  return true
 }
