@@ -37,22 +37,6 @@ const UPPER_RIGHT = [21, 22, 23, 24, 25, 26, 27, 28]
 const LOWER_LEFT = [48, 47, 46, 45, 44, 43, 42, 41]
 const LOWER_RIGHT = [31, 32, 33, 34, 35, 36, 37, 38]
 
-function getPopoverAlignClass(number: number) {
-  const upperLeftIndex = UPPER_LEFT.indexOf(number)
-  if (upperLeftIndex >= 0 && upperLeftIndex <= 2) return "left-0"
-
-  const lowerLeftIndex = LOWER_LEFT.indexOf(number)
-  if (lowerLeftIndex >= 0 && lowerLeftIndex <= 2) return "left-0"
-
-  const upperRightIndex = UPPER_RIGHT.indexOf(number)
-  if (upperRightIndex >= UPPER_RIGHT.length - 3) return "right-0"
-
-  const lowerRightIndex = LOWER_RIGHT.indexOf(number)
-  if (lowerRightIndex >= LOWER_RIGHT.length - 3) return "right-0"
-
-  return "left-1/2 -translate-x-1/2"
-}
-
 const PROBLEMS = [
   { key: "problem_atm" as const, label: "ATM" },
   { key: "problem_crowding" as const, label: "Apiñamiento" },
@@ -163,44 +147,20 @@ export default function Step4DentalExam({ medicalHistoryId, patientId, initialDa
   function ToothCell({ number }: { number: number }) {
     const status = toothMap[number] ?? "healthy"
     const isOpen = openTooth === number
-    const opensUpward = number >= 31
-    const popoverPositionClass = opensUpward
-      ? "bottom-10 sm:bottom-11"
-      : "top-10 sm:top-11"
-    const popoverAlignClass = getPopoverAlignClass(number)
 
     return (
-      <div className="relative">
-        <button
-          type="button"
-          onClick={() => setOpenTooth(isOpen ? null : number)}
-          className={`h-8 w-8 rounded border-2 text-[9px] font-bold transition-all hover:scale-105 sm:h-9 sm:w-9 sm:text-[10px] ${TOOTH_BG[status]} flex items-center justify-center`}
-          title={`Diente ${number}`}
-        >
-          {number}
-        </button>
-        {isOpen && (
-          <div
-            className={`absolute ${popoverPositionClass} ${popoverAlignClass} z-20 w-32 rounded-xl border border-outline-variant/20 bg-white p-1.5 shadow-2xl`}
-          >
-            {TOOTH_STATUS_OPTIONS.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => setStatus(number, opt.value)}
-                className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-[11px] leading-4 transition-colors ${
-                  status === opt.value
-                    ? "bg-primary/10 text-primary font-semibold"
-                    : "hover:bg-surface-container text-on-surface"
-                }`}
-              >
-                <span className={`w-2 h-2 rounded-full ${opt.dot} shrink-0`} />
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+      <button
+        type="button"
+        onClick={() => setOpenTooth(isOpen ? null : number)}
+        aria-haspopup="menu"
+        aria-expanded={isOpen}
+        className={`h-8 w-8 rounded border-2 text-[9px] font-bold transition-all hover:scale-105 sm:h-9 sm:w-9 sm:text-[10px] ${TOOTH_BG[status]} flex items-center justify-center ${
+          isOpen ? "ring-2 ring-sidebar-active ring-offset-1" : ""
+        }`}
+        title={`Diente ${number}`}
+      >
+        {number}
+      </button>
     )
   }
 
@@ -294,8 +254,8 @@ export default function Step4DentalExam({ medicalHistoryId, patientId, initialDa
             ))}
           </div>
 
-          <div className="pb-2">
-            <div className="space-y-2 rounded-xl bg-surface-container-low p-3 sm:p-4">
+          <div className="pb-2 overflow-x-auto">
+            <div className="min-w-max w-full space-y-2 rounded-xl bg-surface-container-low p-3 sm:p-4">
               {/* Upper jaw */}
               <div className="flex items-center justify-between gap-1 sm:gap-1.5">
                 <div className="flex gap-1 sm:gap-1.5">{UPPER_LEFT.map((n) => <ToothCell key={n} number={n} />)}</div>
@@ -312,7 +272,58 @@ export default function Step4DentalExam({ medicalHistoryId, patientId, initialDa
               </div>
             </div>
           </div>
+          <p className="mt-2 flex items-center gap-1 text-xs text-secondary sm:hidden">
+            <span className="material-symbols-outlined text-[14px]">swipe</span>
+            Deslizá horizontalmente para ver todas las piezas.
+          </p>
         </div>
+
+        {/* Tooth status picker — fixed overlay (bottom sheet on mobile, centered card on sm+) */}
+        {openTooth !== null && (
+          <>
+            <button
+              type="button"
+              aria-label="Cerrar selector de estado"
+              onClick={() => setOpenTooth(null)}
+              className="fixed inset-0 z-40 bg-black/30"
+            />
+            <div
+              role="menu"
+              className="fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-white p-4 shadow-2xl sm:inset-x-auto sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:w-80 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="font-bold text-on-surface">Diente {openTooth}</h4>
+                <button
+                  type="button"
+                  onClick={() => setOpenTooth(null)}
+                  className="h-11 w-11 flex items-center justify-center rounded-lg text-secondary hover:bg-surface-container transition-colors"
+                >
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {TOOTH_STATUS_OPTIONS.map((opt) => {
+                  const active = (toothMap[openTooth] ?? "healthy") === opt.value
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setStatus(openTooth, opt.value)}
+                      className={`h-11 flex items-center gap-2 rounded-lg border px-3 text-left text-sm transition-colors ${
+                        active
+                          ? "border-sidebar-active bg-sidebar-active/10 text-sidebar-active font-semibold"
+                          : "border-outline-variant/40 text-on-surface hover:bg-surface-container-low"
+                      }`}
+                    >
+                      <span className={`w-3 h-3 rounded-full ${opt.dot} shrink-0`} />
+                      {opt.label}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Text fields */}
         <div className="bg-surface-container-low rounded-xl p-5">
