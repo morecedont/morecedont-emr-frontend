@@ -12,6 +12,7 @@ export type PatientHeaderData = {
   bloodType: string | null
   phone: string | null
   isActive: boolean
+  firstVisitPending: boolean
 }
 
 interface PatientProfileHeaderProps {
@@ -36,6 +37,12 @@ export default function PatientProfileHeader({ patient }: PatientProfileHeaderPr
               {patient.fullName}
             </h1>
             <div className="flex flex-wrap items-center gap-2 mt-2">
+              {patient.firstVisitPending && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold">
+                  <span className="material-symbols-outlined text-[13px]">pending_actions</span>
+                  Primera consulta pendiente
+                </span>
+              )}
               {patient.age !== null && (
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-white/60 rounded-full border border-white/40 text-xs font-semibold text-secondary">
                   <span className="material-symbols-outlined text-[12px]">cake</span>

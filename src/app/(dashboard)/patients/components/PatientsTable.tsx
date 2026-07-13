@@ -14,7 +14,7 @@ export type PatientRow = {
   idNumber: string | null
   lastVisitDate: string | null // ISO string
   clinicName: string | null
-  status: "active" | "pending" | "inactive"
+  status: "active" | "pending" | "inactive" | "first_visit_pending"
 }
 
 const AVATAR_CLASSES = [
@@ -53,6 +53,14 @@ function formatLastVisit(iso: string | null): string {
 }
 
 function StatusBadge({ status }: { status: PatientRow["status"] }) {
+  if (status === "first_visit_pending") {
+    return (
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-indigo-100 text-indigo-700">
+        <span className="material-symbols-outlined text-[13px]">pending_actions</span>
+        Primera consulta
+      </span>
+    )
+  }
   if (status === "active") {
     return (
       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-green-100 text-green-700">

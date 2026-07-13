@@ -9,6 +9,7 @@ const BORDER_BY_STATUS: Record<AppointmentStatus, string> = {
   scheduled: "border-l-amber-accent",
   cancelled: "border-l-outline",
   completed: "border-l-outline",
+  no_show: "border-l-error",
 }
 
 const STATUS_LABEL: Record<AppointmentStatus, string> = {
@@ -16,6 +17,7 @@ const STATUS_LABEL: Record<AppointmentStatus, string> = {
   scheduled: "Programado",
   cancelled: "Cancelado",
   completed: "Completado",
+  no_show: "No asistió",
 }
 
 function capitalize(s: string) {

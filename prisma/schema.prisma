@@ -733,6 +733,9 @@ model patients {
   current_doctor_id   String              @db.Uuid
   created_at          DateTime            @default(now()) @db.Timestamptz(6)
   occupation          String?
+  status              patient_status      @default(active)
+  referred_by         String?
+  approximate_age     Int?
   patient_transfers   patient_transfers[]
   medical_histories   medical_histories[]
   appointments        appointments[]
@@ -967,6 +970,14 @@ enum appointment_status {
   confirmed
   cancelled
   completed
+  no_show
+
+  @@schema("public")
+}
+
+enum patient_status {
+  pending_first_visit
+  active
 
   @@schema("public")
 }

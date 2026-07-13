@@ -1,12 +1,13 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { getProfile } from "@/lib/session"
 import { prisma } from "@/lib/prisma"
 import { Prisma } from "@prisma/client"
 import type {
   NewAppointmentInput,
   UpdateAppointmentInput,
+  NewPatientAppointmentInput,
 } from "@/types/appointments"
 import {
   createCalendarEvent,
@@ -261,6 +262,102 @@ export async function createAppointment(
   } catch (err) {
     console.error("createAppointment:", err)
     return { error: "No se pudo crear la cita" }
+  }
+}
+
+// ─── Agendar paciente nuevo (registro mínimo + primera cita) ──────────────────
+// Crea el paciente en estado pending_first_visit + su primera cita en una sola
+// transacción, SIN historia clínica (se completa en la consulta). El sync a
+// Google Calendar es best-effort y nunca revierte lo ya creado.
+
+export async function scheduleNewPatient(
+  input: NewPatientAppointmentInput
+): Promise<{ error?: string; patientId?: string; appointmentId?: string }> {
+  const profile = await getProfile()
+  if (!profile) return { error: "No autorizado" }
+
+  const {
+    fullName,
+    phone,
+    email,
+    referredBy,
+    approximateAge,
+    clinicId,
+    scheduledAt,
+    durationMinutes,
+    reasonForVisit,
+    gcalSyncEnabled,
+  } = input
+
+  // Datos administrativos mínimos.
+  if (!fullName?.trim()) return { error: "El nombre es requerido" }
+  if (!phone?.trim()) return { error: "El teléfono es requerido" }
+  if (!clinicId) return { error: "La clínica es requerida" }
+  if (!scheduledAt) return { error: "La fecha y hora son requeridas" }
+
+  const when = new Date(scheduledAt)
+  if (isNaN(when.getTime())) return { error: "Fecha u hora inválida" }
+
+  if (
+    approximateAge != null &&
+    (!Number.isInteger(approximateAge) || approximateAge < 0 || approximateAge > 130)
+  ) {
+    return { error: "Edad aproximada inválida" }
+  }
+
+  try {
+    // Paciente + cita atómicos: o quedan ambos, o ninguno.
+    const { patientId, appointment } = await prisma.$transaction(async (tx) => {
+      const patient = await tx.patients.create({
+        data: {
+          full_name: fullName.trim(),
+          phone: phone.trim(),
+          email: email?.trim() || null,
+          referred_by: referredBy?.trim() || null,
+          approximate_age: approximateAge ?? null,
+          status: "pending_first_visit",
+          // Ownership: el doctor que agenda es creador y propietario actual
+          // (satisface la RLS INSERT: created_by = current_doctor_id = auth.uid()).
+          created_by: profile.id,
+          current_doctor_id: profile.id,
+        },
+      })
+
+      const appointment = await tx.appointments.create({
+        data: {
+          doctor_id: profile.id,
+          patient_id: patient.id,
+          clinic_id: clinicId,
+          scheduled_at: when,
+          duration_minutes:
+            Number.isFinite(durationMinutes) && durationMinutes > 0
+              ? durationMinutes
+              : 30,
+          // "Motivo de consulta" es texto libre → treatment_type.
+          treatment_type: reasonForVisit?.trim() || null,
+          status: "scheduled",
+          gcal_sync_status: "pending",
+          gcal_sync_enabled: gcalSyncEnabled,
+        },
+        include: { patient: { select: { full_name: true, email: true } } },
+      })
+
+      return { patientId: patient.id, appointment }
+    })
+
+    // Sync best-effort a Google Calendar: fuera de la transacción, nunca revierte.
+    // Si falla, la cita queda gcal_sync_status="pending" y la levanta el backfill.
+    if (gcalSyncEnabled) {
+      await pushCreate(profile.id, appointment.id, buildEventInput(appointment))
+    }
+
+    revalidatePath("/agenda")
+    revalidatePath("/patients")
+    revalidateTag(`dashboard-metrics-${profile.id}`, "max")
+    return { patientId, appointmentId: appointment.id }
+  } catch (err) {
+    console.error("scheduleNewPatient:", err)
+    return { error: "No se pudo agendar el paciente" }
   }
 }
 

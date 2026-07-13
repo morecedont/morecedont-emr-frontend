@@ -11,6 +11,7 @@ import CalendarGrid from "./CalendarGrid"
 import AgendaView from "./AgendaView"
 import SyncStatusIndicator from "./SyncStatusIndicator"
 import NewAppointmentSlideOver from "./NewAppointmentSlideOver"
+import NewPatientSlideOver from "./NewPatientSlideOver"
 
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1)
@@ -60,6 +61,7 @@ export default function AgendaClient({
   }
 
   const [slideOverOpen, setSlideOverOpen] = useState(false)
+  const [newPatientOpen, setNewPatientOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [editingAppointment, setEditingAppointment] =
     useState<Appointment | null>(null)
@@ -81,6 +83,11 @@ export default function AgendaClient({
     setEditingAppointment(null)
     setSelectedDate(new Date())
     setSlideOverOpen(true)
+  }
+
+  function openNewPatient() {
+    setSelectedDate(new Date())
+    setNewPatientOpen(true)
   }
 
   function handleAppointmentClick(appointment: Appointment) {
@@ -234,14 +241,24 @@ export default function AgendaClient({
             ))}
         </div>
 
-        <button
-          type="button"
-          onClick={openNew}
-          className="hidden md:flex items-center gap-2 h-11 px-5 bg-teal-accent hover:bg-teal-accent-hover text-white rounded-lg font-bold text-sm transition-all active:scale-95"
-        >
-          <span className="material-symbols-outlined text-lg">add</span>
-          Nueva cita
-        </button>
+        <div className="hidden md:flex items-center gap-2">
+          <button
+            type="button"
+            onClick={openNewPatient}
+            className="flex items-center gap-2 h-11 px-4 border border-teal-accent text-teal-accent hover:bg-teal-surface rounded-lg font-bold text-sm transition-all active:scale-95"
+          >
+            <span className="material-symbols-outlined text-lg">person_add</span>
+            Paciente nuevo
+          </button>
+          <button
+            type="button"
+            onClick={openNew}
+            className="flex items-center gap-2 h-11 px-5 bg-teal-accent hover:bg-teal-accent-hover text-white rounded-lg font-bold text-sm transition-all active:scale-95"
+          >
+            <span className="material-symbols-outlined text-lg">add</span>
+            Nueva cita
+          </button>
+        </div>
       </div>
 
       {/* Desktop: grilla mensual */}
@@ -264,7 +281,17 @@ export default function AgendaClient({
         />
       </div>
 
-      {/* FAB mobile */}
+      {/* FAB mobile: paciente nuevo (secundario) */}
+      <button
+        type="button"
+        onClick={openNewPatient}
+        aria-label="Agendar paciente nuevo"
+        className="md:hidden fixed bottom-24 right-6 w-14 h-14 bg-white border border-teal-accent text-teal-accent rounded-full flex items-center justify-center shadow-xl z-40 active:scale-90 transition-transform"
+      >
+        <span className="material-symbols-outlined text-2xl">person_add</span>
+      </button>
+
+      {/* FAB mobile: nueva cita (principal) */}
       <button
         type="button"
         onClick={openNew}
@@ -282,6 +309,16 @@ export default function AgendaClient({
           defaultDate={selectedDate}
           isGoogleConnected={isGoogleConnected}
           appointment={editingAppointment}
+          onSaved={() => router.refresh()}
+        />
+      )}
+
+      {newPatientOpen && (
+        <NewPatientSlideOver
+          onClose={() => setNewPatientOpen(false)}
+          doctorId={doctorId}
+          defaultDate={selectedDate}
+          isGoogleConnected={isGoogleConnected}
           onSaved={() => router.refresh()}
         />
       )}

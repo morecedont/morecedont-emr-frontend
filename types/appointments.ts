@@ -7,6 +7,7 @@ export type AppointmentStatus =
   | "confirmed"
   | "cancelled"
   | "completed"
+  | "no_show"
 
 export type GcalSyncStatus =
   | "pending"
@@ -47,6 +48,29 @@ export interface NewAppointmentInput {
 /** Payload para editar una cita existente (`updateAppointment`). */
 export interface UpdateAppointmentInput extends NewAppointmentInput {
   id: string
+}
+
+/**
+ * Payload de "Agendar paciente nuevo": datos administrativos mínimos del
+ * paciente + la primera cita, en un solo flujo (`scheduleNewPatient`).
+ * NO crea historia clínica: eso se completa en la consulta.
+ */
+export interface NewPatientAppointmentInput {
+  // Datos mínimos del paciente
+  fullName: string
+  phone: string
+  email: string | null
+  referredBy: string | null
+  approximateAge: number | null
+  // Datos de la primera cita
+  clinicId: string
+  /** ISO 8601 construido desde fecha + hora del formulario */
+  scheduledAt: string
+  durationMinutes: number
+  /** Motivo de consulta → appointments.treatment_type (texto libre) */
+  reasonForVisit: string | null
+  /** Preferencia de sync con Google Calendar */
+  gcalSyncEnabled: boolean
 }
 
 export type SyncIndicatorStatus =

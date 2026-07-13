@@ -95,7 +95,12 @@ export default async function PatientsPage({
       idNumber: p.id_number ?? null,
       lastVisitDate: lastVisitDate ? lastVisitDate.toISOString() : null,
       clinicName,
-      status: deriveStatus(lastVisitDate),
+      // El estado "primera consulta pendiente" (columna DB) tiene prioridad
+      // sobre el estado derivado por inactividad de visitas.
+      status:
+        p.status === "pending_first_visit"
+          ? "first_visit_pending"
+          : deriveStatus(lastVisitDate),
     }
   })
 

@@ -78,6 +78,13 @@ CREATE TABLE doctor_clinics (
 -- created_by es inmutable: registra quién creó el paciente.
 -- ============================================================
 
+-- Estado del paciente: pending_first_visit = registrado + agendado sin historia;
+-- active = con historia clínica. Ver feature "agendar paciente nuevo".
+CREATE TYPE patient_status AS ENUM ('pending_first_visit', 'active');
+
+-- Migración aplicada aparte sobre appointment_status (enum definido en Supabase,
+-- fuera de este archivo): ALTER TYPE appointment_status ADD VALUE IF NOT EXISTS 'no_show';
+
 CREATE TABLE patients (
   id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   full_name         TEXT NOT NULL,
@@ -90,7 +97,10 @@ CREATE TABLE patients (
   address           TEXT,
   created_by        UUID NOT NULL REFERENCES profiles(id),
   current_doctor_id UUID NOT NULL REFERENCES profiles(id),
-  created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  status            patient_status NOT NULL DEFAULT 'active',
+  referred_by       TEXT,                    -- Quién refirió al paciente (registro mínimo)
+  approximate_age   INTEGER                  -- Edad aprox. cuando no se conoce la fecha exacta
 );
 
 -- ============================================================

@@ -30,6 +30,12 @@ const STATUS_STYLES: Record<AppointmentStatus, { bar: string; dot: string; label
     label: "Cancelada",
     labelCls: "text-outline bg-surface-container",
   },
+  no_show: {
+    bar: "bg-error",
+    dot: "bg-error",
+    label: "No asistió",
+    labelCls: "text-error bg-error-container/40",
+  },
 }
 
 function AppointmentCard({ appt }: { appt: Appointment }) {

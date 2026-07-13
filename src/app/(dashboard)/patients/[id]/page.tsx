@@ -118,6 +118,7 @@ export default async function PatientPage({
     bloodType: patient.blood_type ?? null,
     phone: patient.phone ?? null,
     isActive,
+    firstVisitPending: patient.status === "pending_first_visit",
   }
 
   // History rows — active (paginated)
