@@ -70,7 +70,7 @@ export type ExamFormData = Omit<DentalExamData, "eruption_status"> & {
 const EMPTY_EXAM: ExamFormData = {
   problem_atm: false, problem_crowding: false, problem_periodontitis: false,
   problem_gingivitis: false, problem_habits: false, problem_takes_aspirin: false,
-  problem_wisdom_extract: false, eruption_status: "", specifications: "",
+  problem_wisdom_extract: false, problem_other: "", eruption_status: "", specifications: "",
   observations: "", definitive_diagnosis: "", treatment_plan_notes: "",
 }
 
@@ -240,6 +240,18 @@ export default function Step4DentalExam({ medicalHistoryId, patientId, initialDa
                 <span className="text-sm font-medium text-on-surface">{p.label}</span>
               </label>
             ))}
+          </div>
+
+          {/* Other (free text) */}
+          <div className="mt-4">
+            <label className={labelCls}>Otro (no contemplado en la lista)</label>
+            <input
+              type="text"
+              value={examData.problem_other}
+              onChange={(e) => setExamData((prev) => ({ ...prev, problem_other: e.target.value }))}
+              placeholder="Describa otro problema detectado"
+              className={inputCls}
+            />
           </div>
 
           {/* Eruption status */}

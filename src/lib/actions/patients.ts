@@ -312,6 +312,7 @@ export type DentalExamData = {
   problem_habits: boolean
   problem_takes_aspirin: boolean
   problem_wisdom_extract: boolean
+  problem_other: string
   eruption_status: "erupted" | "semi" | "not_erupted" | null
   specifications: string
   observations: string
@@ -345,6 +346,7 @@ export async function saveDentalExam(
         problem_habits: examData.problem_habits,
         problem_takes_aspirin: examData.problem_takes_aspirin,
         problem_wisdom_extract: examData.problem_wisdom_extract,
+        problem_other: examData.problem_other || null,
         eruption_status: examData.eruption_status,
         specifications: examData.specifications || null,
         observations: examData.observations || null,
@@ -360,6 +362,7 @@ export async function saveDentalExam(
         problem_habits: examData.problem_habits,
         problem_takes_aspirin: examData.problem_takes_aspirin,
         problem_wisdom_extract: examData.problem_wisdom_extract,
+        problem_other: examData.problem_other || null,
         eruption_status: examData.eruption_status,
         specifications: examData.specifications || null,
         observations: examData.observations || null,

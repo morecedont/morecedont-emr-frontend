@@ -534,6 +534,7 @@ model dental_exams {
   problem_habits         Boolean?          @default(false)
   problem_takes_aspirin  Boolean?          @default(false)
   problem_wisdom_extract Boolean?          @default(false)
+  problem_other          String?
   eruption_status        eruption_status?
   specifications         String?
   observations           String?

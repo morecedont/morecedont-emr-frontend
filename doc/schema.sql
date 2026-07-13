@@ -231,6 +231,7 @@ CREATE TABLE dental_exams (
   problem_habits          BOOLEAN DEFAULT FALSE,
   problem_takes_aspirin   BOOLEAN DEFAULT FALSE,
   problem_wisdom_extract  BOOLEAN DEFAULT FALSE,
+  problem_other           TEXT,
 
   -- Estado de erupción de cordales
   eruption_status         eruption_status,

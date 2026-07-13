@@ -101,6 +101,7 @@ export default async function EditHistoryPage({
         problem_habits: exam.problem_habits ?? false,
         problem_takes_aspirin: exam.problem_takes_aspirin ?? false,
         problem_wisdom_extract: exam.problem_wisdom_extract ?? false,
+        problem_other: exam.problem_other ?? "",
         eruption_status: (exam.eruption_status ?? "") as "erupted" | "semi" | "not_erupted" | "",
         specifications: exam.specifications ?? "",
         observations: exam.observations ?? "",

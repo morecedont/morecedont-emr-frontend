@@ -137,6 +137,7 @@ export default async function HistoryDetailPage({
         problem_habits: history.dental_exams.problem_habits ?? false,
         problem_takes_aspirin: history.dental_exams.problem_takes_aspirin ?? false,
         problem_wisdom_extract: history.dental_exams.problem_wisdom_extract ?? false,
+        problem_other: history.dental_exams.problem_other ?? null,
         eruption_status: (history.dental_exams.eruption_status ?? null) as "erupted" | "semi" | "not_erupted" | null,
         specifications: history.dental_exams.specifications ?? null,
         observations: history.dental_exams.observations ?? null,

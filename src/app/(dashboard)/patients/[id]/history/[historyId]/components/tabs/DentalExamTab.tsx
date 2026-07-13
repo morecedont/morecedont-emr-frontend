@@ -15,6 +15,7 @@ export type DentalExamData = {
   problem_habits: boolean | null
   problem_takes_aspirin: boolean | null
   problem_wisdom_extract: boolean | null
+  problem_other: string | null
   eruption_status: EruptionStatus
   specifications: string | null
   observations: string | null
@@ -108,6 +109,14 @@ export default function DentalExamTab({ exam, toothRecords, patientId, historyId
               <span className="px-3 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700 uppercase tracking-wide">
                 {ERUPTION_LABELS[exam.eruption_status] ?? exam.eruption_status}
               </span>
+            </div>
+          )}
+
+          {/* Other (free text) */}
+          {exam.problem_other && (
+            <div className="flex flex-col gap-1 py-2 border-b border-outline/10 last:border-0 sm:col-span-2">
+              <span className="text-sm text-on-surface">Otro</span>
+              <span className="text-sm text-secondary leading-relaxed">{exam.problem_other}</span>
             </div>
           )}
         </div>
